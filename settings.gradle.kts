@@ -9,6 +9,7 @@ include(
         "cfa-metrics",
         "common",
         "core",
+        "markov",
         "solver",
         "solver-z3",
         "sts",

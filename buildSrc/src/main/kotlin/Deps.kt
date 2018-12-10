@@ -1,4 +1,8 @@
 object Deps {
+    object Kotlin {
+        val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin}"
+    }
+
     val guava = "com.google.guava:guava:${Versions.guava}"
 
     object Antlr {
