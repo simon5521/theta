@@ -32,7 +32,7 @@ public class Update {
 
 
     public Rate getRate(){
-        FuncType<ParameterSpace,Rate> func=rateExpr.Func(localParameters,numRate);
+        //FuncType<ParameterSpace,Rate> func=rateExpr.Func(localParameters,numRate);
         return numRate;
     }
 

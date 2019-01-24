@@ -2,9 +2,8 @@ package hu.bme.mit.theta.mm;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
-public class ContinousTimeParametricMarkovChain {
+public class ContinuousTimeParametricMarkovChain {
 
     private ParameterSpace parameterSpace;
 
@@ -21,7 +20,7 @@ public class ContinousTimeParametricMarkovChain {
 
     public Command[] commands;
 
-    public ContinousTimeParametricMarkovChain(int startingLocation, int locationNumber, int targetLocation){
+    public ContinuousTimeParametricMarkovChain(int startingLocation, int locationNumber, int targetLocation){
         this.startingLocation = startingLocation;
         this.locationNumber = locationNumber;
         commands =new Command[locationNumber];
@@ -34,11 +33,11 @@ public class ContinousTimeParametricMarkovChain {
     }
 
 
-    public ContinousTimeParametricMarkovChain copy(){
-        ContinousTimeParametricMarkovChain continousTimeParametricMarkovChain =new ContinousTimeParametricMarkovChain(startingLocation, locationNumber, targetLocation);
-        continousTimeParametricMarkovChain.commands =this.commands;
-        continousTimeParametricMarkovChain.parameterSpace=this.parameterSpace;
-        return continousTimeParametricMarkovChain;
+    public ContinuousTimeParametricMarkovChain copy(){
+        ContinuousTimeParametricMarkovChain continuousTimeParametricMarkovChain =new ContinuousTimeParametricMarkovChain(startingLocation, locationNumber, targetLocation);
+        continuousTimeParametricMarkovChain.commands =this.commands;
+        continuousTimeParametricMarkovChain.parameterSpace=this.parameterSpace;
+        return continuousTimeParametricMarkovChain;
     }
 
     public void setParameterSpace(ParameterSpace parameterSpace){

@@ -10,7 +10,7 @@ public class NondeterministicCommand extends Command {
 
     //this array contains the numeric rates of the updates for each actions
     //this array should be evaluated in each iteration cycle
-    public double[] [] rates; //first dimension shows the target (update), second dimension shows the action
+    public double[][] rates; //first dimension shows the target (update), second dimension shows the action
 
 
     public NondeterministicCommand(ParameterSpace parameterSpace, int locationNumber, List<Update> updates, String guard, String action, double [][] rates) {

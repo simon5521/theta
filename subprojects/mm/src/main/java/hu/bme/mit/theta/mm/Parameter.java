@@ -5,7 +5,7 @@ import hu.bme.mit.theta.core.type.Type;
 import java.util.Scanner;
 
 
-public class Parameter implements Type {
+public class Parameter /*implements Type*/ {
 
     public final Double lowerLimit;
     public final Double upperLimit;

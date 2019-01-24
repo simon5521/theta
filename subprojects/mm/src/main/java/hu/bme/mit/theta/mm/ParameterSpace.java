@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-public class ParameterSpace implements Type {
+public class ParameterSpace /*implements Type*/ {
 
     public ParameterSpaceState state=ParameterSpaceState.UNTESTED;
 

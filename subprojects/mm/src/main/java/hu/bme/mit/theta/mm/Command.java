@@ -5,11 +5,11 @@ import java.util.List;
 
 public class Command {
 
-    private ParameterSpace localParameters=new ParameterSpace();
+    public ParameterSpace localParameters=new ParameterSpace();
 
     private ParameterSpace parameterSpace;
 
-    private List<Update> updates;
+    public List<Update> updates;
 
 
     public final int locationNumber;
