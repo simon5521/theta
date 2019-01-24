@@ -1,3 +1,3 @@
-plugins(
-        id("java-common")
-)
+plugins{
+    id("java-common")
+}

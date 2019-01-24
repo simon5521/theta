@@ -15,7 +15,7 @@ A CFA is a directed graph with
 * locations, with dedicated initial, final and error locations,
 * edges between locations, labeled with statements over the variables.
 
-Algorithms are usually interested in proving that the error location is not reachable.
+Algorithms are usually interested in proving that the error command is not reachable.
 
 ### Textual representation (DSL)
 
