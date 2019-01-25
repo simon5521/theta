@@ -1,5 +1,12 @@
 package hu.bme.mit.theta.mm;
 
+import hu.bme.mit.theta.core.stmt.AssignStmt;
+import hu.bme.mit.theta.core.type.Expr;
+import hu.bme.mit.theta.core.type.LitExpr;
+import hu.bme.mit.theta.core.type.booltype.BoolType;
+import hu.bme.mit.theta.core.type.realtype.RealType;
+
+import java.util.Collection;
 import java.util.List;
 
 //I may not will use it in the future
@@ -10,14 +17,17 @@ public class NondeterministicCommand extends Command {
 
     //this array contains the numeric rates of the updates for each actions
     //this array should be evaluated in each iteration cycle
-    public double[][] rates; //first dimension shows the target (update), second dimension shows the action
+    public final LitExpr<RealType>[][] rates; //first dimension shows the target (update), second dimension shows the action
 
 
-    public NondeterministicCommand(ParameterSpace parameterSpace, int locationNumber, List<Update> updates, String guard, String action, double [][] rates) {
-        super(parameterSpace, locationNumber, updates, guard, action);
-        actionNumber=pow2(parameterNumber);
-        this.rates=new double[updates.size()][actionNumber];
+
+
+    public NondeterministicCommand(List<Update> updates, Expr<BoolType> guard, Collection<AssignStmt<?>> action,LitExpr<RealType>[][] rates) {
+        super(updates, guard, action);
+        actionNumber=pow2(super.parameterNumber);
+        this.rates=rates;
     }
+
 
     private int pow2(int n){
         int r=1;

@@ -125,6 +125,24 @@ public final class ExprUtils {
 		}
 		expr.getOps().forEach(op -> collectVars(op, collectTo));
 	}
+	/**
+	 * Collect parameters of an expression into a given collection.
+	 *
+	 * @param expr Expression
+	 * @param collectTo Collection where the variables should be put
+	 */
+	public static void collectParams(final Expr<?> expr, final Collection<ParamDecl<?>> collectTo) {
+		if (expr instanceof RefExpr) {
+			final RefExpr<?> refExpr = (RefExpr<?>) expr;
+			final Decl<?> decl = refExpr.getDecl();
+			if (decl instanceof ParamDecl) {
+				final ParamDecl<?> paramDecl = (ParamDecl<?>) decl;
+				collectTo.add(paramDecl);
+				return;
+			}
+		}
+		expr.getOps().forEach(op -> collectParams(op, collectTo));
+	}
 
 	/**
 	 * Collect variables from expressions into a given collection.
@@ -146,6 +164,18 @@ public final class ExprUtils {
 		final Set<VarDecl<?>> vars = new HashSet<>();
 		collectVars(expr, vars);
 		return vars;
+	}
+
+	/**
+	 * Get variables of an expression.
+	 *
+	 * @param expr Expression
+	 * @return Set of variables appearing in the expression
+	 */
+	public static Set<ParamDecl<?>> getParams(final Expr<?> expr) {
+		final Set<ParamDecl<?>> params = new HashSet<>();
+		collectParams(expr, params);
+		return params;
 	}
 
 	/**

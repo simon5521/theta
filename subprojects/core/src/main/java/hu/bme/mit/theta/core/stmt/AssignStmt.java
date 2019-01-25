@@ -19,6 +19,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static hu.bme.mit.theta.core.utils.TypeUtils.cast;
 
 import hu.bme.mit.theta.common.Utils;
+import hu.bme.mit.theta.core.decl.ParamDecl;
 import hu.bme.mit.theta.core.decl.VarDecl;
 import hu.bme.mit.theta.core.type.Expr;
 import hu.bme.mit.theta.core.type.Type;
@@ -53,6 +54,7 @@ public final class AssignStmt<DeclType extends Type> implements Stmt {
 	public VarDecl<DeclType> getVarDecl() {
 		return varDecl;
 	}
+
 
 	public Expr<DeclType> getExpr() {
 		return expr;

@@ -1,72 +1,36 @@
 package hu.bme.mit.theta.mm;
 
+import hu.bme.mit.theta.core.decl.ParamDecl;
+import hu.bme.mit.theta.core.decl.VarDecl;
+import hu.bme.mit.theta.core.type.realtype.RealType;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ContinuousTimeParametricMarkovChain {
 
-    private ParameterSpace parameterSpace;
+    public final int commandNumber;
 
-    public final double uniformExitRate=25;
+    public final int variableNumber;
 
-    public final double uniformExitExpectedTime=1/uniformExitRate;
+    public final int parameterNumber;
 
-    public final Integer startingLocation;
+    public final Collection<Command> commands;
 
-    public final Integer locationNumber;
+    public final Collection<VarDecl<?>> variables;
 
-    public final Integer targetLocation;
+    public final Collection<ParamDecl<RealType>> parameters;
 
-
-    public Command[] commands;
-
-    public ContinuousTimeParametricMarkovChain(int startingLocation, int locationNumber, int targetLocation){
-        this.startingLocation = startingLocation;
-        this.locationNumber = locationNumber;
-        commands =new Command[locationNumber];
-        if(targetLocation<=locationNumber)
-            this.targetLocation = targetLocation;
-        else {
-            this.targetLocation = -1;
-            System.out.println("there is an error with the target location");
-        }
+    public ContinuousTimeParametricMarkovChain(Collection<Command> commands, Collection<VarDecl<?>> variables, Collection<ParamDecl<RealType>> parameters) {
+        this.commands = commands;
+        this.variables = variables;
+        this.parameters = parameters;
+        commandNumber=commands.size();
+        variableNumber=variables.size();
+        parameterNumber=parameters.size();
     }
 
 
-    public ContinuousTimeParametricMarkovChain copy(){
-        ContinuousTimeParametricMarkovChain continuousTimeParametricMarkovChain =new ContinuousTimeParametricMarkovChain(startingLocation, locationNumber, targetLocation);
-        continuousTimeParametricMarkovChain.commands =this.commands;
-        continuousTimeParametricMarkovChain.parameterSpace=this.parameterSpace;
-        return continuousTimeParametricMarkovChain;
-    }
-
-    public void setParameterSpace(ParameterSpace parameterSpace){
-
-        this.parameterSpace = parameterSpace;
-
-        for(Command command : commands){
-            command.setParameterSpace(parameterSpace);
-        }
-
-    }
-
-    public ParameterSpace getParameterSpace(){
-        return parameterSpace;
-    }
-
-
-
-
-    private void readParameters(){
-        parameterSpace=new ParameterSpace();
-
-    }
-
-    private void readLocations(){
-        List<Command> tmpCommands =new ArrayList<>();
-        // #todo
-        commands = tmpCommands.toArray(new Command[locationNumber]);
-
-    }
 
 }

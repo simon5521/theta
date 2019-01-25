@@ -1,38 +1,39 @@
 package hu.bme.mit.theta.mm;
 
-import java.util.ArrayList;
-import java.util.List;
+import hu.bme.mit.theta.core.decl.ParamDecl;
+import hu.bme.mit.theta.core.decl.VarDecl;
+import hu.bme.mit.theta.core.type.realtype.RealType;
+
+import java.util.*;
 
 public class ContinuousTimeParametricMarkovDecisionProcess{
 
-    public int actionNumber;
+    public final int actionNumber;
 
-    public final double uniformExitRate;
+    public final int commandNumber;
 
-    public final double uniformExitExpectedTime;
+    public final int variableNumber;
 
-    public final Integer startingLocation;
+    public final int parameterNumber;
 
-    public final Integer locationNumber;
+    public final Collection<NondeterministicCommand> commands;
 
-    public final Integer targetLocation;
+    public final Collection<VarDecl<?>> variables;
 
-    public List<NondeterministicCommand> commands=new ArrayList<>();
+    public final Collection<ParamDecl<RealType>> parameters;
 
-    public ContinuousTimeParametricMarkovDecisionProcess(double uniformExitRate, int startingLocation, int locationNumber, int targetLocation){
-        this.uniformExitRate = uniformExitRate;
-        uniformExitExpectedTime=1/uniformExitRate;
-        this.startingLocation = startingLocation;
-        this.locationNumber = locationNumber;
-        if(targetLocation<=locationNumber)
-            this.targetLocation = targetLocation;
-        else {
-            this.targetLocation = -1;
-            System.out.println("there is an error with the target location");
-        }
+    public ContinuousTimeParametricMarkovDecisionProcess(Collection<NondeterministicCommand> commands, Collection<VarDecl<?>> variables, Collection<ParamDecl<RealType>> parameters) {
+        this.commands = commands;
+        this.variables = variables;
+        this.parameters = parameters;
+        commandNumber=commands.size();
+        variableNumber=variables.size();
+        parameterNumber=parameters.size();
+        actionNumber=calculateActionNumber();
     }
 
-    public void calculateActionNumber(){
+
+    private int  calculateActionNumber(){
         int maxActionNumber=0;
         for (NondeterministicCommand command:commands){
 
@@ -41,7 +42,7 @@ public class ContinuousTimeParametricMarkovDecisionProcess{
             }
 
         }
-        actionNumber=maxActionNumber;
+        return maxActionNumber;
     }
 
 

@@ -4,7 +4,6 @@ import hu.bme.mit.theta.mm.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class ContinouosTimeParametricMarkovChainRelaxator {
 
@@ -57,7 +56,7 @@ public class ContinouosTimeParametricMarkovChainRelaxator {
                     parameterArray[parameterCounter].limit=ParameterDirection.LOW;
                 }
             }
-            for (int targetLocation=0;targetLocation<nondeterministicCommand.locationNumber;targetLocation++){
+            for (int targetLocation = 0; targetLocation<nondeterministicCommand.updateNumber; targetLocation++){
                 if(transitions[targetLocation]!=null){
                     nondeterministicCommand.rates[targetLocation][actionBits]=transitions[targetLocation].getRate().value;
                 }

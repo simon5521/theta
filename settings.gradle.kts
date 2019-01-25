@@ -9,7 +9,6 @@ include(
         "cfa-metrics",
         "common",
         "core",
-        "markov",
         "mm",
         "mm-analysis",
         "mm-metrics",
