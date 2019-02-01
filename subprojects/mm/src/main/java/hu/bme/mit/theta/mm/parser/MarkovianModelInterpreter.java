@@ -17,7 +17,6 @@ import hu.bme.mit.theta.core.type.realtype.RealType;
 import hu.bme.mit.theta.mm.dsl.Command;
 import hu.bme.mit.theta.mm.dsl.ContinuousTimeParametricMarkovChain;
 import hu.bme.mit.theta.mm.dsl.Update;
-import hu.bme.mit.theta.xta.XtaProcess;
 import hu.bme.mit.theta.xta.utils.RangeType;
 
 import java.util.List;
