@@ -40,6 +40,7 @@ import hu.bme.mit.theta.core.decl.Decl;
 import hu.bme.mit.theta.core.decl.VarDecl;
 import hu.bme.mit.theta.core.dsl.CoreDslManager;
 
+
 public final class CfaVisualizer {
 
 	private static final String CFA_LABEL = "";
@@ -50,6 +51,7 @@ public final class CfaVisualizer {
 	private static final LineStyle LOC_LINE_STYLE = LineStyle.NORMAL;
 	private static final LineStyle EDGE_LINE_STYLE = LineStyle.NORMAL;
 	private static final String EDGE_FONT = "courier";
+
 
 	private CfaVisualizer() {
 	}

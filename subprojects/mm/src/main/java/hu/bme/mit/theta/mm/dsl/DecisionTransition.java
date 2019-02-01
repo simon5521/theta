@@ -1,4 +1,4 @@
-package hu.bme.mit.theta.mm;
+package hu.bme.mit.theta.mm.dsl;
 
 public class DecisionTransition {
 

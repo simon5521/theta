@@ -1,7 +1,7 @@
 package hu.bme.mit.theta.mm.analysis;
 
 
-import hu.bme.mit.theta.mm.ContinuousTimeParametricMarkovChain;
+import hu.bme.mit.theta.mm.dsl.ContinuousTimeParametricMarkovChain;
 
 public class ContinuousTimeParametricMarkovChainLinearisator {
     private static ContinuousTimeParametricMarkovChainLinearisator ourInstance = new ContinuousTimeParametricMarkovChainLinearisator();

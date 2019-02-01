@@ -5,7 +5,7 @@ import hu.bme.mit.theta.core.type.Type;
 import hu.bme.mit.theta.core.type.abstracttype.*;
 import hu.bme.mit.theta.core.type.realtype.RealType;
 
-public final class RealType  implements Additive<RealType>, Multiplicative<RealType>, Equational<RealType>, Ordered<RealType>,
+public class RealType  implements Additive<RealType>, Multiplicative<RealType>, Equational<RealType>, Ordered<RealType>,
         Castable<RealType> {
 
     private static final RealType INSTANCE = new RealType();
@@ -13,7 +13,7 @@ public final class RealType  implements Additive<RealType>, Multiplicative<RealT
     private static final String TYPE_LABEL = "Real";
 
 
-    private RealType(){
+    protected RealType(){
 
     }
 

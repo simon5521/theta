@@ -1,10 +1,12 @@
-package hu.bme.mit.theta.mm;
+package hu.bme.mit.theta.mm.dsl;
 
 import hu.bme.mit.theta.core.decl.ParamDecl;
 import hu.bme.mit.theta.core.decl.VarDecl;
 import hu.bme.mit.theta.core.type.realtype.RealType;
 
 import java.util.*;
+
+import static com.google.common.base.Preconditions.checkState;
 
 public class ContinuousTimeParametricMarkovDecisionProcess{
 
@@ -45,5 +47,32 @@ public class ContinuousTimeParametricMarkovDecisionProcess{
         return maxActionNumber;
     }
 
+    public final static class Builder{
+
+        private Collection<NondeterministicCommand> commands;
+
+        private Collection<VarDecl<?>> variables;
+
+        private Collection<ParamDecl<RealType>> parameters;
+
+        private boolean built;
+
+        private Builder(){
+            commands=new HashSet<>();
+            variables=new HashSet<>();
+            parameters=new HashSet<>();
+            built=false;
+        }
+
+        public ContinuousTimeParametricMarkovDecisionProcess build(){
+            checkNotBuilt();
+            return new ContinuousTimeParametricMarkovDecisionProcess(commands,variables,parameters);
+        }
+
+        private void checkNotBuilt() {
+            checkState(!built, "Command was already built.");
+        }
+
+    }
 
 }

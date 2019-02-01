@@ -1,4 +1,4 @@
-package hu.bme.mit.theta.mm;
+package hu.bme.mit.theta.mm.dsl;
 
 import hu.bme.mit.theta.core.stmt.AssignStmt;
 import hu.bme.mit.theta.core.type.Expr;
@@ -9,7 +9,6 @@ import hu.bme.mit.theta.core.type.realtype.RealType;
 import java.util.Collection;
 import java.util.List;
 
-//I may not will use it in the future
 public class NondeterministicCommand extends Command {
 
     public final int actionNumber;
@@ -22,7 +21,7 @@ public class NondeterministicCommand extends Command {
 
 
 
-    public NondeterministicCommand(List<Update> updates, Expr<BoolType> guard, Collection<AssignStmt<?>> action,LitExpr<RealType>[][] rates) {
+    public NondeterministicCommand(List<Update> updates, Expr<BoolType> guard, String action,LitExpr<RealType>[][] rates) {
         super(updates, guard, action);
         actionNumber=pow2(super.parameterNumber);
         this.rates=rates;

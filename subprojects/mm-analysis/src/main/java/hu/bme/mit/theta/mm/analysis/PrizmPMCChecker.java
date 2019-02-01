@@ -2,7 +2,10 @@ package hu.bme.mit.theta.mm.analysis;
 
 import java.io.IOException;
 
-import hu.bme.mit.theta.mm.*;
+import hu.bme.mit.theta.mm.dsl.ContinuousTimeParametricMarkovChain;
+import hu.bme.mit.theta.mm.dsl.ContinuousTimeParametricMarkovDecisionProcess;
+import hu.bme.mit.theta.mm.dsl.NondeterministicCommand;
+import hu.bme.mit.theta.mm.dsl.Update;
 
 public class PrizmPMCChecker {
     private PrizmModellChecker prizmModellChecker;

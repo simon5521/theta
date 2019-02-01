@@ -1,10 +1,7 @@
-package hu.bme.mit.theta.mm;
-
-import hu.bme.mit.theta.core.type.Type;
+package hu.bme.mit.theta.mm.dsl;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 
 public class ParameterSpace /*implements Type*/ {
 

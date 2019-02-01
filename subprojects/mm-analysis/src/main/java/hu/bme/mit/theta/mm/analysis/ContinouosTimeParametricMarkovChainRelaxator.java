@@ -1,6 +1,6 @@
 package hu.bme.mit.theta.mm.analysis;
 
-import hu.bme.mit.theta.mm.*;
+import hu.bme.mit.theta.mm.dsl.*;
 
 import java.util.ArrayList;
 import java.util.List;
