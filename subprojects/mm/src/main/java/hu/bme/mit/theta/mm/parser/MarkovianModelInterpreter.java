@@ -7,7 +7,6 @@ import hu.bme.mit.theta.core.decl.VarDecl;
 import hu.bme.mit.theta.core.parser.CoreInterpreter;
 import hu.bme.mit.theta.core.parser.Env;
 import hu.bme.mit.theta.core.stmt.AssignStmt;
-import hu.bme.mit.theta.core.stmt.Stmt;
 import hu.bme.mit.theta.core.type.Expr;
 import hu.bme.mit.theta.core.type.LitExpr;
 import hu.bme.mit.theta.core.type.Type;
@@ -15,7 +14,7 @@ import hu.bme.mit.theta.core.type.booltype.BoolType;
 import hu.bme.mit.theta.core.type.inttype.IntType;
 import hu.bme.mit.theta.core.type.realtype.RealType;
 import hu.bme.mit.theta.mm.dsl.Command;
-import hu.bme.mit.theta.mm.dsl.ContinuousTimeParametricMarkovChain;
+import hu.bme.mit.theta.mm.dsl.MarkovianModel;
 import hu.bme.mit.theta.mm.dsl.Update;
 import hu.bme.mit.theta.xta.utils.RangeType;
 
@@ -32,14 +31,14 @@ public class MarkovianModelInterpreter {
 
     private final Env env;
     private final CoreInterpreter interpreter;
-    private  final ContinuousTimeParametricMarkovChain.Builder mmBuilder;
+    private  final MarkovianModel.Builder mmBuilder;
 
     public MarkovianModelInterpreter(Env env){
 
         this.env = env;
         this.interpreter=new CoreInterpreter(env);
         initEnv();
-        mmBuilder=ContinuousTimeParametricMarkovChain.builder();
+        mmBuilder= MarkovianModel.builder();
 
 
     }
@@ -48,7 +47,7 @@ public class MarkovianModelInterpreter {
         interpreter.defineCommonTypes();
         interpreter.defineCommonExprs();
         interpreter.defineCommonStmts();
-        env.define("pctmc",markovianModelCreator());
+        env.define("pctmc",markovianModelCreator(MarkovianModel.Type.ContinuousTimeParametricMarkovChain));
         env.define("var",variableCreator());
         env.define("command",commandCreator());
         env.define("update",updateCreator());
@@ -98,9 +97,10 @@ public class MarkovianModelInterpreter {
     }
 
 
-    private Function<List<SExpr>, ContinuousTimeParametricMarkovChain> markovianModelCreator() {
+    private Function<List<SExpr>, MarkovianModel> markovianModelCreator(MarkovianModel.Type type) {
         return sexprs -> {
             env.push();
+            mmBuilder.setType(type);
             for (final SExpr sexpr : sexprs) {
                 final Object object = eval(sexpr);
                 if (object instanceof VarDecl) {

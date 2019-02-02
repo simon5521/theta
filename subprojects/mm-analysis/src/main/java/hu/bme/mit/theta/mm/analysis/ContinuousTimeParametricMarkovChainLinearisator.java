@@ -1,7 +1,7 @@
 package hu.bme.mit.theta.mm.analysis;
 
 
-import hu.bme.mit.theta.mm.dsl.ContinuousTimeParametricMarkovChain;
+import hu.bme.mit.theta.mm.dsl.MarkovianModel;
 
 public class ContinuousTimeParametricMarkovChainLinearisator {
     private static ContinuousTimeParametricMarkovChainLinearisator ourInstance = new ContinuousTimeParametricMarkovChainLinearisator();
@@ -15,8 +15,8 @@ public class ContinuousTimeParametricMarkovChainLinearisator {
 
 
     //there are the important stuff
-    public static ContinuousTimeParametricMarkovChain linearisate(ContinuousTimeParametricMarkovChain continuousTimeParametricMarkovChain) {
+    public static MarkovianModel linearisate(MarkovianModel markovianModel) {
         //todo: add linearisation
-        return continuousTimeParametricMarkovChain;
+        return markovianModel;
     }
 }

@@ -12,7 +12,7 @@ import java.util.HashSet;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
-public class ContinuousTimeParametricMarkovChain {
+public class MarkovianModel {
 
     public final int commandNumber;
 
@@ -28,7 +28,9 @@ public class ContinuousTimeParametricMarkovChain {
 
     public final Valuation variableInitalisations;
 
-    public ContinuousTimeParametricMarkovChain(Collection<Command> commands, Collection<VarDecl<?>> variables, Collection<ParamDecl<?>> parameters, Valuation variableInitalisations) {
+    public final Type type;
+
+    public MarkovianModel(Collection<Command> commands, Collection<VarDecl<?>> variables, Collection<ParamDecl<?>> parameters, Valuation variableInitalisations, Type type) {
         this.commands = commands;
         this.variables = variables;
         this.parameters = parameters;
@@ -36,6 +38,7 @@ public class ContinuousTimeParametricMarkovChain {
         variableNumber=variables.size();
         parameterNumber=parameters.size();
         this.variableInitalisations = variableInitalisations;
+        this.type = type;
     }
 
 
@@ -43,6 +46,13 @@ public class ContinuousTimeParametricMarkovChain {
     public static Builder builder() {
         return new Builder();
     }
+
+
+
+    public enum Type{
+        ContinuousTimeParametricMarkovChain, ContinuousTimeParametricMarkovDecisionProcess, ContinousTimeMarkovDecisionProcess, DiscreteTimeMarkovDecisionProcess
+    }
+
 
 
     public static final class Builder {
@@ -59,6 +69,8 @@ public class ContinuousTimeParametricMarkovChain {
         private Valuation variableInitalisations;
 
         private ImmutableValuation.Builder initialisationBuilder;
+
+        private Type type;
 
 
         private Builder(){
@@ -88,7 +100,7 @@ public class ContinuousTimeParametricMarkovChain {
         }
 
 
-        public ContinuousTimeParametricMarkovChain build() {
+        public MarkovianModel build() {
             checkNotBuilt();
             built = true;
             //collecting the parameters from the Commands
@@ -96,7 +108,7 @@ public class ContinuousTimeParametricMarkovChain {
                 command.collectParams(parameters);
             }
             variableInitalisations=initialisationBuilder.build();
-            return new ContinuousTimeParametricMarkovChain(this.commands, this.variables, this.parameters, this.variableInitalisations);
+            return new MarkovianModel(this.commands, this.variables, this.parameters, this.variableInitalisations, type);
         }
 
 
@@ -105,9 +117,9 @@ public class ContinuousTimeParametricMarkovChain {
         }
 
 
-
-
+        public void setType(Type type) {
+            this.type = type;
+        }
     }
-
 
 }
