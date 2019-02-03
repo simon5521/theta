@@ -43,6 +43,10 @@ public class MarkovianModelInterpreter {
 
     }
 
+    public MarkovianModel markovianModel(SExpr sExpr){
+        return (MarkovianModel) eval(sExpr);
+    }
+
     private void initEnv(){
         interpreter.defineCommonTypes();
         interpreter.defineCommonExprs();
