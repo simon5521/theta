@@ -11,6 +11,7 @@ import hu.bme.mit.theta.core.type.Expr;
 import hu.bme.mit.theta.core.type.LitExpr;
 import hu.bme.mit.theta.core.type.Type;
 import hu.bme.mit.theta.core.type.booltype.BoolType;
+import hu.bme.mit.theta.core.type.inttype.IntLitExpr;
 import hu.bme.mit.theta.core.type.inttype.IntType;
 import hu.bme.mit.theta.core.type.realtype.RealType;
 import hu.bme.mit.theta.mm.dsl.Command;
@@ -107,9 +108,9 @@ public class MarkovianModelInterpreter {
             mmBuilder.setType(type);
             for (final SExpr sexpr : sexprs) {
                 final Object object = eval(sexpr);
-                if (object instanceof VarDecl) {
-                    final VarDecl<?> varDecl = (VarDecl<?>) object;
-                    env.define(varDecl.getName(), varDecl);
+                if (object instanceof VariableContext) {
+                    final VariableContext varDecl = (VariableContext) object;
+                    env.define(varDecl.varDecl.getName(), varDecl);
                 } else if (object instanceof CommandContext) {
                     final Command command=mmBuilder.createCommand(((CommandContext) object).builder);
                     env.define(command.action, command);
@@ -149,7 +150,7 @@ public class MarkovianModelInterpreter {
             checkArgument(sexprs.size() > 2);
             Command.Builder builder=new Command.Builder();
             builder.setAction(sexprs.get(0).asAtom().getAtom());
-            builder.setGuard((Expr<BoolType>) eval(sexprs.get(1).asAtom()));
+            builder.setGuard((Expr<BoolType>) eval(sexprs.get(1)));
             env.push();
             for(final SExpr sexpr :sexprs){
                 final Object object = eval(sexpr);
@@ -166,10 +167,10 @@ public class MarkovianModelInterpreter {
             checkArgument(sexprs.size() >= 2);
             final String name = sexprs.get(0).asAtom().getAtom();
             final Type type = interpreter.type(sexprs.get(1));
-            if(type.equals(IntType.class)){ //todo: supervising needed
+            if(type.equals(IntType.getInstance())){ //todo: supervising needed
                 final RangeType _type = RangeType.Range((int) evalAtom(sexprs.get(2).asAtom()),(int) evalAtom(sexprs.get(3).asAtom()));
                 final VarDecl<RangeType> varDecl = Var(name,_type);
-                VariableContext variableContext=new VariableContext(varDecl,(LitExpr<RangeType>) eval(sexprs.get(4).asAtom()) );
+                VariableContext variableContext=new VariableContext(varDecl,IntLitExpr.of((Integer) eval(sexprs.get(4).asAtom()))  );
                 return variableContext;
             }else{
                 final VarDecl<?> varDecl = Var(name, type);

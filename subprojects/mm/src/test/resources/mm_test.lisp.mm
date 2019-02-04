@@ -1,5 +1,5 @@
 (pctmc
-    (var l Range
+    (var l Int
         0
         3
         0
