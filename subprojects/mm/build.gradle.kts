@@ -7,8 +7,3 @@ dependencies{
     compile(project(":theta-xta"))
     compile(project(":theta-common"))
 }
-
-
-tasks.withType<Test> {
-    useJUnitPlatform()
-}

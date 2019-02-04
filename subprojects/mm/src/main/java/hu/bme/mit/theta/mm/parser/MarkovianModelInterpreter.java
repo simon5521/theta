@@ -163,7 +163,7 @@ public class MarkovianModelInterpreter {
 
     private Function<List<SExpr>, VariableContext> variableCreator() {//todo add valuation
         return sexprs -> {
-            checkArgument(sexprs.size() == 2);
+            checkArgument(sexprs.size() >= 2);
             final String name = sexprs.get(0).asAtom().getAtom();
             final Type type = interpreter.type(sexprs.get(1));
             if(type.equals(IntType.class)){ //todo: supervising needed
