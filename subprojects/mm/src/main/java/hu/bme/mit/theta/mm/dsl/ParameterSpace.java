@@ -1,72 +1,75 @@
 package hu.bme.mit.theta.mm.dsl;
 
-import java.util.HashMap;
-import java.util.Map;
+import hu.bme.mit.theta.core.decl.ParamDecl;
+import hu.bme.mit.theta.core.model.ImmutableValuation;
+import hu.bme.mit.theta.core.model.Valuation;
+import hu.bme.mit.theta.core.type.LitExpr;
+
+import java.util.Collection;
+import java.util.HashSet;
+
+import static com.google.common.base.Preconditions.checkState;
 
 public class ParameterSpace /*implements Type*/ {
 
-    public ParameterSpaceState state=ParameterSpaceState.UNTESTED;
+    public final Collection<ParamDecl<?>> paramDecls;
 
-    public Map<String,Parameter> map = new HashMap<String,Parameter>();
 
-    public ParameterSpace(){
+    public final Valuation lowerLimits;
 
+    public final Valuation upperLimits;
+
+    public ParameterSpace(Collection<ParamDecl<?>> paramDecls, Valuation lowerLimits, Valuation upperLimits) {
+        this.paramDecls = paramDecls;
+        this.lowerLimits = lowerLimits;
+        this.upperLimits = upperLimits;
     }
 
-    public ParameterSpace(ParameterSpace parameterSpace){
-        map.putAll(parameterSpace.map);
+    public static ParameterSpace.Builder builder(){
+        return new Builder();
     }
 
-    public Parameter getParameterByName(String name){
-        return map.get(name);
-    }
+    public static final class Builder{
 
-    public void addParameter(Parameter parameter){
-        map.put(parameter.name,parameter);
-    }
+        private Collection<ParamDecl<?>> paramDecls;
 
-    ParameterSpace cutSpaceByParameterAndGetLow(String pameterName){
-        Parameter cutParameter=map.get(pameterName);
-        ParameterSpace cutLowParameterSpace=new ParameterSpace(this);
-        cutLowParameterSpace.map.remove(pameterName);
-        cutLowParameterSpace.map.put(cutParameter.lowHalf().name,cutParameter.lowHalf());
-        return cutLowParameterSpace;
-    }
+        private ImmutableValuation.Builder lowerLimits;
 
-    ParameterSpace cutSpaceByParameterAndGetUp(String pameterName){
-        Parameter cutParameter=map.get(pameterName);
-        ParameterSpace cutUpParameterSpace=new ParameterSpace(this);
-        cutUpParameterSpace.map.remove(pameterName);
-        cutUpParameterSpace.map.put(cutParameter.upHalf().name,cutParameter.upHalf());
-        return cutUpParameterSpace;
-    }
+        private ImmutableValuation.Builder upperLimits;
 
+        private boolean built;
 
-
-
-    public String toString(){
-        StringBuilder stringBuilder=new StringBuilder("Parameterspace: \n");
-        for (Map.Entry<String,Parameter> entry:map.entrySet()){
-            stringBuilder.append(entry.getValue().name);
-            stringBuilder.append(" : ");
-            stringBuilder.append(entry.getValue().lowerLimit);
-            stringBuilder.append("; ");
-            stringBuilder.append(entry.getValue().upperLimit);
-            stringBuilder.append("\n");
-        }
-        return stringBuilder.toString();
-    }
-
-    public double getJordanMeasure(){
-        double measure=1;
-        if(map.isEmpty()){
-            measure=0;
-        }
-        for (Map.Entry<String,Parameter> entry:map.entrySet()){
-            measure*=entry.getValue().upperLimit-entry.getValue().lowerLimit;
+        private Builder(){
+            lowerLimits=ImmutableValuation.builder();
+            upperLimits=ImmutableValuation.builder();
+            built=false;
+            paramDecls=new HashSet<>();
         }
 
-        return measure;
+        public void addParameter(ParamDecl<?> paramDecl, LitExpr<?> lowerLimit,LitExpr<?> upperLimit){
+            checkNotBuilt();
+            lowerLimits.put(paramDecl,lowerLimit);
+            upperLimits.put(paramDecl,upperLimit);
+            paramDecls.add(paramDecl);
+        }
+
+        public ParameterSpace build(){
+            checkNotBuilt();
+            built=true;
+            return new ParameterSpace(paramDecls, lowerLimits.build(),upperLimits.build());
+        }
+
+        private void checkNotBuilt() {
+            checkState(!built, "A parameter space was already built.");
+        }
+
+
+
+
     }
+
+
+
+
 
 }

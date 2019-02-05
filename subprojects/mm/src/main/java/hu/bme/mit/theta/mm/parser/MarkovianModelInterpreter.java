@@ -3,6 +3,7 @@ package hu.bme.mit.theta.mm.parser;
 import com.google.common.primitives.Doubles;
 import com.google.common.primitives.Ints;
 import hu.bme.mit.theta.common.parser.SExpr;
+import hu.bme.mit.theta.core.decl.ParamDecl;
 import hu.bme.mit.theta.core.decl.VarDecl;
 import hu.bme.mit.theta.core.parser.CoreInterpreter;
 import hu.bme.mit.theta.core.parser.Env;
@@ -13,18 +14,23 @@ import hu.bme.mit.theta.core.type.Type;
 import hu.bme.mit.theta.core.type.booltype.BoolType;
 import hu.bme.mit.theta.core.type.inttype.IntLitExpr;
 import hu.bme.mit.theta.core.type.inttype.IntType;
+import hu.bme.mit.theta.core.type.rangetype.RangeType;
+import hu.bme.mit.theta.core.type.realtype.RealExprs;
 import hu.bme.mit.theta.core.type.realtype.RealType;
 import hu.bme.mit.theta.mm.dsl.Command;
 import hu.bme.mit.theta.mm.dsl.MarkovianModel;
+import hu.bme.mit.theta.mm.dsl.ParameterSpace;
 import hu.bme.mit.theta.mm.dsl.Update;
-import hu.bme.mit.theta.xta.utils.RangeType;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static hu.bme.mit.theta.common.Utils.head;
 import static hu.bme.mit.theta.common.Utils.tail;
+import static hu.bme.mit.theta.core.decl.Decls.Param;
 import static hu.bme.mit.theta.core.decl.Decls.Var;
 
 public class MarkovianModelInterpreter {
@@ -33,6 +39,8 @@ public class MarkovianModelInterpreter {
     private final Env env;
     private final CoreInterpreter interpreter;
     private  final MarkovianModel.Builder mmBuilder;
+    private final ParameterSpace.Builder paramBuilder;
+    private ParameterSpace parameterSpace;
 
     public MarkovianModelInterpreter(Env env){
 
@@ -40,7 +48,7 @@ public class MarkovianModelInterpreter {
         this.interpreter=new CoreInterpreter(env);
         initEnv();
         mmBuilder= MarkovianModel.builder();
-
+        paramBuilder=ParameterSpace.builder();
 
     }
 
@@ -56,6 +64,7 @@ public class MarkovianModelInterpreter {
         env.define("var",variableCreator());
         env.define("command",commandCreator());
         env.define("update",updateCreator());
+        env.define("param",parameterCreator());
     }
 
 
@@ -109,18 +118,27 @@ public class MarkovianModelInterpreter {
             for (final SExpr sexpr : sexprs) {
                 final Object object = eval(sexpr);
                 if (object instanceof VariableContext) {
-                    final VariableContext varDecl = (VariableContext) object;
-                    env.define(varDecl.varDecl.getName(), varDecl);
+                    final VariableContext variableContext = (VariableContext) object;
+                    //env.define(variableContext.varDecl.getName(), variableContext.varDecl); okkal van kiszedve mert korábban defelem
                 } else if (object instanceof CommandContext) {
                     final Command command=mmBuilder.createCommand(((CommandContext) object).builder);
                     env.define(command.action, command);
+                } else if (object instanceof ParameterContext) {
+                    ParameterContext parameterContext=((ParameterContext) object);
+                    env.define(parameterContext.paramDecl.getName(),parameterContext.paramDecl);
+                    paramBuilder.addParameter(parameterContext.paramDecl,parameterContext.lowerLimit,parameterContext.upperLimit);
                 } else {
                     throw new UnsupportedOperationException();
                 }
             }
             env.pop();
+            parameterSpace=paramBuilder.build();
             return mmBuilder.build();
         };
+    }
+
+    public ParameterSpace getParameterSpace(){
+        return parameterSpace;
     }
 
     /*
@@ -130,16 +148,16 @@ public class MarkovianModelInterpreter {
 
     private Function<List<SExpr>, UpdateContext> updateCreator() {
         return sexprs -> {
-            checkArgument(sexprs.size() > 2);
+            checkArgument(sexprs.size() == 2);
             Update.Builder builder=new Update.Builder();
-            builder.setRate((Expr<RealType>) eval(sexprs.get(0).asAtom()));
-            env.push();
+            builder.setRate((Expr<RealType>) eval(sexprs.get(0)));
+            //env.push();
             for(final SExpr sexpr :sexprs){
                 final Object object = eval(sexpr);
                 final AssignStmt stmt = (AssignStmt) object;
                 builder.addStmt(stmt);
             }
-            env.pop();
+            //env.pop();
             return new UpdateContext(builder);
         };
     }
@@ -151,8 +169,9 @@ public class MarkovianModelInterpreter {
             Command.Builder builder=new Command.Builder();
             builder.setAction(sexprs.get(0).asAtom().getAtom());
             builder.setGuard((Expr<BoolType>) eval(sexprs.get(1)));
+            List<SExpr> updateSExprs=List.copyOf(sexprs.subList(2,sexprs.size()-1));
             env.push();
-            for(final SExpr sexpr :sexprs){
+            for(final SExpr sexpr :updateSExprs){
                 final Object object = eval(sexpr);
                 final UpdateContext update = (UpdateContext) object;
                 builder.addUpdate(update.builder.build());
@@ -170,13 +189,28 @@ public class MarkovianModelInterpreter {
             if(type.equals(IntType.getInstance())){ //todo: supervising needed
                 final RangeType _type = RangeType.Range((int) evalAtom(sexprs.get(2).asAtom()),(int) evalAtom(sexprs.get(3).asAtom()));
                 final VarDecl<RangeType> varDecl = Var(name,_type);
+                mmBuilder.createVariable(varDecl,IntLitExpr.of((int) eval(sexprs.get(4))));
                 VariableContext variableContext=new VariableContext(varDecl,IntLitExpr.of((Integer) eval(sexprs.get(4).asAtom()))  );
+                env.define(name,Var(name,IntType.getInstance()));
+                //todo: supervising needed (Más típussal deklarálom az environment-ben, hogy tisztán int-ként lehessen kezelni és a RangeType-ban ne kelljen a műveleteket újra deffiniálni)
                 return variableContext;
             }else{
                 final VarDecl<?> varDecl = Var(name, type);
                 VariableContext variableContext=new VariableContext(varDecl,(LitExpr<?>) eval(sexprs.get(2).asAtom()));
                 return variableContext;
             }
+        };
+    }
+
+    private Function<List<SExpr>, ParameterContext> parameterCreator() {
+        return sexprs -> {
+            checkArgument(sexprs.size() == 3);
+            final String name = sexprs.get(0).asAtom().getAtom();
+            final Type type = RealType.getInstance();
+            ParamDecl<?> paramDecl=Param(name,type);
+            LitExpr<?> lowerLimit= RealExprs.Real((Double) eval(sexprs.get(1)));
+            LitExpr<?> upperLimit= RealExprs.Real((Double) eval(sexprs.get(2)));
+            return new ParameterContext(paramDecl,lowerLimit,upperLimit);
         };
     }
 
@@ -187,6 +221,19 @@ public class MarkovianModelInterpreter {
         private VariableContext(VarDecl<?> varDecl, LitExpr<?> initialExpr) {
             this.varDecl = varDecl;
             this.initialExpr = initialExpr;
+        }
+    }
+
+    private final class ParameterContext{
+
+        public final ParamDecl<?> paramDecl;
+        public final LitExpr<?> lowerLimit;
+        public final LitExpr<?> upperLimit;
+
+        private ParameterContext(ParamDecl<?> paramDecl, LitExpr<?> lowerLimit, LitExpr<?> upperLimit) {
+            this.paramDecl = paramDecl;
+            this.lowerLimit = lowerLimit;
+            this.upperLimit = upperLimit;
         }
     }
 

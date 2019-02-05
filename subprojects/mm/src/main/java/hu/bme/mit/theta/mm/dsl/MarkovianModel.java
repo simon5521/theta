@@ -89,6 +89,11 @@ public class MarkovianModel {
             return command;
         }
 
+        public void addParameter(ParamDecl<?> paramDecl){
+            checkNotBuilt();
+            parameters.add(paramDecl);
+        }
+
         public VarDecl<?> createVariable(VarDecl<?> variable, LitExpr<?> initialValue){
             checkNotBuilt();
             checkArgument(variable!=null,"Variable must not be null!");

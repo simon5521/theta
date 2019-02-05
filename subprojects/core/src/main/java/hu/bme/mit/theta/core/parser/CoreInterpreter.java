@@ -30,6 +30,7 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
+import com.google.common.primitives.Doubles;
 import com.google.common.primitives.Ints;
 
 import hu.bme.mit.theta.common.TernaryOperator;
@@ -77,6 +78,7 @@ import hu.bme.mit.theta.core.type.inttype.IntType;
 import hu.bme.mit.theta.core.type.inttype.ModExpr;
 import hu.bme.mit.theta.core.type.inttype.RemExpr;
 import hu.bme.mit.theta.core.type.rattype.RatType;
+import hu.bme.mit.theta.core.type.realtype.RealExprs;
 
 public class CoreInterpreter {
 
@@ -182,6 +184,8 @@ public class CoreInterpreter {
 			return Ref((Decl<?>) object);
 		} else if (object instanceof Integer) {
 			return Int((Integer) object);
+		} else if (object instanceof Double) {
+			return RealExprs.Real((Double) object);
 		} else {
 			throw new UnsupportedOperationException();
 		}
@@ -218,8 +222,11 @@ public class CoreInterpreter {
 	private Object evalAtom(final SAtom satom) {
 		final String symbol = satom.getAtom();
 		final Integer integer = Ints.tryParse(symbol);
+		final Double real= Doubles.tryParse(symbol);
 		if (integer != null) {
 			return integer;
+		} if (real != null) {
+			return real;
 		} else {
 			final Object value = env.eval(symbol);
 			return value;

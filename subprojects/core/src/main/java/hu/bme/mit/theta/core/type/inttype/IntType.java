@@ -24,15 +24,12 @@ import hu.bme.mit.theta.core.type.abstracttype.Multiplicative;
 import hu.bme.mit.theta.core.type.abstracttype.Ordered;
 import hu.bme.mit.theta.core.type.rattype.RatType;
 
-public final class IntType implements Additive<IntType>, Multiplicative<IntType>, Equational<IntType>, Ordered<IntType>,
+public class IntType implements Additive<IntType>, Multiplicative<IntType>, Equational<IntType>, Ordered<IntType>,
 		Castable<IntType> {
 
 	private static final IntType INSTANCE = new IntType();
 	private static final int HASH_SEED = 222670;
 	private static final String TYPE_LABEL = "Int";
-
-	private IntType() {
-	}
 
 	public static IntType getInstance() {
 		return INSTANCE;
