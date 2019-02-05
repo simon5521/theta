@@ -16,6 +16,7 @@ import hu.bme.mit.theta.core.type.inttype.IntLitExpr;
 import hu.bme.mit.theta.core.type.inttype.IntType;
 import hu.bme.mit.theta.core.type.rangetype.RangeType;
 import hu.bme.mit.theta.core.type.realtype.RealExprs;
+import hu.bme.mit.theta.core.type.realtype.RealLitExpr;
 import hu.bme.mit.theta.core.type.realtype.RealType;
 import hu.bme.mit.theta.mm.dsl.Command;
 import hu.bme.mit.theta.mm.dsl.MarkovianModel;
@@ -150,11 +151,20 @@ public class MarkovianModelInterpreter {
         return sexprs -> {
             checkArgument(sexprs.size() == 2);
             Update.Builder builder=new Update.Builder();
-            builder.setRate((Expr<RealType>) eval(sexprs.get(0)));
+            Object object=eval(sexprs.get(0));
+            if (object instanceof Expr){
+                builder.setRate((Expr<RealType>) object);
+            } else if(object instanceof Double) {
+                builder.setRate(RealLitExpr.of((Double) object));
+            } else {
+                throw new UnsupportedOperationException();
+            }
+
+            List<SExpr> stmtSExprs = List.copyOf(sexprs.subList(1,sexprs.size()));
             //env.push();
-            for(final SExpr sexpr :sexprs){
-                final Object object = eval(sexpr);
-                final AssignStmt stmt = (AssignStmt) object;
+            for(final SExpr sexpr :stmtSExprs){
+                final Object objecti = eval(sexpr);
+                final AssignStmt stmt = (AssignStmt) objecti;
                 builder.addStmt(stmt);
             }
             //env.pop();
@@ -169,7 +179,7 @@ public class MarkovianModelInterpreter {
             Command.Builder builder=new Command.Builder();
             builder.setAction(sexprs.get(0).asAtom().getAtom());
             builder.setGuard((Expr<BoolType>) eval(sexprs.get(1)));
-            List<SExpr> updateSExprs=List.copyOf(sexprs.subList(2,sexprs.size()-1));
+            List<SExpr> updateSExprs=List.copyOf(sexprs.subList(2,sexprs.size()));
             env.push();
             for(final SExpr sexpr :updateSExprs){
                 final Object object = eval(sexpr);

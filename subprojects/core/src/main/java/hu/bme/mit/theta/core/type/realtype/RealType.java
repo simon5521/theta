@@ -41,17 +41,17 @@ public class RealType  implements Additive<RealType>, Multiplicative<RealType>, 
 
     @Override
     public AddExpr<RealType> Add(Iterable<? extends Expr<RealType>> ops) {
-        return null;
+        return RealExprs.Add(ops);
     }
 
     @Override
     public SubExpr<RealType> Sub(Expr<RealType> leftOp, Expr<RealType> rightOp) {
-        return null;
+        return RealExprs.Sub(leftOp,rightOp);
     }
 
     @Override
     public NegExpr<RealType> Neg(Expr<RealType> op) {
-        return null;
+        return RealExprs.Neg(op);
     }
 
     @Override
@@ -61,41 +61,41 @@ public class RealType  implements Additive<RealType>, Multiplicative<RealType>, 
 
     @Override
     public EqExpr<RealType> Eq(Expr<RealType> leftOp, Expr<RealType> rightOp) {
-        return null;
+        return RealExprs.Eq(leftOp,rightOp);
     }
 
     @Override
     public NeqExpr<RealType> Neq(Expr<RealType> leftOp, Expr<RealType> rightOp) {
-        return null;
+        return RealExprs.Neq(leftOp,rightOp);
     }
 
     @Override
     public MulExpr<RealType> Mul(Iterable<? extends Expr<RealType>> ops) {
-        return null;
+        return RealExprs.Mul(ops);
     }
 
     @Override
     public DivExpr<RealType> Div(Expr<RealType> leftOp, Expr<RealType> rightOp) {
-        return null;
+        return RealExprs.Div(leftOp,rightOp);
     }
 
     @Override
     public LtExpr<RealType> Lt(Expr<RealType> leftOp, Expr<RealType> rightOp) {
-        return null;
+        return RealExprs.Lt(leftOp, rightOp);
     }
 
     @Override
     public LeqExpr<RealType> Leq(Expr<RealType> leftOp, Expr<RealType> rightOp) {
-        return null;
+        return RealExprs.Leq(leftOp, rightOp);
     }
 
     @Override
     public GtExpr<RealType> Gt(Expr<RealType> leftOp, Expr<RealType> rightOp) {
-        return null;
+        return RealExprs.Gt(leftOp, rightOp);
     }
 
     @Override
     public GeqExpr<RealType> Geq(Expr<RealType> leftOp, Expr<RealType> rightOp) {
-        return null;
+        return RealExprs.Geq(leftOp, rightOp);
     }
 }
