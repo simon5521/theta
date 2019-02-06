@@ -18,10 +18,7 @@ import hu.bme.mit.theta.core.type.rangetype.RangeType;
 import hu.bme.mit.theta.core.type.realtype.RealExprs;
 import hu.bme.mit.theta.core.type.realtype.RealLitExpr;
 import hu.bme.mit.theta.core.type.realtype.RealType;
-import hu.bme.mit.theta.mm.data.ContinousCommand;
-import hu.bme.mit.theta.mm.data.ContinuousUpdate;
-import hu.bme.mit.theta.mm.data.ParameterSpace;
-import hu.bme.mit.theta.mm.data.ParametricContinousTimeMarkovChain;
+import hu.bme.mit.theta.mm.data.*;
 
 import java.util.List;
 import java.util.function.Function;
@@ -37,7 +34,8 @@ public class MarkovianModelInterpreter {
 
     private final Env env;
     private final CoreInterpreter interpreter;
-    private  final ParametricContinousTimeMarkovChain.Builder mmBuilder;
+    private  final ParametricContinousTimeMarkovChain.Builder pCTMCBuilder;
+    private final DiscreteTimeMarkovDecisionProcess.Builder MDPBuilder;
     private final ParameterSpace.Builder paramBuilder;
     private ParameterSpace parameterSpace;
 
@@ -46,7 +44,8 @@ public class MarkovianModelInterpreter {
         this.env = env;
         this.interpreter=new CoreInterpreter(env);
         initEnv();
-        mmBuilder= ParametricContinousTimeMarkovChain.builder();
+        pCTMCBuilder = ParametricContinousTimeMarkovChain.builder();
+        MDPBuilder = DiscreteTimeMarkovDecisionProcess.builder();
         paramBuilder=ParameterSpace.builder();
 
     }
@@ -60,9 +59,12 @@ public class MarkovianModelInterpreter {
         interpreter.defineCommonExprs();
         interpreter.defineCommonStmts();
         env.define("pctmc", pCTMCCreator());
+        env.define("dtmdp", DTMDPCreator());
         env.define("var",variableCreator());
-        env.define("command",commandCreator());
-        env.define("update",updateCreator());
+        env.define("command", continuousCommandCreator());
+        env.define("dcommand",discreteCommandCreator());
+        env.define("update", continuousUpdateCreator());
+        env.define("dupdate",discreteUpdateCreator());
         env.define("param",parameterCreator());
     }
 
@@ -117,9 +119,15 @@ public class MarkovianModelInterpreter {
                 final Object object = eval(sexpr);
                 if (object instanceof VariableContext) {
                     final VariableContext variableContext = (VariableContext) object;
-                    //env.define(variableContext.varDecl.getName(), variableContext.varDecl); okkal van kiszedve mert korábban defelem
-                } else if (object instanceof CommandContext) {
-                    final ContinousCommand command=mmBuilder.createCommand(((CommandContext) object).builder);
+                    if (variableContext.varDecl.getType().equals(RealType.getInstance())){
+                        pCTMCBuilder.createVariable(variableContext.varDecl,variableContext.initialExpr);
+                    } else if (variableContext.varDecl.getType().equals(BoolType.getInstance())) {
+                        pCTMCBuilder.createVariable(variableContext.varDecl,variableContext.initialExpr);
+                    } else {
+                        throw new UnsupportedOperationException();
+                    }
+                } else if (object instanceof ContinouosCommandContext) {
+                    final ContinousCommand command= pCTMCBuilder.createCommand(((ContinouosCommandContext) object).builder);
                     env.define(command.action, command);
                 } else if (object instanceof ParameterContext) {
                     ParameterContext parameterContext=((ParameterContext) object);
@@ -131,7 +139,33 @@ public class MarkovianModelInterpreter {
             }
             env.pop();
             parameterSpace=paramBuilder.build();
-            return mmBuilder.build();
+            return pCTMCBuilder.build();
+        };
+    }
+
+    private Function<List<SExpr>, DiscreteTimeMarkovDecisionProcess> DTMDPCreator() {
+        return sexprs -> {
+            env.push();
+            for (final SExpr sexpr : sexprs) {
+                final Object object = eval(sexpr);
+                if (object instanceof VariableContext) {
+                    final VariableContext variableContext = (VariableContext) object;
+                    if (variableContext.varDecl.getType().equals(RealType.getInstance())){
+                        MDPBuilder.createVariable(variableContext.varDecl,variableContext.initialExpr);
+                    } else if (variableContext.varDecl.getType().equals(BoolType.getInstance())) {
+                        MDPBuilder.createVariable(variableContext.varDecl,variableContext.initialExpr);
+                    } else {
+                        throw new UnsupportedOperationException();
+                    }
+                } else if (object instanceof DiscreteCommand) {
+                    final DiscreteCommand command= MDPBuilder.createCommand(((DiscreteCommandContext) object).builder);
+                    env.define(command.action, command);
+                } else {
+                    throw new UnsupportedOperationException();
+                }
+            }
+            env.pop();
+            return MDPBuilder.build();
         };
     }
 
@@ -144,7 +178,7 @@ public class MarkovianModelInterpreter {
      */
 
 
-    private Function<List<SExpr>, UpdateContext> updateCreator() {
+    private Function<List<SExpr>, ContinuousUpdateContext> continuousUpdateCreator() {
         return sexprs -> {
             checkArgument(sexprs.size() == 2);
             ContinuousUpdate.Builder builder=new ContinuousUpdate.Builder();
@@ -165,12 +199,38 @@ public class MarkovianModelInterpreter {
                 builder.addStmt(stmt);
             }
             //env.pop();
-            return new UpdateContext(builder);
+            return new ContinuousUpdateContext(builder);
         };
     }
 
 
-    private Function<List<SExpr>, CommandContext> commandCreator() {
+    private Function<List<SExpr>, DiscreteUpdateContext> discreteUpdateCreator() {
+        return sexprs -> {
+            checkArgument(sexprs.size() == 2);
+            DiscreteUpdate.Builder builder= DiscreteUpdate.builder();
+            Object object=eval(sexprs.get(0));
+            if (object instanceof Expr){
+                builder.setProbability((Expr<RealType>) object);
+            } else if(object instanceof Double) {
+                builder.setProbability(RealLitExpr.of((Double) object));
+            } else {
+                throw new UnsupportedOperationException();
+            }
+
+            List<SExpr> stmtSExprs = List.copyOf(sexprs.subList(1,sexprs.size()));
+            //env.push();
+            for(final SExpr sexpr :stmtSExprs){
+                final Object objecti = eval(sexpr);
+                final AssignStmt stmt = (AssignStmt) objecti;
+                builder.addStmt(stmt);
+            }
+            //env.pop();
+            return new DiscreteUpdateContext(builder);
+        };
+    }
+
+
+    private Function<List<SExpr>, ContinouosCommandContext> continuousCommandCreator() {
         return sexprs -> {
             checkArgument(sexprs.size() > 2);
             ContinousCommand.Builder builder=new ContinousCommand.Builder();
@@ -180,11 +240,29 @@ public class MarkovianModelInterpreter {
             env.push();
             for(final SExpr sexpr :updateSExprs){
                 final Object object = eval(sexpr);
-                final UpdateContext update = (UpdateContext) object;
+                final ContinuousUpdateContext update = (ContinuousUpdateContext) object;
                 builder.addUpdate(update.builder.build());
             }
             env.pop();
-            return new CommandContext(builder);
+            return new ContinouosCommandContext(builder);
+        };
+    }
+
+    private Function<List<SExpr>, DiscreteCommandContext> discreteCommandCreator() {
+        return sexprs -> {
+            checkArgument(sexprs.size() > 2);
+            DiscreteCommand.Builder builder= DiscreteCommand.builder();
+            builder.setAction(sexprs.get(0).asAtom().getAtom());
+            builder.setGuard((Expr<BoolType>) eval(sexprs.get(1)));
+            List<SExpr> updateSExprs=List.copyOf(sexprs.subList(2,sexprs.size()));
+            env.push();
+            for(final SExpr sexpr :updateSExprs){
+                final Object object = eval(sexpr);
+                final DiscreteUpdateContext update = (DiscreteUpdateContext) object;
+                builder.addUpdate(update.builder.build());
+            }
+            env.pop();
+            return new DiscreteCommandContext(builder);
         };
     }
 
@@ -196,7 +274,6 @@ public class MarkovianModelInterpreter {
             if(type.equals(IntType.getInstance())){ //todo: supervising needed
                 final RangeType _type = RangeType.Range((int) evalAtom(sexprs.get(2).asAtom()),(int) evalAtom(sexprs.get(3).asAtom()));
                 final VarDecl<RangeType> varDecl = Var(name,_type);
-                mmBuilder.createVariable(varDecl,IntLitExpr.of((int) eval(sexprs.get(4))));
                 VariableContext variableContext=new VariableContext(varDecl,IntLitExpr.of((Integer) eval(sexprs.get(4).asAtom()))  );
                 env.define(name,Var(name,IntType.getInstance()));
                 //todo: supervising needed (Más típussal deklarálom az environment-ben, hogy tisztán int-ként lehessen kezelni és a RangeType-ban ne kelljen a műveleteket újra deffiniálni)
@@ -244,18 +321,34 @@ public class MarkovianModelInterpreter {
         }
     }
 
-    private final class UpdateContext{
+    private final class ContinuousUpdateContext {
         public final ContinuousUpdate.Builder builder;
 
-        private UpdateContext(ContinuousUpdate.Builder builder) {
+        private ContinuousUpdateContext(ContinuousUpdate.Builder builder) {
             this.builder = builder;
         }
     }
 
-    private final class CommandContext{
+    private final class DiscreteUpdateContext {
+        public final DiscreteUpdate.Builder builder;
+
+        private DiscreteUpdateContext(DiscreteUpdate.Builder builder) {
+            this.builder = builder;
+        }
+    }
+
+    private final class ContinouosCommandContext {
         public final ContinousCommand.Builder builder;
 
-        private CommandContext(ContinousCommand.Builder builder) {
+        private ContinouosCommandContext(ContinousCommand.Builder builder) {
+            this.builder = builder;
+        }
+    }
+
+    private final class DiscreteCommandContext {
+        public final DiscreteCommand.Builder builder;
+
+        private DiscreteCommandContext(DiscreteCommand.Builder builder) {
             this.builder = builder;
         }
     }

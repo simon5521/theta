@@ -1,0 +1,13 @@
+package hu.bme.mit.theta.mm.data;
+
+import hu.bme.mit.theta.core.decl.ParamDecl;
+import hu.bme.mit.theta.core.decl.VarDecl;
+import hu.bme.mit.theta.core.model.Valuation;
+
+import java.util.Collection;
+
+public abstract class MarkovDecisionProcess<ModelCommand extends Command>  extends MarkovianModel<ModelCommand>{
+    protected MarkovDecisionProcess(Collection<ModelCommand> modelCommands, Collection<VarDecl<?>> variables, Valuation variableInitalisations) {
+        super(modelCommands, variables, variableInitalisations);
+    }
+}

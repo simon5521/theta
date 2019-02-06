@@ -13,6 +13,10 @@ public class DiscreteCommand extends Command<DiscreteUpdate> {
         super(discreteUpdates, guard, action);
     }
 
+    public static Builder builder(){
+        return new Builder();
+    }
+
 
     public static final class Builder{
 
