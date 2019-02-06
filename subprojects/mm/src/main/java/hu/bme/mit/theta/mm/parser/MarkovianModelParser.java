@@ -6,7 +6,7 @@ import hu.bme.mit.theta.common.parser.LispLexer;
 import hu.bme.mit.theta.common.parser.LispParser;
 import hu.bme.mit.theta.common.parser.SExpr;
 import hu.bme.mit.theta.core.parser.Env;
-import hu.bme.mit.theta.mm.dsl.MarkovianModel;
+import hu.bme.mit.theta.mm.data.ParametricContinousTimeMarkovChain;
 
 import java.io.Reader;
 
@@ -24,10 +24,10 @@ public class MarkovianModelParser {
         markovianModelInterpreter=new MarkovianModelInterpreter(env);
     }
 
-    public MarkovianModel markovianModel(){
+    public ParametricContinousTimeMarkovChain markovianModel(){
         SExpr sExpr=lispParser.sexpr();
-        MarkovianModel markovianModel=markovianModelInterpreter.markovianModel(sExpr);
-        return markovianModel;
+        ParametricContinousTimeMarkovChain parametricContinousTimeMarkovChain=markovianModelInterpreter.parametricContiniuousTimeMarkovChain(sExpr);
+        return parametricContinousTimeMarkovChain;
     }
 
 

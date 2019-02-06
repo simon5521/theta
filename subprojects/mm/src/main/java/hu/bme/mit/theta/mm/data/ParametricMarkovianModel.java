@@ -1,14 +1,9 @@
 package hu.bme.mit.theta.mm.data;
 
-import hu.bme.mit.theta.core.decl.ParamDecl;
-import hu.bme.mit.theta.core.decl.VarDecl;
-import hu.bme.mit.theta.core.model.ImmutableValuation;
 import hu.bme.mit.theta.core.model.Valuation;
-import hu.bme.mit.theta.core.type.LitExpr;
 import hu.bme.mit.theta.mm.Parametric;
 
 import java.util.Collection;
-import java.util.HashSet;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;

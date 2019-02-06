@@ -15,11 +15,11 @@ public class PrizmPMCChecker {
 
 /*
     public PrizmPMCChecker(
-            MarkovianModel markovianModel,
+            MarkovianModel parametricContiniuousTimeMarkovChain,
             Double keyProperty
     ) throws IOException {
         prizmModellChecker=new PrizmModellChecker();
-        this.markovianModel = markovianModel;
+        this.parametricContiniuousTimeMarkovChain = parametricContiniuousTimeMarkovChain;
         setKeyProperty(keyProperty);
     }
 */
@@ -34,24 +34,24 @@ public class PrizmPMCChecker {
     }
 /*
     private void setPropertyFile() throws IOException {
-        prizmModellChecker.setPropertyFileHigh(" Rmax=? [ F l = "+ markovianModel.targetLocation.toString()+" ] ");
-        prizmModellChecker.setPropertyFileLow(" Rmin=? [ F l = "+ markovianModel.targetLocation.toString()+" ] ");
+        prizmModellChecker.setPropertyFileHigh(" Rmax=? [ F l = "+ parametricContiniuousTimeMarkovChain.targetLocation.toString()+" ] ");
+        prizmModellChecker.setPropertyFileLow(" Rmin=? [ F l = "+ parametricContiniuousTimeMarkovChain.targetLocation.toString()+" ] ");
     }
 
     //uniformisation relaxation and substitution together (3 in 1)
     //most complex part of the program
     private String generatePrizmModell(){
         //relaxation
-        ContinuousTimeParametricMarkovDecisionProcess continuousTimeParametricMarkovDecisionProcess=ContinouosTimeParametricMarkovChainRelaxator.getInstance().relaxAndEvaluate(markovianModel);
+        ContinuousTimeParametricMarkovDecisionProcess continuousTimeParametricMarkovDecisionProcess=ContinouosTimeParametricMarkovChainRelaxator.getInstance().relaxAndEvaluate(parametricContiniuousTimeMarkovChain);
         //todo: updating the whole stuff
         StringBuilder prizmModell=new StringBuilder();
         prizmModell.append("mdp\n");
         prizmModell.append("module m1\n");
-        prizmModell.append(" l : [0.."+ Integer.toString(markovianModel.locationNumber-1)+"] init "+ markovianModel.startingLocation.toString()+" ; \n");
+        prizmModell.append(" l : [0.."+ Integer.toString(parametricContiniuousTimeMarkovChain.locationNumber-1)+"] init "+ parametricContiniuousTimeMarkovChain.startingLocation.toString()+" ; \n");
         //todo: gyilkos triplaloop feloldása
         for(NondeterministicCommand nondeterministicCommand:continuousTimeParametricMarkovDecisionProcess.commands){
-            if(sourceLocation== markovianModel.targetLocation){
-                prizmModell.append("[] l = "+ Integer.toString(markovianModel.targetLocation)+" -> ( l'="+ Integer.toString(markovianModel.targetLocation)+"); \n");
+            if(sourceLocation== parametricContiniuousTimeMarkovChain.targetLocation){
+                prizmModell.append("[] l = "+ Integer.toString(parametricContiniuousTimeMarkovChain.targetLocation)+" -> ( l'="+ Integer.toString(parametricContiniuousTimeMarkovChain.targetLocation)+"); \n");
             }else {
                 for(Integer action = 0; action< nondeterministicCommand.actionNumber; action++){
                     prizmModell.append("[]"+nondeterministicCommand.guard+" -> ");
@@ -59,12 +59,12 @@ public class PrizmPMCChecker {
                     Update[] updates=nondeterministicCommand.updates.toArray(new Update[nondeterministicCommand.updates.size()]);
                     for (Integer targetLocation = 0; targetLocation< nondeterministicCommand.updates.size(); targetLocation++){
                         if(nondeterministicCommand.rates[targetLocation][action]!=0.0){
-                            prizmModell.append(Double.toString((nondeterministicCommand.rates[targetLocation][action])/ markovianModel.uniformExitRate)+" : ("+updates[targetLocation].target+") + ");
+                            prizmModell.append(Double.toString((nondeterministicCommand.rates[targetLocation][action])/ parametricContiniuousTimeMarkovChain.uniformExitRate)+" : ("+updates[targetLocation].target+") + ");
                             localExitRate+=nondeterministicCommand.rates[targetLocation][action];
                         }
                     }
                     //adding uniformisation criteria
-                    prizmModell.append(Double.toString((markovianModel.uniformExitRate-localExitRate)/ markovianModel.uniformExitRate)+" :(l'="+ Integer.toString(sourceLocation)+");\n");//todo semmi sem valtozik megvalosítása
+                    prizmModell.append(Double.toString((parametricContiniuousTimeMarkovChain.uniformExitRate-localExitRate)/ parametricContiniuousTimeMarkovChain.uniformExitRate)+" :(l'="+ Integer.toString(sourceLocation)+");\n");//todo semmi sem valtozik megvalosítása
 
 
                 }
@@ -74,7 +74,7 @@ public class PrizmPMCChecker {
 
         //adding rewards to the modell
         prizmModell.append("rewards \"expTime\"\n");
-        prizmModell.append("[] l<"+ markovianModel.locationNumber+": "+ Double.toString(markovianModel.uniformExitExpectedTime)+";\n");
+        prizmModell.append("[] l<"+ parametricContiniuousTimeMarkovChain.locationNumber+": "+ Double.toString(parametricContiniuousTimeMarkovChain.uniformExitExpectedTime)+";\n");
         prizmModell.append("endrewards\n");
         return prizmModell.toString();
     }

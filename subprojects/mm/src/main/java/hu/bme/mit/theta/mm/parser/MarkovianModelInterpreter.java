@@ -18,13 +18,11 @@ import hu.bme.mit.theta.core.type.rangetype.RangeType;
 import hu.bme.mit.theta.core.type.realtype.RealExprs;
 import hu.bme.mit.theta.core.type.realtype.RealLitExpr;
 import hu.bme.mit.theta.core.type.realtype.RealType;
-import hu.bme.mit.theta.mm.dsl.Command;
-import hu.bme.mit.theta.mm.dsl.MarkovianModel;
-import hu.bme.mit.theta.mm.dsl.ParameterSpace;
-import hu.bme.mit.theta.mm.dsl.Update;
+import hu.bme.mit.theta.mm.data.ContinousCommand;
+import hu.bme.mit.theta.mm.data.ContinuousUpdate;
+import hu.bme.mit.theta.mm.data.ParameterSpace;
+import hu.bme.mit.theta.mm.data.ParametricContinousTimeMarkovChain;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
@@ -39,7 +37,7 @@ public class MarkovianModelInterpreter {
 
     private final Env env;
     private final CoreInterpreter interpreter;
-    private  final MarkovianModel.Builder mmBuilder;
+    private  final ParametricContinousTimeMarkovChain.Builder mmBuilder;
     private final ParameterSpace.Builder paramBuilder;
     private ParameterSpace parameterSpace;
 
@@ -48,20 +46,20 @@ public class MarkovianModelInterpreter {
         this.env = env;
         this.interpreter=new CoreInterpreter(env);
         initEnv();
-        mmBuilder= MarkovianModel.builder();
+        mmBuilder= ParametricContinousTimeMarkovChain.builder();
         paramBuilder=ParameterSpace.builder();
 
     }
 
-    public MarkovianModel markovianModel(SExpr sExpr){
-        return (MarkovianModel) eval(sExpr);
+    public ParametricContinousTimeMarkovChain parametricContiniuousTimeMarkovChain(SExpr sExpr){
+        return (ParametricContinousTimeMarkovChain) eval(sExpr);
     }
 
     private void initEnv(){
         interpreter.defineCommonTypes();
         interpreter.defineCommonExprs();
         interpreter.defineCommonStmts();
-        env.define("pctmc",markovianModelCreator(MarkovianModel.Type.ContinuousTimeParametricMarkovChain));
+        env.define("pctmc", pCTMCCreator());
         env.define("var",variableCreator());
         env.define("command",commandCreator());
         env.define("update",updateCreator());
@@ -112,17 +110,16 @@ public class MarkovianModelInterpreter {
     }
 
 
-    private Function<List<SExpr>, MarkovianModel> markovianModelCreator(MarkovianModel.Type type) {
+    private Function<List<SExpr>, ParametricContinousTimeMarkovChain> pCTMCCreator() {
         return sexprs -> {
             env.push();
-            mmBuilder.setType(type);
             for (final SExpr sexpr : sexprs) {
                 final Object object = eval(sexpr);
                 if (object instanceof VariableContext) {
                     final VariableContext variableContext = (VariableContext) object;
                     //env.define(variableContext.varDecl.getName(), variableContext.varDecl); okkal van kiszedve mert korábban defelem
                 } else if (object instanceof CommandContext) {
-                    final Command command=mmBuilder.createCommand(((CommandContext) object).builder);
+                    final ContinousCommand command=mmBuilder.createCommand(((CommandContext) object).builder);
                     env.define(command.action, command);
                 } else if (object instanceof ParameterContext) {
                     ParameterContext parameterContext=((ParameterContext) object);
@@ -150,7 +147,7 @@ public class MarkovianModelInterpreter {
     private Function<List<SExpr>, UpdateContext> updateCreator() {
         return sexprs -> {
             checkArgument(sexprs.size() == 2);
-            Update.Builder builder=new Update.Builder();
+            ContinuousUpdate.Builder builder=new ContinuousUpdate.Builder();
             Object object=eval(sexprs.get(0));
             if (object instanceof Expr){
                 builder.setRate((Expr<RealType>) object);
@@ -176,7 +173,7 @@ public class MarkovianModelInterpreter {
     private Function<List<SExpr>, CommandContext> commandCreator() {
         return sexprs -> {
             checkArgument(sexprs.size() > 2);
-            Command.Builder builder=new Command.Builder();
+            ContinousCommand.Builder builder=new ContinousCommand.Builder();
             builder.setAction(sexprs.get(0).asAtom().getAtom());
             builder.setGuard((Expr<BoolType>) eval(sexprs.get(1)));
             List<SExpr> updateSExprs=List.copyOf(sexprs.subList(2,sexprs.size()));
@@ -248,17 +245,17 @@ public class MarkovianModelInterpreter {
     }
 
     private final class UpdateContext{
-        public final Update.Builder builder;
+        public final ContinuousUpdate.Builder builder;
 
-        private UpdateContext(Update.Builder builder) {
+        private UpdateContext(ContinuousUpdate.Builder builder) {
             this.builder = builder;
         }
     }
 
     private final class CommandContext{
-        public final Command.Builder builder;
+        public final ContinousCommand.Builder builder;
 
-        private CommandContext(Command.Builder builder) {
+        private CommandContext(ContinousCommand.Builder builder) {
             this.builder = builder;
         }
     }

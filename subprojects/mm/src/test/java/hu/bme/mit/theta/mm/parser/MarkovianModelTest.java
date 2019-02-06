@@ -2,7 +2,9 @@ package hu.bme.mit.theta.mm.parser;
 
 
 
+import hu.bme.mit.theta.mm.data.ParametricContinousTimeMarkovChain;
 import hu.bme.mit.theta.mm.dsl.MarkovianModel;
+import hu.bme.mit.theta.mm.generator.MMPRISMWriter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +32,7 @@ public final class MarkovianModelTest {
 
     private Reader reader;
     private MarkovianModelParser parser;
+    private MMPRISMWriter writer;
 
     @Parameters
     public static Collection<Object[]> data() {
@@ -44,6 +47,7 @@ public final class MarkovianModelTest {
     public void before() throws FileNotFoundException {
         reader = new FileReader(filepath);
         parser = new MarkovianModelParser(reader);
+        writer = MMPRISMWriter.instance();
     }
 
     @After
@@ -54,8 +58,8 @@ public final class MarkovianModelTest {
 
     @Test
     public void test(){
-        MarkovianModel markovianModel=parser.markovianModel();
-        System.out.println(markovianModel.toString());
+        ParametricContinousTimeMarkovChain pCTMC=parser.markovianModel();
+        System.out.println(writer.PCTMC2PRISM(pCTMC));
     }
 
 

@@ -13,7 +13,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
 public class ParametricContinousTimeMarkovChain extends ParametricMarkovianModel<ContinousCommand> {
-    protected ParametricContinousTimeMarkovChain(Collection collection, Collection variables, Collection parameters, Valuation variableInitalisations) {
+    protected ParametricContinousTimeMarkovChain(Collection<ContinousCommand> collection, Collection variables, Collection parameters, Valuation variableInitalisations) {
         super(collection, variables, parameters, variableInitalisations);
     }
 

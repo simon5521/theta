@@ -18,12 +18,12 @@ public class ContinouosTimeParametricMarkovChainRelaxator {
     private ContinouosTimeParametricMarkovChainRelaxator() {
     }
 
-    public ContinuousTimeParametricMarkovDecisionProcess relax(MarkovianModel markovianModel){
+    public ContinuousTimeParametricMarkovDecisionProcess relax(MarkovianModel parametricContiniuousTimeMarkovChain){
         ContinuousTimeParametricMarkovDecisionProcess continuousTimeParametricMarkovDecisionProcess=new ContinuousTimeParametricMarkovDecisionProcess(
                 uniformExitRate,
-                markovianModel.startingLocation,
-                markovianModel.locationNumber,
-                markovianModel.targetLocation);
+                parametricContiniuousTimeMarkovChain.startingLocation,
+                parametricContiniuousTimeMarkovChain.locationNumber,
+                parametricContiniuousTimeMarkovChain.targetLocation);
         return continuousTimeParametricMarkovDecisionProcess;
     }
 
@@ -33,8 +33,8 @@ public class ContinouosTimeParametricMarkovChainRelaxator {
         return continuousTimeParametricMarkovDecisionProcess;
     }
 
-    public ContinuousTimeParametricMarkovDecisionProcess relaxAndEvaluate(MarkovianModel markovianModel){
-        return evaluate(relax(markovianModel));
+    public ContinuousTimeParametricMarkovDecisionProcess relaxAndEvaluate(MarkovianModel parametricContiniuousTimeMarkovChain){
+        return evaluate(relax(parametricContiniuousTimeMarkovChain));
     }
 
     public void generateAndGetActions(NondeterministicCommand nondeterministicCommand){
