@@ -54,6 +54,10 @@ public class MarkovianModelInterpreter {
         return (ParametricContinousTimeMarkovChain) eval(sExpr);
     }
 
+    public DiscreteTimeMarkovDecisionProcess discreteTimeMarkovDecisionProcess(SExpr sExpr){
+        return (DiscreteTimeMarkovDecisionProcess) eval(sExpr);
+    }
+
     private void initEnv(){
         interpreter.defineCommonTypes();
         interpreter.defineCommonExprs();
@@ -119,7 +123,7 @@ public class MarkovianModelInterpreter {
                 final Object object = eval(sexpr);
                 if (object instanceof VariableContext) {
                     final VariableContext variableContext = (VariableContext) object;
-                    if (variableContext.varDecl.getType().equals(RealType.getInstance())){
+                    if (variableContext.varDecl.getType().toString().contains("Range")){
                         pCTMCBuilder.createVariable(variableContext.varDecl,variableContext.initialExpr);
                     } else if (variableContext.varDecl.getType().equals(BoolType.getInstance())) {
                         pCTMCBuilder.createVariable(variableContext.varDecl,variableContext.initialExpr);
@@ -150,14 +154,14 @@ public class MarkovianModelInterpreter {
                 final Object object = eval(sexpr);
                 if (object instanceof VariableContext) {
                     final VariableContext variableContext = (VariableContext) object;
-                    if (variableContext.varDecl.getType().equals(RealType.getInstance())){
+                    if (variableContext.varDecl.getType().toString().contains("Range")){
                         MDPBuilder.createVariable(variableContext.varDecl,variableContext.initialExpr);
                     } else if (variableContext.varDecl.getType().equals(BoolType.getInstance())) {
                         MDPBuilder.createVariable(variableContext.varDecl,variableContext.initialExpr);
                     } else {
                         throw new UnsupportedOperationException();
                     }
-                } else if (object instanceof DiscreteCommand) {
+                } else if (object instanceof DiscreteCommandContext) {
                     final DiscreteCommand command= MDPBuilder.createCommand(((DiscreteCommandContext) object).builder);
                     env.define(command.action, command);
                 } else {
@@ -213,6 +217,8 @@ public class MarkovianModelInterpreter {
                 builder.setProbability((Expr<RealType>) object);
             } else if(object instanceof Double) {
                 builder.setProbability(RealLitExpr.of((Double) object));
+            } else if (object instanceof Integer) {
+                builder.setProbability(RealLitExpr.of((Integer) object));
             } else {
                 throw new UnsupportedOperationException();
             }

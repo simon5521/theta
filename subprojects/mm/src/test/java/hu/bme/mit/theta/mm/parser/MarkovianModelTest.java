@@ -2,8 +2,8 @@ package hu.bme.mit.theta.mm.parser;
 
 
 
+import hu.bme.mit.theta.mm.data.DiscreteTimeMarkovDecisionProcess;
 import hu.bme.mit.theta.mm.data.ParametricContinousTimeMarkovChain;
-import hu.bme.mit.theta.mm.dsl.MarkovianModel;
 import hu.bme.mit.theta.mm.generator.MMPRISMWriter;
 import org.junit.After;
 import org.junit.Before;
@@ -38,7 +38,9 @@ public final class MarkovianModelTest {
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
 
-                { "src/test/resources/mm_test.lisp.mm"},
+                //{ "src/test/resources/pctmc_test.lisp.mm"},
+                { "src/test/resources/dtmdp_test.lisp.mm"},
+
 
         });
     }
@@ -58,8 +60,10 @@ public final class MarkovianModelTest {
 
     @Test
     public void test(){
-        ParametricContinousTimeMarkovChain pCTMC=parser.markovianModel();
-        System.out.println(writer.PCTMC2PRISM(pCTMC));
+        //ParametricContinousTimeMarkovChain pCTMC=parser.pCTMC();
+        //System.out.println(writer.PCTMC2PRISM(pCTMC));
+        DiscreteTimeMarkovDecisionProcess dtmdp=parser.DTMDP();
+        System.out.println(writer.DTMDP2PRISM(dtmdp));
     }
 
 
