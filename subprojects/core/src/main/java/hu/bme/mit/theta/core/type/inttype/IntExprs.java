@@ -36,6 +36,8 @@ public final class IntExprs {
 		return IntToRatExpr.of(op);
 	}
 
+	public static IntToRealExpr ToReal(final Expr<IntType> op) {return IntToRealExpr.of(op);}
+
 	public static IntAddExpr Add(final Iterable<? extends Expr<IntType>> ops) {
 		return IntAddExpr.of(ops);
 	}

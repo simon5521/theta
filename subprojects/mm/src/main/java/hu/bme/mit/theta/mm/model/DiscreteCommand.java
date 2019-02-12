@@ -1,4 +1,4 @@
-package hu.bme.mit.theta.mm.data;
+package hu.bme.mit.theta.mm.model;
 
 import hu.bme.mit.theta.core.type.Expr;
 import hu.bme.mit.theta.core.type.booltype.BoolType;
@@ -8,16 +8,20 @@ import java.util.HashSet;
 
 import static com.google.common.base.Preconditions.checkState;
 
-public class ContinousCommand extends Command<ContinuousUpdate> {
-
-    protected ContinousCommand(Collection<ContinuousUpdate> continuousUpdates, Expr<BoolType> guard, String action) {
-        super(continuousUpdates, guard, action);
+public class DiscreteCommand extends Command<DiscreteUpdate> {
+    protected DiscreteCommand(Collection<DiscreteUpdate> discreteUpdates, Expr<BoolType> guard, String action) {
+        super(discreteUpdates, guard, action);
     }
+
+    public static Builder builder(){
+        return new Builder();
+    }
+
 
     public static final class Builder{
 
 
-        private Collection<ContinuousUpdate> updates;
+        private Collection<DiscreteUpdate> updates;
 
         private Expr<BoolType> guard;
 
@@ -27,16 +31,16 @@ public class ContinousCommand extends Command<ContinuousUpdate> {
 
 
         public Builder(){
-            updates=new HashSet<>();
+            updates=new HashSet<DiscreteUpdate>();
             guard=null;
             action=null;
             built=false;
         }
 
-        public ContinousCommand build(){
+        public DiscreteCommand build(){
             checkNotBuilt();
             built=true;
-            return new ContinousCommand(updates,guard,action);
+            return new DiscreteCommand(updates,guard,action);
         }
 
         public void setAction(String action) {
@@ -49,14 +53,14 @@ public class ContinousCommand extends Command<ContinuousUpdate> {
             this.guard = guard;
         }
 
-        public ContinuousUpdate createUpdate(ContinuousUpdate.Builder builder){
+        public DiscreteUpdate createUpdate(DiscreteUpdate.Builder builder){
             checkNotBuilt();
-            ContinuousUpdate update=builder.build();
+            DiscreteUpdate update=builder.build();
             updates.add(update);
             return update;
         }
 
-        public void addUpdate(ContinuousUpdate update){
+        public void addUpdate(DiscreteUpdate update){
             updates.add(update);
         }
 

@@ -80,7 +80,7 @@ public final class YedWriter extends AbstractGraphWriter {
 	private void printSimpleNode(final Node node, final StringBuilder sb) {
 		final NodeAttributes attributes = node.getAttributes();
 		sb.append("\t<node id=\"").append(node.getId()).append("\">");
-		sb.append("<data key=\"d6\"><y:ShapeNode>");
+		sb.append("<model key=\"d6\"><y:ShapeNode>");
 		sb.append("<y:NodeLabel>").append(escape(attributes.getLabel())).append("</y:NodeLabel>");
 		sb.append("<y:Fill color=\"").append(mapColorToString(attributes.getFillColor()))
 				.append("\" transparent=\"false\"/>");
@@ -93,13 +93,13 @@ public final class YedWriter extends AbstractGraphWriter {
 		// TODO: peripheries
 		sb.append("/>");
 		sb.append("<y:Shape type=\"").append(mapShapeToString(attributes.getShape()))
-				.append("\"/></y:ShapeNode></data></node>").append(System.lineSeparator());
+				.append("\"/></y:ShapeNode></model></node>").append(System.lineSeparator());
 	}
 
 	private void printCompositeNode(final CompositeNode node, final StringBuilder sb) {
 		final NodeAttributes attributes = node.getAttributes();
 		sb.append("<node id=\"").append(node.getId()).append("\">").append(System.lineSeparator());
-		sb.append("\t<data key=\"d6\"><y:ProxyAutoBoundsNode><y:Realizers active=\"0\"><y:GroupNode>")
+		sb.append("\t<model key=\"d6\"><y:ProxyAutoBoundsNode><y:Realizers active=\"0\"><y:GroupNode>")
 				.append(System.lineSeparator());
 		sb.append("\t<y:NodeLabel modelName=\"internal\" modelPosition=\"t\">").append(escape(attributes.getLabel()))
 				.append("</y:NodeLabel>").append(System.lineSeparator());
@@ -117,7 +117,7 @@ public final class YedWriter extends AbstractGraphWriter {
 
 		sb.append("\t<y:Shape type=\"").append(mapShapeToString(attributes.getShape()))
 				.append("\"/></y:GroupNode></y:Realizers></y:ProxyAutoBoundsNode>").append(System.lineSeparator());
-		sb.append("\t</data>").append(System.lineSeparator());
+		sb.append("\t</model>").append(System.lineSeparator());
 		sb.append("\t<graph edgedefault=\"directed\" id=\"").append(node.getId()).append(":\">");
 		for (final Node child : node.getChildren()) {
 			printNode(child, sb);
@@ -130,7 +130,7 @@ public final class YedWriter extends AbstractGraphWriter {
 			final EdgeAttributes attributes = edge.getAttributes();
 			sb.append("\t<edge id=\"").append(edge.hashCode()).append("\" source=\"").append(edge.getSource().getId())
 					.append("\" target=\"").append(edge.getTarget().getId()).append("\">");
-			sb.append("<data key=\"d9\"><y:PolyLineEdge><y:LineStyle color=\"")
+			sb.append("<model key=\"d9\"><y:PolyLineEdge><y:LineStyle color=\"")
 					.append(mapColorToString(attributes.getColor())).append("\"");
 			final String style = mapLineStyleToString(attributes.getLineStyle());
 			if (!"".equals(style)) {
@@ -139,7 +139,7 @@ public final class YedWriter extends AbstractGraphWriter {
 			sb.append("/>");
 			sb.append("<y:Arrows source=\"none\" target=\"standard\"/>");
 			sb.append("<y:EdgeLabel>").append(attributes.getLabel()).append("</y:EdgeLabel>");
-			sb.append("</y:PolyLineEdge></data></edge>");
+			sb.append("</y:PolyLineEdge></model></edge>");
 			sb.append(System.lineSeparator());
 		}
 	}

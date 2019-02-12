@@ -1,4 +1,4 @@
-package hu.bme.mit.theta.mm.data;
+package hu.bme.mit.theta.mm.model;
 
 import hu.bme.mit.theta.core.decl.VarDecl;
 import hu.bme.mit.theta.core.model.ImmutableValuation;

@@ -1,4 +1,4 @@
-package hu.bme.mit.theta.mm.data;
+package hu.bme.mit.theta.mm.model;
 
 import hu.bme.mit.theta.core.type.Expr;
 import hu.bme.mit.theta.core.type.realtype.RealType;

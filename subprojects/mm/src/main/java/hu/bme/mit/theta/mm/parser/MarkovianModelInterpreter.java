@@ -18,7 +18,7 @@ import hu.bme.mit.theta.core.type.rangetype.RangeType;
 import hu.bme.mit.theta.core.type.realtype.RealExprs;
 import hu.bme.mit.theta.core.type.realtype.RealLitExpr;
 import hu.bme.mit.theta.core.type.realtype.RealType;
-import hu.bme.mit.theta.mm.data.*;
+import hu.bme.mit.theta.mm.model.*;
 
 import java.util.List;
 import java.util.function.Function;

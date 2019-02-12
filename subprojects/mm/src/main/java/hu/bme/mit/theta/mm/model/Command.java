@@ -1,4 +1,4 @@
-package hu.bme.mit.theta.mm.data;
+package hu.bme.mit.theta.mm.model;
 
 import hu.bme.mit.theta.core.decl.ParamDecl;
 import hu.bme.mit.theta.core.type.Expr;
@@ -10,7 +10,7 @@ import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkState;
 
-public abstract class Command<CommandUpdate extends hu.bme.mit.theta.mm.data.Update>  {
+public abstract class Command<CommandUpdate extends hu.bme.mit.theta.mm.model.Update>  {
 
     public Collection<CommandUpdate> updates;
 

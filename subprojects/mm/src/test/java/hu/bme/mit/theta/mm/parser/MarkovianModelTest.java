@@ -2,8 +2,7 @@ package hu.bme.mit.theta.mm.parser;
 
 
 
-import hu.bme.mit.theta.mm.data.DiscreteTimeMarkovDecisionProcess;
-import hu.bme.mit.theta.mm.data.ParametricContinousTimeMarkovChain;
+import hu.bme.mit.theta.mm.model.DiscreteTimeMarkovDecisionProcess;
 import hu.bme.mit.theta.mm.generator.MMPRISMWriter;
 import org.junit.After;
 import org.junit.Before;

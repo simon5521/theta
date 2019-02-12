@@ -23,6 +23,7 @@ import hu.bme.mit.theta.core.type.abstracttype.Equational;
 import hu.bme.mit.theta.core.type.abstracttype.Multiplicative;
 import hu.bme.mit.theta.core.type.abstracttype.Ordered;
 import hu.bme.mit.theta.core.type.rattype.RatType;
+import hu.bme.mit.theta.core.type.realtype.RealType;
 
 public class IntType implements Additive<IntType>, Multiplicative<IntType>, Equational<IntType>, Ordered<IntType>,
 		Castable<IntType> {
@@ -112,6 +113,9 @@ public class IntType implements Additive<IntType>, Multiplicative<IntType>, Equa
 		if (type instanceof RatType) {
 			@SuppressWarnings("unchecked")
 			final Expr<TargetType> result = (Expr<TargetType>) IntExprs.ToRat(op);
+			return result;
+		} else if (type instanceof RealType) {
+			final Expr<TargetType> result = (Expr<TargetType>) IntExprs.ToReal(op);
 			return result;
 		} else {
 			throw new ClassCastException("Int cannot be cast to " + type);

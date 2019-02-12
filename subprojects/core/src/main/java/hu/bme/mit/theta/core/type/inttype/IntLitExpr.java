@@ -18,12 +18,14 @@ package hu.bme.mit.theta.core.type.inttype;
 import static hu.bme.mit.theta.core.type.booltype.BoolExprs.Bool;
 import static hu.bme.mit.theta.core.type.inttype.IntExprs.Int;
 import static hu.bme.mit.theta.core.type.rattype.RatExprs.Rat;
+import static hu.bme.mit.theta.core.type.realtype.RealExprs.Real;
 
 import hu.bme.mit.theta.core.model.Valuation;
 import hu.bme.mit.theta.core.type.LitExpr;
 import hu.bme.mit.theta.core.type.NullaryExpr;
 import hu.bme.mit.theta.core.type.booltype.BoolLitExpr;
 import hu.bme.mit.theta.core.type.rattype.RatLitExpr;
+import hu.bme.mit.theta.core.type.realtype.RealLitExpr;
 
 public final class IntLitExpr extends NullaryExpr<IntType> implements LitExpr<IntType>, Comparable<IntLitExpr> {
 
@@ -56,6 +58,10 @@ public final class IntLitExpr extends NullaryExpr<IntType> implements LitExpr<In
 
 	public RatLitExpr toRat() {
 		return Rat(this.value, 1);
+	}
+
+	public RealLitExpr toReal() {
+		return Real((double) this.value);
 	}
 
 	public IntLitExpr add(final IntLitExpr that) {

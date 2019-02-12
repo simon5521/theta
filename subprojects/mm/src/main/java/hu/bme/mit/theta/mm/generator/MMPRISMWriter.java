@@ -4,7 +4,7 @@ import hu.bme.mit.theta.core.decl.VarDecl;
 import hu.bme.mit.theta.core.stmt.AssignStmt;
 import hu.bme.mit.theta.core.type.LitExpr;
 import hu.bme.mit.theta.core.type.rangetype.RangeType;
-import hu.bme.mit.theta.mm.data.*;
+import hu.bme.mit.theta.mm.model.*;
 
 public final class MMPRISMWriter {
 
