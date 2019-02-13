@@ -16,10 +16,7 @@
 package hu.bme.mit.theta.mm.generator;
 
 import hu.bme.mit.theta.common.DispatchTable;
-import hu.bme.mit.theta.core.type.BinaryExpr;
-import hu.bme.mit.theta.core.type.Expr;
-import hu.bme.mit.theta.core.type.MultiaryExpr;
-import hu.bme.mit.theta.core.type.UnaryExpr;
+import hu.bme.mit.theta.core.type.*;
 import hu.bme.mit.theta.core.type.anytype.IteExpr;
 import hu.bme.mit.theta.core.type.anytype.PrimeExpr;
 import hu.bme.mit.theta.core.type.anytype.RefExpr;
@@ -68,6 +65,18 @@ public final class ExprPRISMWriter {
 				.addCase(ForallExpr.class, this::forall)
 
 				.addCase(ExistsExpr.class, this::exists)
+
+				// Temporal logic
+
+				.addCase(NextExpr.class, e -> prefixUnary(e, "X "))
+
+				.addCase(FutureExpr.class, e -> prefixUnary(e, "F "))
+
+				.addCase(GlobalExpr.class, e -> prefixUnary(e, "G "))
+
+				.addCase(UntilExpr.class, e -> infixBinary(e," U "))
+
+				.addCase(BoundedUntilExpr.class, e -> infinixTernary(e," U<="," "))
 
 				// Integer
 
@@ -195,6 +204,10 @@ public final class ExprPRISMWriter {
 
 	private String infixBinary(final BinaryExpr<?, ?> expr, final String operator) {
 		return writeWithBrackets(expr.getLeftOp()) + operator + writeWithBrackets(expr.getRightOp());
+	}
+
+	private String infinixTernary(final TernaryExpr<?,?,?,?> expr, final String op1, final String op2){
+		return (writeWithBrackets(expr.getOp1()) + op1 + writeWithBrackets(expr.getOp2()) + op2 + writeWithBrackets(expr.getOp3()));
 	}
 
 	private String infixMultiary(final MultiaryExpr<?, ?> expr, final String operator) {

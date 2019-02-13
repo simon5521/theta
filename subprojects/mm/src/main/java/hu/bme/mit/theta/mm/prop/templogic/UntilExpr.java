@@ -1,4 +1,4 @@
-package hu.bme.mit.theta.mm.templogic;
+package hu.bme.mit.theta.mm.prop.templogic;
 
 import hu.bme.mit.theta.core.model.Valuation;
 import hu.bme.mit.theta.core.type.BinaryExpr;
@@ -6,7 +6,7 @@ import hu.bme.mit.theta.core.type.Expr;
 import hu.bme.mit.theta.core.type.LitExpr;
 import hu.bme.mit.theta.core.type.booltype.BoolType;
 
-public class UntilExpr extends BinaryExpr<BoolType,BoolType> implements TemporalLogicExpr {
+public class UntilExpr extends BinaryExpr<BoolType,BoolType> implements hu.bme.mit.theta.mm.prop.templogic.TemporalLogicExpr {
 
     private static final int HASH_SEED = 4536;
     private static final String OPERATOR_LABEL = "U";
