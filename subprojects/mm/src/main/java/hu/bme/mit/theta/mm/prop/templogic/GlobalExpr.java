@@ -5,7 +5,7 @@ import hu.bme.mit.theta.core.type.Expr;
 import hu.bme.mit.theta.core.type.LitExpr;
 import hu.bme.mit.theta.core.type.UnaryExpr;
 import hu.bme.mit.theta.core.type.booltype.BoolType;
-import hu.bme.mit.theta.mm.prop.TemporalLogicExpr;
+import hu.bme.mit.theta.mm.prop.templogic.TemporalLogicExpr;
 
 
 //this operator sometimes called always

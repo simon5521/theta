@@ -6,14 +6,21 @@ import hu.bme.mit.theta.core.type.booltype.BoolType;
 import hu.bme.mit.theta.core.type.realtype.RealType;
 import hu.bme.mit.theta.mm.prop.operator.PropertyOperator;
 
-public class GT extends BinaryOperatorArthimetric<BoolType> {
+import java.util.List;
 
-    protected GT(PropertyOperator operator, Expr<BoolType> pathProp, LitExpr<RealType> opExpr) {
+public class GT extends TernaryOperatorArthimetric<BoolType> {
+
+    protected GT(PropertyOperator operator, Expr<BoolType> pathProp, Expr<RealType> opExpr) {
         super(operator, pathProp, opExpr);
     }
 
     @Override
     public BoolType getType() {
         return BoolType.getInstance();
+    }
+
+    @Override
+    public Expr<BoolType> withOps(List<? extends Expr<?>> ops) {
+        throw new UnsupportedOperationException();
     }
 }

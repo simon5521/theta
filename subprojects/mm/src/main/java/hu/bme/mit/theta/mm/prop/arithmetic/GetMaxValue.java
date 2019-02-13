@@ -6,7 +6,9 @@ import hu.bme.mit.theta.core.type.realtype.RealType;
 import hu.bme.mit.theta.mm.prop.operator.PTAOperator;
 import hu.bme.mit.theta.mm.prop.operator.PropertyOperator;
 
-public class GetMaxValue extends UnaryOperatorArthimetric<RealType> implements PTAOperator {
+import java.util.List;
+
+public class GetMaxValue extends BinaryOperatorArthimetric<RealType> implements PTAOperator {
     protected GetMaxValue(PropertyOperator operator, Expr<BoolType> pathProp) {
         super(operator, pathProp);
     }
@@ -15,4 +17,11 @@ public class GetMaxValue extends UnaryOperatorArthimetric<RealType> implements P
     public RealType getType() {
         return RealType.getInstance();
     }
+
+
+    @Override
+    public Expr<RealType> withOps(List<? extends Expr<?>> ops) {
+        return new GetExactValue( (PropertyOperator) ops.get(0),(Expr<BoolType>) ops.get(1) );
+    }
+
 }

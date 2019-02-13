@@ -1,6 +1,8 @@
 package hu.bme.mit.theta.mm.prop.arithmetic;
 
+import hu.bme.mit.theta.core.model.Valuation;
 import hu.bme.mit.theta.core.type.Expr;
+import hu.bme.mit.theta.core.type.LitExpr;
 import hu.bme.mit.theta.core.type.Type;
 import hu.bme.mit.theta.core.type.booltype.BoolType;
 import hu.bme.mit.theta.mm.prop.operator.PropertyOperator;
@@ -8,7 +10,7 @@ import hu.bme.mit.theta.mm.prop.templogic.TemporalLogicExpr;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-public abstract class OperatorArithmetic<ArithmeticType extends Type> {
+public abstract class OperatorArithmetic<ArithmeticType extends Type> implements Expr<ArithmeticType> {
 
     public final PropertyOperator operator;
 
@@ -20,6 +22,11 @@ public abstract class OperatorArithmetic<ArithmeticType extends Type> {
         this.pathProp = pathProp;
     }
 
-    public abstract ArithmeticType getType();
+
+    @Override
+    public LitExpr<ArithmeticType> eval(Valuation valuation){
+        throw new UnsupportedOperationException();
+    }
+
 
 }

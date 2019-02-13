@@ -28,6 +28,12 @@ import hu.bme.mit.theta.core.type.inttype.ModExpr;
 import hu.bme.mit.theta.core.type.inttype.RemExpr;
 import hu.bme.mit.theta.core.type.rattype.*;
 import hu.bme.mit.theta.core.type.realtype.*;
+import hu.bme.mit.theta.mm.prop.arithmetic.*;
+import hu.bme.mit.theta.mm.prop.operator.EventProbabilityOperator;
+import hu.bme.mit.theta.mm.prop.operator.PropertyOperator;
+import hu.bme.mit.theta.mm.prop.operator.RewardOperator;
+import hu.bme.mit.theta.mm.prop.operator.SteadyStateProbabilityOperator;
+import hu.bme.mit.theta.mm.prop.templogic.*;
 
 public final class ExprPRISMWriter {
 
@@ -46,15 +52,15 @@ public final class ExprPRISMWriter {
 
 				// Boolean
 
-				.addCase(NotExpr.class, e -> prefixUnary(e, "not "))
+				.addCase(NotExpr.class, e -> prefixUnary(e, "! "))
 
-				.addCase(ImplyExpr.class, e -> infixBinary(e, " imply "))
+				.addCase(ImplyExpr.class, e -> infixBinary(e, " -> "))
 
 				.addCase(IffExpr.class, e -> infixBinary(e, " iff "))
 
-				.addCase(AndExpr.class, e -> infixMultiary(e, " and "))
+				.addCase(AndExpr.class, e -> infixMultiary(e, " & "))
 
-				.addCase(OrExpr.class, e -> infixMultiary(e, " or "))
+				.addCase(OrExpr.class, e -> infixMultiary(e, " | "))
 
 				.addCase(XorExpr.class, e -> infixBinary(e, " xor "))
 
@@ -77,6 +83,26 @@ public final class ExprPRISMWriter {
 				.addCase(UntilExpr.class, e -> infixBinary(e," U "))
 
 				.addCase(BoundedUntilExpr.class, e -> infinixTernary(e," U<="," "))
+
+				// Property operators
+
+				.addCase(EventProbabilityOperator.class, e -> "P")
+
+				.addCase(SteadyStateProbabilityOperator.class, e -> "S")
+
+				.addCase(RewardOperator.class, e -> "R")
+
+				//Property operator arithmetics
+
+				.addCase(GetExactValue.class, e -> binaryOperatorArthimetric(e,"=?"))
+
+				.addCase(GetMaxValue.class, e -> binaryOperatorArthimetric(e,"max=?"))
+
+				.addCase(GetMinValue.class, e -> binaryOperatorArthimetric(e, "min=?"))
+
+				.addCase(GT.class, e -> ternaryOperatorArthimetric(e, "<=") )
+
+				.addCase(LT.class, e -> ternaryOperatorArthimetric(e, ">="))
 
 				// Integer
 
@@ -220,6 +246,14 @@ public final class ExprPRISMWriter {
 			}
 		}
 		return sb.toString();
+	}
+
+	private String binaryOperatorArthimetric(BinaryOperatorArthimetric<?> e, String operator){
+		return write(((PropertyOperator) e.getOps().get(0)))+operator+" ["+write((Expr<BoolType>) e.getOps().get(1))+"];";
+	}
+
+	private String ternaryOperatorArthimetric(TernaryOperatorArthimetric<?> e, String operator){
+		return write(((PropertyOperator) e.getOps().get(0)))+operator+write((Expr<RealType>) e.getOps().get(1))+" ["+write((Expr<BoolType>) e.getOps().get(2))+"];";
 	}
 
 	private String forall(final ForallExpr e) {

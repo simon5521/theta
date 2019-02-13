@@ -5,7 +5,7 @@ import hu.bme.mit.theta.core.type.Expr;
 import hu.bme.mit.theta.core.type.LitExpr;
 import hu.bme.mit.theta.core.type.UnaryExpr;
 import hu.bme.mit.theta.core.type.booltype.BoolType;
-import hu.bme.mit.theta.mm.prop.TemporalLogicExpr;
+import hu.bme.mit.theta.mm.prop.templogic.TemporalLogicExpr;
 
 
 //this operator sometimes called eventually
@@ -13,7 +13,7 @@ public class FutureExpr  extends UnaryExpr<BoolType,BoolType> implements Tempora
     private static final int HASH_SEED = 3652;
     private static final String OPERATOR_LABEL = "F";
 
-    private FutureExpr(Expr<BoolType> op){
+    public FutureExpr(Expr<BoolType> op){
         super(op);
     }
 
