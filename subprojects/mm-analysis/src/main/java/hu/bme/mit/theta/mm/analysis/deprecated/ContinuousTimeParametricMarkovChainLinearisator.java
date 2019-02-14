@@ -1,4 +1,4 @@
-package hu.bme.mit.theta.mm.analysis;
+package hu.bme.mit.theta.mm.analysis.deprecated;
 
 
 import hu.bme.mit.theta.mm.dsl.MarkovianModel;

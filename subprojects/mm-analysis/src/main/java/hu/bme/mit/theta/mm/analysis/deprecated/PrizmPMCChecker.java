@@ -1,11 +1,6 @@
-package hu.bme.mit.theta.mm.analysis;
-
-import java.io.IOException;
+package hu.bme.mit.theta.mm.analysis.deprecated;
 
 import hu.bme.mit.theta.mm.dsl.MarkovianModel;
-import hu.bme.mit.theta.mm.dsl.ContinuousTimeParametricMarkovDecisionProcess;
-import hu.bme.mit.theta.mm.dsl.NondeterministicCommand;
-import hu.bme.mit.theta.mm.dsl.Update;
 
 public class PrizmPMCChecker {
     private PrizmModellChecker prizmModellChecker;
