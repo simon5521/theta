@@ -15,11 +15,13 @@ public class Property {
     public final Collection<ConstDecl<?>> constans;
     public final Collection<MultiObjective> multiObjectives;
     public final Collection<OperatorArithmetic<?>> objectives;
+    public final ImmutableValuation constInitialisations;
 
-    private Property(Collection<ConstDecl<?>> constans, Collection<MultiObjective> multiObjectives, Collection<OperatorArithmetic<?>> objectives) {
+    private Property(Collection<ConstDecl<?>> constans, Collection<MultiObjective> multiObjectives, Collection<OperatorArithmetic<?>> objectives, ImmutableValuation constInitialisations) {
         this.constans = constans;
         this.multiObjectives = multiObjectives;
         this.objectives = objectives;
+        this.constInitialisations = constInitialisations;
     }
 
     public Builder builder(){
@@ -45,7 +47,7 @@ public class Property {
 
         public Property build(){
             checkNotBuilt();
-            return new Property(constans,multiObjectives,objectives);
+            return new Property(constans,multiObjectives,objectives, contValueBuilder.build());
         }
 
         public void addConstant(ConstDecl<?> constDecl, LitExpr<?> value){

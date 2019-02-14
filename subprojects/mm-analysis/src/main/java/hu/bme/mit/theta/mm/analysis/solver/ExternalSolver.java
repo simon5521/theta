@@ -1,5 +1,11 @@
 package hu.bme.mit.theta.mm.analysis.solver;
 
+import hu.bme.mit.theta.core.type.booltype.BoolType;
+import hu.bme.mit.theta.mm.generator.MMPRISMWriter;
+import hu.bme.mit.theta.mm.model.MarkovianModel;
+import hu.bme.mit.theta.mm.prop.Property;
+import hu.bme.mit.theta.mm.prop.arithmetic.OperatorArithmetic;
+
 import java.io.*;
 import java.util.List;
 import java.util.Locale;
@@ -12,8 +18,6 @@ public abstract class ExternalSolver implements MarkovSolver{
     private final String boolResultPattern ="Result: [a-z]*";
 
     protected abstract List<String> generateCommand();
-
-    protected abstract void generateAndWriteProperty();
 
 
     protected abstract Scanner runSolver(List<String> commandLine) throws IOException;
@@ -49,9 +53,9 @@ public abstract class ExternalSolver implements MarkovSolver{
     }
 
 
-    protected double solveDouble(String model,String property) throws IOException {
-        writeModellFile(model);
-        generateAndWriteProperty();
+    protected double solveDouble(MarkovianModel model) throws IOException {
+        MMPRISMWriter mmprismWriter=MMPRISMWriter.instance();
+        writeModellFile(mmprismWriter.MarkovianModel2PRISM(model));
         List<String> commandLine = generateCommand();
 
 
@@ -61,8 +65,9 @@ public abstract class ExternalSolver implements MarkovSolver{
 
     }
 
-    protected boolean solveBool(String model, String property) throws IOException {
-        writeModellFile(model);
+    protected boolean solveBool(MarkovianModel model) throws IOException {
+        MMPRISMWriter mmprismWriter=MMPRISMWriter.instance();
+        writeModellFile(mmprismWriter.MarkovianModel2PRISM(model));
 
         List<String> commandLine=generateCommand();
 
@@ -74,6 +79,7 @@ public abstract class ExternalSolver implements MarkovSolver{
         return findBoolResult(scanner);
 
     }
+
 
 
 

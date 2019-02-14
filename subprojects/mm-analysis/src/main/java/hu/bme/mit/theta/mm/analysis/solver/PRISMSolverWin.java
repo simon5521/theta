@@ -1,9 +1,8 @@
 package hu.bme.mit.theta.mm.analysis.solver;
 
-import hu.bme.mit.theta.core.type.booltype.BoolType;
-import hu.bme.mit.theta.core.type.realtype.RealType;
 import hu.bme.mit.theta.mm.dsl.MarkovianModel;
-import hu.bme.mit.theta.mm.prop.arithmetic.OperatorArithmetic;
+import hu.bme.mit.theta.mm.generator.MMPRISMWriter;
+import hu.bme.mit.theta.mm.prop.Property;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -45,18 +44,22 @@ public class PRISMSolverWin extends ExternalSolver {    private final String mod
         return commandLine;
     }
 
-    @Override
-    protected void generateAndWriteProperty() {
 
+    protected void writeProperty(Property property) throws IOException {
+        MMPRISMWriter mmprismWriter = MMPRISMWriter.instance();
+        BufferedWriter fileWriter=new BufferedWriter(new FileWriter(tempPropertyLocation));
+        fileWriter.write(mmprismWriter.Property2PRISM(property));
+        fileWriter.close();
     }
 
+
     @Override
-    public boolean solveSingleDiscrete(MarkovianModel markovianModel, OperatorArithmetic<BoolType> singleProperty) {
+    public boolean solveBinSingle(MarkovianModel markovianModel, Property property) {
         return false;
     }
 
     @Override
-    public double solveSingleDouble(MarkovianModel markovianModel, OperatorArithmetic<RealType> singleProperty) {
+    public double solveDoubleSingle(MarkovianModel markovianModel, Property property) {
         return 0;
     }
 }
