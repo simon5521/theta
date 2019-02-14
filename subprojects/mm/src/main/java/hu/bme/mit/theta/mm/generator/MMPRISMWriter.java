@@ -1,5 +1,6 @@
 package hu.bme.mit.theta.mm.generator;
 
+import hu.bme.mit.theta.core.decl.ConstDecl;
 import hu.bme.mit.theta.core.decl.VarDecl;
 import hu.bme.mit.theta.core.stmt.AssignStmt;
 import hu.bme.mit.theta.core.type.LitExpr;
@@ -147,6 +148,25 @@ public final class MMPRISMWriter {
 
         return prismBuilder.toString();
 
+    }
+
+
+    public String Constans2PRISM(ConstDecl<?> constDecl,LitExpr<?> initalValue){
+
+        ExprPRISMWriter exprWriter=ExprPRISMWriter.instance();
+        StringBuilder prismBuilder=new StringBuilder("const ");
+
+
+        prismBuilder
+                .append(constDecl.getType())
+                .append(" ")
+                .append(constDecl.getName())
+                .append(" = ")
+                .append(exprWriter.write(initalValue))
+                .append(" ;");
+
+
+        return prismBuilder.toString();
     }
 
 

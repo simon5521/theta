@@ -1,6 +1,8 @@
 package hu.bme.mit.theta.mm.prop;
 
 import hu.bme.mit.theta.core.decl.ConstDecl;
+import hu.bme.mit.theta.core.model.ImmutableValuation;
+import hu.bme.mit.theta.core.type.LitExpr;
 import hu.bme.mit.theta.mm.prop.arithmetic.OperatorArithmetic;
 
 import java.util.Collection;
@@ -29,6 +31,7 @@ public class Property {
         private Collection<ConstDecl<?>> constans;
         private Collection<MultiObjective> multiObjectives;
         private Collection<OperatorArithmetic<?>> objectives;
+        private ImmutableValuation.Builder contValueBuilder;
 
         private boolean built;
 
@@ -36,6 +39,7 @@ public class Property {
             constans=new HashSet<>();
             multiObjectives=new HashSet<>();
             objectives=new HashSet<>();
+            contValueBuilder=ImmutableValuation.builder();
             built=false;
         }
 
@@ -44,9 +48,10 @@ public class Property {
             return new Property(constans,multiObjectives,objectives);
         }
 
-        public void addConstant(ConstDecl<?> constDecl){
+        public void addConstant(ConstDecl<?> constDecl, LitExpr<?> value){
             checkNotBuilt();
             constans.add(constDecl);
+            contValueBuilder.put(constDecl,value);
         }
 
         public void addMultiObjective(MultiObjective multiObjective){
