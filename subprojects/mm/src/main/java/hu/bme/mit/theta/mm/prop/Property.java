@@ -60,9 +60,9 @@ public class Property {
             multiObjectives.add(multiObjective);
         }
 
-        public void addOpetorArithmetic(Objective operatorArithmetic){
+        public void addObjective(Objective objective){
             checkNotBuilt();
-            objectives.add(operatorArithmetic);
+            objectives.add(objective);
         }
 
 

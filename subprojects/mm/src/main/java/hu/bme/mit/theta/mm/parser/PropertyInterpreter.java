@@ -10,6 +10,7 @@ import hu.bme.mit.theta.core.type.LitExpr;
 import hu.bme.mit.theta.core.type.Type;
 import hu.bme.mit.theta.core.type.arithmetic.OperatorArithmetic;
 import hu.bme.mit.theta.mm.prop.MultiObjective;
+import hu.bme.mit.theta.mm.prop.Objective;
 import hu.bme.mit.theta.mm.prop.Property;
 
 import java.util.List;
@@ -89,6 +90,30 @@ public class PropertyInterpreter{
         }
     }
 
+//#todo: implement multi objective parsing
+
+    private Function<List<SExpr>, Property> propertyCreator() {
+        return sexprs -> {
+            env.push();
+            for (final SExpr sexpr : sexprs) {
+                final Object object = eval(sexpr);
+                if (object instanceof ConstantContext) {
+                    final ConstantContext constantContext = (ConstantContext) object;
+                    env.define(constantContext.constDecl.getName(),constantContext.constDecl);
+                    builder.addConstant(constantContext.constDecl,constantContext.initialExpr);
+                } else if (object instanceof ObjectiveContext) {
+                    final ObjectiveContext objectiveContext=(ObjectiveContext) object;
+                    Objective objective=new Objective(objectiveContext.operatorArithmetic, objectiveContext.name);
+                    env.define(objectiveContext.name,objective);
+                    builder.addObjective(objective);
+                } else {
+                    throw new UnsupportedOperationException();
+                }
+            }
+            env.pop();
+            return builder.build();
+        };
+    }
 
     private Function<List<SExpr>, ConstantContext> constantCreator() {//todo add valuation
         return sexprs -> {
