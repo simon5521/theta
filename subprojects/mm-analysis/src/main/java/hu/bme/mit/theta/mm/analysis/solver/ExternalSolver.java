@@ -1,10 +1,7 @@
 package hu.bme.mit.theta.mm.analysis.solver;
 
-import hu.bme.mit.theta.core.type.booltype.BoolType;
 import hu.bme.mit.theta.mm.generator.MMPRISMWriter;
 import hu.bme.mit.theta.mm.model.MarkovianModel;
-import hu.bme.mit.theta.mm.prop.Property;
-import hu.bme.mit.theta.mm.prop.arithmetic.OperatorArithmetic;
 
 import java.io.*;
 import java.util.List;

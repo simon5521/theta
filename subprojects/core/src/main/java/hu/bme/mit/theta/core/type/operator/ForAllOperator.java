@@ -1,7 +1,4 @@
-package hu.bme.mit.theta.mm.prop.operator;
-
-import hu.bme.mit.theta.mm.prop.operator.NondeterministicPropertyOperator;
-import hu.bme.mit.theta.mm.prop.operator.PropertyOperator;
+package hu.bme.mit.theta.core.type.operator;
 
 public class ForAllOperator extends PropertyOperator implements NondeterministicPropertyOperator {
 
@@ -9,7 +6,13 @@ public class ForAllOperator extends PropertyOperator implements Nondeterministic
 
     private static final int HASH_SEED = 3522;
     private static final String OPERATOR_LABEL = "A";
+    private static final ForAllOperator INSTANCE=new ForAllOperator();
 
+    private ForAllOperator(){}
+
+    public static ForAllOperator getINSTANCE() {
+        return INSTANCE;
+    }
 
     @Override
     public String getOperatorLabel() {

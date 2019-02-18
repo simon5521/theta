@@ -20,6 +20,7 @@ import hu.bme.mit.theta.core.type.*;
 import hu.bme.mit.theta.core.type.anytype.IteExpr;
 import hu.bme.mit.theta.core.type.anytype.PrimeExpr;
 import hu.bme.mit.theta.core.type.anytype.RefExpr;
+import hu.bme.mit.theta.core.type.arithmetic.*;
 import hu.bme.mit.theta.core.type.arraytype.ArrayReadExpr;
 import hu.bme.mit.theta.core.type.arraytype.ArrayWriteExpr;
 import hu.bme.mit.theta.core.type.booltype.*;
@@ -28,12 +29,12 @@ import hu.bme.mit.theta.core.type.inttype.ModExpr;
 import hu.bme.mit.theta.core.type.inttype.RemExpr;
 import hu.bme.mit.theta.core.type.rattype.*;
 import hu.bme.mit.theta.core.type.realtype.*;
+import hu.bme.mit.theta.core.type.templogic.*;
 import hu.bme.mit.theta.mm.prop.arithmetic.*;
-import hu.bme.mit.theta.mm.prop.operator.EventProbabilityOperator;
-import hu.bme.mit.theta.mm.prop.operator.PropertyOperator;
-import hu.bme.mit.theta.mm.prop.operator.RewardOperator;
-import hu.bme.mit.theta.mm.prop.operator.SteadyStateProbabilityOperator;
-import hu.bme.mit.theta.mm.prop.templogic.*;
+import hu.bme.mit.theta.core.type.operator.EventProbabilityOperator;
+import hu.bme.mit.theta.core.type.operator.PropertyOperator;
+import hu.bme.mit.theta.core.type.operator.RewardOperator;
+import hu.bme.mit.theta.core.type.operator.SteadyStateProbabilityOperator;
 
 public final class ExprPRISMWriter {
 

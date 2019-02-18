@@ -177,9 +177,6 @@ public class MarkovianModelInterpreter {
         return parameterSpace;
     }
 
-    /*
-    todo: add argument check to creators
-     */
 
 
     private Function<List<SExpr>, ContinuousUpdateContext> continuousUpdateCreator() {

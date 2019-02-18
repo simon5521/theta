@@ -1,12 +1,12 @@
-package hu.bme.mit.theta.mm.prop.arithmetic;
+package hu.bme.mit.theta.core.type.arithmetic;
 
 import hu.bme.mit.theta.core.model.Valuation;
 import hu.bme.mit.theta.core.type.Expr;
 import hu.bme.mit.theta.core.type.LitExpr;
 import hu.bme.mit.theta.core.type.Type;
 import hu.bme.mit.theta.core.type.booltype.BoolType;
-import hu.bme.mit.theta.mm.prop.operator.PropertyOperator;
-import hu.bme.mit.theta.mm.prop.templogic.TemporalLogicExpr;
+import hu.bme.mit.theta.core.type.operator.PropertyOperator;
+import hu.bme.mit.theta.core.type.templogic.TemporalLogicExpr;
 
 import static com.google.common.base.Preconditions.checkArgument;
 

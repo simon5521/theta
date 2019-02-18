@@ -1,4 +1,4 @@
-package hu.bme.mit.theta.mm.prop.operator;
+package hu.bme.mit.theta.core.type.operator;
 
 public interface NondeterministicPropertyOperator {
 }

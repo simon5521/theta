@@ -1,10 +1,10 @@
-package hu.bme.mit.theta.mm.prop.arithmetic;
+package hu.bme.mit.theta.core.type.arithmetic;
 
 import com.google.common.collect.ImmutableList;
 import hu.bme.mit.theta.core.type.Expr;
 import hu.bme.mit.theta.core.type.Type;
 import hu.bme.mit.theta.core.type.booltype.BoolType;
-import hu.bme.mit.theta.mm.prop.operator.PropertyOperator;
+import hu.bme.mit.theta.core.type.operator.PropertyOperator;
 
 import java.util.List;
 

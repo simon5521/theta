@@ -1,7 +1,7 @@
 package hu.bme.mit.theta.mm.prop;
 
 import hu.bme.mit.theta.core.type.booltype.BoolType;
-import hu.bme.mit.theta.mm.prop.arithmetic.OperatorArithmetic;
+import hu.bme.mit.theta.core.type.arithmetic.OperatorArithmetic;
 
 import java.util.Collection;
 import java.util.HashSet;

@@ -7,7 +7,7 @@ import hu.bme.mit.theta.core.type.LitExpr;
 import hu.bme.mit.theta.core.type.rangetype.RangeType;
 import hu.bme.mit.theta.mm.model.*;
 import hu.bme.mit.theta.mm.prop.Property;
-import hu.bme.mit.theta.mm.prop.arithmetic.OperatorArithmetic;
+import hu.bme.mit.theta.core.type.arithmetic.OperatorArithmetic;
 
 public final class MMPRISMWriter {
 

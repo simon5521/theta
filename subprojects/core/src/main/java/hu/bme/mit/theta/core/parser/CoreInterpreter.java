@@ -46,6 +46,9 @@ import hu.bme.mit.theta.core.stmt.HavocStmt;
 import hu.bme.mit.theta.core.stmt.SkipStmt;
 import hu.bme.mit.theta.core.stmt.Stmt;
 import hu.bme.mit.theta.core.type.Expr;
+import hu.bme.mit.theta.core.type.arithmetic.*;
+import hu.bme.mit.theta.core.type.operator.*;
+import hu.bme.mit.theta.core.type.templogic.*;
 import hu.bme.mit.theta.core.type.Type;
 import hu.bme.mit.theta.core.type.abstracttype.AddExpr;
 import hu.bme.mit.theta.core.type.abstracttype.DivExpr;
@@ -124,6 +127,26 @@ public class CoreInterpreter {
 		defineExpr("/=", exprBinaryOperator(NeqExpr::create2));
 	}
 
+
+	public void defineTempLogicExprs(){
+		defineExpr("F",exprUnaryOperator(FutureExpr::create));
+		defineExpr("N",exprUnaryOperator(NextExpr::create));
+		defineExpr("G",exprUnaryOperator(GlobalExpr::create));
+		defineExpr("U",exprBinaryOperator(UntilExpr::create));
+		defineExpr("U<=",exprTernaryOperator(BoundedUntilExpr::create));
+		defineExpr("P", EventProbabilityOperator.getINSTANCE());
+		defineExpr("S", SteadyStateProbabilityOperator.getINSTANCE());
+		defineExpr("R", RewardOperator.getINSTANCE());
+		defineExpr("E", ThereExistsOperator.getINSTANCE());
+		defineExpr("A", ForAllOperator.getINSTANCE());
+		defineExpr("=?", exprBinaryOperator(GetExactValue::create));
+		defineExpr("min=?", exprBinaryOperator(GetMinValue::create));
+		defineExpr("max=?", exprBinaryOperator(GetMaxValue::create));
+		defineExpr("GT", exprTernaryOperator(GT::create));
+		defineExpr("LT", exprTernaryOperator(LT::create));
+
+	}
+
 	public void defineCommonStmts() {
 		defineStmt("skip", SkipStmt.getInstance());
 		defineStmt("assign", createAssign());
@@ -169,6 +192,8 @@ public class CoreInterpreter {
 		final Function<List<SExpr>, Stmt> interpretation = sexprs -> function.apply(env, sexprs);
 		env.define(symbol, interpretation);
 	}
+
+
 
 	////
 
@@ -360,5 +385,6 @@ public class CoreInterpreter {
 			return HavocStmt.of(varDecl);
 		};
 	}
+
 
 }

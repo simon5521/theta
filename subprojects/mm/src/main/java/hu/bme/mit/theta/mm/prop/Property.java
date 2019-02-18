@@ -3,7 +3,6 @@ package hu.bme.mit.theta.mm.prop;
 import hu.bme.mit.theta.core.decl.ConstDecl;
 import hu.bme.mit.theta.core.model.ImmutableValuation;
 import hu.bme.mit.theta.core.type.LitExpr;
-import hu.bme.mit.theta.mm.prop.arithmetic.OperatorArithmetic;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -14,17 +13,17 @@ public class Property {
 
     public final Collection<ConstDecl<?>> constans;
     public final Collection<MultiObjective> multiObjectives;
-    public final Collection<OperatorArithmetic<?>> objectives;
+    public final Collection<Objective> objectives;
     public final ImmutableValuation constInitialisations;
 
-    private Property(Collection<ConstDecl<?>> constans, Collection<MultiObjective> multiObjectives, Collection<OperatorArithmetic<?>> objectives, ImmutableValuation constInitialisations) {
+    private Property(Collection<ConstDecl<?>> constans, Collection<MultiObjective> multiObjectives, Collection<Objective> objectives, ImmutableValuation constInitialisations) {
         this.constans = constans;
         this.multiObjectives = multiObjectives;
         this.objectives = objectives;
         this.constInitialisations = constInitialisations;
     }
 
-    public Builder builder(){
+    public static Builder builder(){
         return new Builder();
     }
 
@@ -32,7 +31,7 @@ public class Property {
 
         private Collection<ConstDecl<?>> constans;
         private Collection<MultiObjective> multiObjectives;
-        private Collection<OperatorArithmetic<?>> objectives;
+        private Collection<Objective> objectives;
         private ImmutableValuation.Builder contValueBuilder;
 
         private boolean built;
@@ -61,7 +60,7 @@ public class Property {
             multiObjectives.add(multiObjective);
         }
 
-        public void addOpetorArithmetic(OperatorArithmetic operatorArithmetic){
+        public void addOpetorArithmetic(Objective operatorArithmetic){
             checkNotBuilt();
             objectives.add(operatorArithmetic);
         }

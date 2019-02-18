@@ -1,4 +1,4 @@
-package hu.bme.mit.theta.mm.prop.operator;
+package hu.bme.mit.theta.core.type.operator;
 
 import hu.bme.mit.theta.core.model.Valuation;
 import hu.bme.mit.theta.core.type.LitExpr;
