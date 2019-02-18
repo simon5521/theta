@@ -8,6 +8,8 @@ import hu.bme.mit.theta.core.parser.CoreInterpreter;
 import hu.bme.mit.theta.core.parser.Env;
 import hu.bme.mit.theta.core.type.LitExpr;
 import hu.bme.mit.theta.core.type.Type;
+import hu.bme.mit.theta.core.type.arithmetic.OperatorArithmetic;
+import hu.bme.mit.theta.mm.prop.MultiObjective;
 import hu.bme.mit.theta.mm.prop.Property;
 
 import java.util.List;
@@ -90,13 +92,25 @@ public class PropertyInterpreter{
 
     private Function<List<SExpr>, ConstantContext> constantCreator() {//todo add valuation
         return sexprs -> {
-            checkArgument(sexprs.size() >= 2);
+            checkArgument(sexprs.size() == 2);
             final String name = sexprs.get(0).asAtom().getAtom();
             final Type type = interpreter.type(sexprs.get(1));
 
-                final ConstDecl<?> constDecl = Const(name, type);
-                ConstantContext constantContext=new ConstantContext(constDecl,(LitExpr<?>) eval(sexprs.get(2).asAtom()));
-                return constantContext;
+            final ConstDecl<?> constDecl = Const(name, type);
+            ConstantContext constantContext=new ConstantContext(constDecl,(LitExpr<?>) eval(sexprs.get(2).asAtom()));
+            return constantContext;
+
+        };
+    }
+
+    private Function<List<SExpr>,ObjectiveContext> objectiveCreator(){
+        return sexprs -> {
+
+            checkArgument(sexprs.size() == 2);
+            final String name = sexprs.get(0).asAtom().getAtom();
+
+            final OperatorArithmetic<?> operatorArithmetic=(OperatorArithmetic<?>) eval(sexprs.get(1));
+            return new ObjectiveContext(name,operatorArithmetic);
 
         };
     }
@@ -108,6 +122,24 @@ public class PropertyInterpreter{
         private ConstantContext(ConstDecl<?> constDecl, LitExpr<?> initialExpr) {
             this.constDecl = constDecl;
             this.initialExpr = initialExpr;
+        }
+    }
+
+    private final class ObjectiveContext {
+        public final String name;
+        public final OperatorArithmetic operatorArithmetic;
+
+        public ObjectiveContext(String name, OperatorArithmetic operatorArithmetic) {
+            this.name = name;
+            this.operatorArithmetic = operatorArithmetic;
+        }
+    }
+
+    private final class MultiobjectiveContext {
+        public final MultiObjective.Builder builder;
+
+        private MultiobjectiveContext(MultiObjective.Builder builder) {
+            this.builder = builder;
         }
     }
 
