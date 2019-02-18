@@ -30,7 +30,6 @@ import hu.bme.mit.theta.core.type.inttype.RemExpr;
 import hu.bme.mit.theta.core.type.rattype.*;
 import hu.bme.mit.theta.core.type.realtype.*;
 import hu.bme.mit.theta.core.type.templogic.*;
-import hu.bme.mit.theta.mm.prop.arithmetic.*;
 import hu.bme.mit.theta.core.type.operator.EventProbabilityOperator;
 import hu.bme.mit.theta.core.type.operator.PropertyOperator;
 import hu.bme.mit.theta.core.type.operator.RewardOperator;

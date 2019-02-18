@@ -7,7 +7,6 @@ import hu.bme.mit.theta.core.type.Expr;
 import hu.bme.mit.theta.core.type.LitExpr;
 import hu.bme.mit.theta.core.type.realtype.RealType;
 import hu.bme.mit.theta.core.utils.ExprUtils;
-import hu.bme.mit.theta.mm.dsl.Rate;
 
 import java.util.Collection;
 import java.util.HashSet;

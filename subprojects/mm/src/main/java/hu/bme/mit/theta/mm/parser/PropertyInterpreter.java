@@ -4,8 +4,10 @@ import com.google.common.primitives.Doubles;
 import com.google.common.primitives.Ints;
 import hu.bme.mit.theta.common.parser.SExpr;
 import hu.bme.mit.theta.core.decl.ConstDecl;
+import hu.bme.mit.theta.core.decl.VarDecl;
 import hu.bme.mit.theta.core.parser.CoreInterpreter;
 import hu.bme.mit.theta.core.parser.Env;
+import hu.bme.mit.theta.core.type.Expr;
 import hu.bme.mit.theta.core.type.LitExpr;
 import hu.bme.mit.theta.core.type.Type;
 import hu.bme.mit.theta.core.type.arithmetic.OperatorArithmetic;
@@ -13,6 +15,7 @@ import hu.bme.mit.theta.mm.prop.MultiObjective;
 import hu.bme.mit.theta.mm.prop.Objective;
 import hu.bme.mit.theta.mm.prop.Property;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
@@ -20,6 +23,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static hu.bme.mit.theta.common.Utils.head;
 import static hu.bme.mit.theta.common.Utils.tail;
 import static hu.bme.mit.theta.core.decl.Decls.Const;
+import static hu.bme.mit.theta.core.utils.TypeUtils.cast;
 
 public class PropertyInterpreter{
 
@@ -27,12 +31,14 @@ public class PropertyInterpreter{
     private final Env env;
     private final CoreInterpreter interpreter;
     private final Property.Builder builder;
+    private final Collection<VarDecl<?>> variables;
 
 
-    public PropertyInterpreter(Env env){
+    public PropertyInterpreter(Env env, Collection<VarDecl<?>> variables){
 
         this.env = env;
         this.interpreter=new CoreInterpreter(env);
+        this.variables = variables;
         initEnv();
         builder=Property.builder();
     }
@@ -43,7 +49,12 @@ public class PropertyInterpreter{
         interpreter.defineCommonExprs();
         interpreter.defineCommonStmts();
         interpreter.defineTempLogicExprs();
-        env.define("const",constantCreator());
+        env.define("constant",constantCreator());
+        env.define("property",propertyCreator());
+        env.define("objective",objectiveCreator());
+        for(VarDecl<?> var:variables){
+            env.define(var.getName(),var);
+        }
     }
 
 
@@ -90,6 +101,10 @@ public class PropertyInterpreter{
         }
     }
 
+    public Property property(SExpr sExpr){
+        return (Property) eval(sExpr);
+    }
+
 //#todo: implement multi objective parsing
 
     private Function<List<SExpr>, Property> propertyCreator() {
@@ -117,12 +132,13 @@ public class PropertyInterpreter{
 
     private Function<List<SExpr>, ConstantContext> constantCreator() {//todo add valuation
         return sexprs -> {
-            checkArgument(sexprs.size() == 2);
+            checkArgument(sexprs.size() == 3);
             final String name = sexprs.get(0).asAtom().getAtom();
             final Type type = interpreter.type(sexprs.get(1));
 
             final ConstDecl<?> constDecl = Const(name, type);
-            ConstantContext constantContext=new ConstantContext(constDecl,(LitExpr<?>) eval(sexprs.get(2).asAtom()));
+            final LitExpr<?> init=cast(eval(sexprs.get(2)));
+            ConstantContext constantContext=new ConstantContext(constDecl,init);
             return constantContext;
 
         };

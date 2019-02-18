@@ -6,6 +6,7 @@ import hu.bme.mit.theta.core.stmt.AssignStmt;
 import hu.bme.mit.theta.core.type.LitExpr;
 import hu.bme.mit.theta.core.type.rangetype.RangeType;
 import hu.bme.mit.theta.mm.model.*;
+import hu.bme.mit.theta.mm.prop.Objective;
 import hu.bme.mit.theta.mm.prop.Property;
 import hu.bme.mit.theta.core.type.arithmetic.OperatorArithmetic;
 
@@ -262,8 +263,11 @@ public final class MMPRISMWriter {
         //todo: write out multiobjectives
 
         //writing out commands
-        for (OperatorArithmetic<?> objective:property.objectives){
-            prismBuilder.append(exprPRISMWriter.write(objective))
+        for (Objective objective:property.objectives){
+            prismBuilder.append(" \"")
+                    .append(objective.name)
+                    .append("\" : ")
+                    .append(exprPRISMWriter.write(objective.operatorArithmetic))
                     .append('\n');
         }
 

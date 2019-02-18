@@ -3,6 +3,7 @@ package hu.bme.mit.theta.mm.parser;
 import com.google.common.primitives.Doubles;
 import com.google.common.primitives.Ints;
 import hu.bme.mit.theta.common.parser.SExpr;
+import hu.bme.mit.theta.core.decl.ConstDecl;
 import hu.bme.mit.theta.core.decl.ParamDecl;
 import hu.bme.mit.theta.core.decl.VarDecl;
 import hu.bme.mit.theta.core.parser.CoreInterpreter;
@@ -11,6 +12,7 @@ import hu.bme.mit.theta.core.stmt.AssignStmt;
 import hu.bme.mit.theta.core.type.Expr;
 import hu.bme.mit.theta.core.type.LitExpr;
 import hu.bme.mit.theta.core.type.Type;
+import hu.bme.mit.theta.core.type.arithmetic.OperatorArithmetic;
 import hu.bme.mit.theta.core.type.booltype.BoolType;
 import hu.bme.mit.theta.core.type.inttype.IntLitExpr;
 import hu.bme.mit.theta.core.type.inttype.IntType;
@@ -19,6 +21,9 @@ import hu.bme.mit.theta.core.type.realtype.RealExprs;
 import hu.bme.mit.theta.core.type.realtype.RealLitExpr;
 import hu.bme.mit.theta.core.type.realtype.RealType;
 import hu.bme.mit.theta.mm.model.*;
+import hu.bme.mit.theta.mm.prop.MultiObjective;
+import hu.bme.mit.theta.mm.prop.Objective;
+import hu.bme.mit.theta.mm.prop.Property;
 
 import java.util.List;
 import java.util.function.Function;
@@ -26,8 +31,7 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkArgument;
 import static hu.bme.mit.theta.common.Utils.head;
 import static hu.bme.mit.theta.common.Utils.tail;
-import static hu.bme.mit.theta.core.decl.Decls.Param;
-import static hu.bme.mit.theta.core.decl.Decls.Var;
+import static hu.bme.mit.theta.core.decl.Decls.*;
 
 public class MarkovianModelInterpreter {
 
@@ -39,6 +43,8 @@ public class MarkovianModelInterpreter {
     private final ParameterSpace.Builder paramBuilder;
     private ParameterSpace parameterSpace;
 
+    private final Property.Builder propertyBuilder;
+
     public MarkovianModelInterpreter(Env env){
 
         this.env = env;
@@ -47,6 +53,7 @@ public class MarkovianModelInterpreter {
         pCTMCBuilder = ParametricContinousTimeMarkovChain.builder();
         MDPBuilder = DiscreteTimeMarkovDecisionProcess.builder();
         paramBuilder=ParameterSpace.builder();
+        propertyBuilder =Property.builder();
 
     }
 
@@ -70,6 +77,12 @@ public class MarkovianModelInterpreter {
         env.define("update", continuousUpdateCreator());
         env.define("dupdate",discreteUpdateCreator());
         env.define("param",parameterCreator());
+        /*
+        interpreter.defineTempLogicExprs();
+        env.define("const",constantCreator());
+        env.define("property",propertyCreator());
+        env.define("objective",objectiveCreator());
+        */
     }
 
 
@@ -301,6 +314,69 @@ public class MarkovianModelInterpreter {
         };
     }
 
+
+
+
+
+
+
+
+
+
+//#todo: implement multi objective parsing
+/*
+    private Function<List<SExpr>, Property> propertyCreator() {
+        return sexprs -> {
+            env.push();
+            for (final SExpr sexpr : sexprs) {
+                final Object object = eval(sexpr);
+                if (object instanceof ConstantContext) {
+                    final ConstantContext constantContext = (ConstantContext) object;
+                    env.define(constantContext.constDecl.getName(),constantContext.constDecl);
+                    propertyBuilder.addConstant(constantContext.constDecl,constantContext.initialExpr);
+                } else if (object instanceof ObjectiveContext) {
+                    final ObjectiveContext objectiveContext=(ObjectiveContext) object;
+                    Objective objective=new Objective(objectiveContext.operatorArithmetic, objectiveContext.name);
+                    env.define(objectiveContext.name,objective);
+                    propertyBuilder.addObjective(objective);
+                } else {
+                    throw new UnsupportedOperationException();
+                }
+            }
+            env.pop();
+            return propertyBuilder.build();
+        };
+    }
+
+    private Function<List<SExpr>, ConstantContext> constantCreator() {//todo add valuation
+        return sexprs -> {
+            checkArgument(sexprs.size() == 3);
+            final String name = sexprs.get(0).asAtom().getAtom();
+            final Type type = interpreter.type(sexprs.get(1));
+
+            final ConstDecl<?> constDecl = Const(name, type);
+            ConstantContext constantContext=new ConstantContext(constDecl,(LitExpr<?>) eval(sexprs.get(2).asAtom()));
+            return constantContext;
+
+        };
+    }
+
+    private Function<List<SExpr>, ObjectiveContext> objectiveCreator(){
+        return sexprs -> {
+
+            checkArgument(sexprs.size() == 2);
+            final String name = sexprs.get(0).asAtom().getAtom();
+
+            final OperatorArithmetic<?> operatorArithmetic=(OperatorArithmetic<?>) eval(sexprs.get(1));
+            return new ObjectiveContext(name,operatorArithmetic);
+
+        };
+    }
+
+
+
+*/
+
     private final class  VariableContext{
         public final VarDecl<?> varDecl;
         public final LitExpr<?> initialExpr;
@@ -355,6 +431,41 @@ public class MarkovianModelInterpreter {
             this.builder = builder;
         }
     }
+
+
+
+
+/*
+
+    private final class ConstantContext {
+        public final ConstDecl<?> constDecl;
+        public final LitExpr<?> initialExpr;
+
+        private ConstantContext(ConstDecl<?> constDecl, LitExpr<?> initialExpr) {
+            this.constDecl = constDecl;
+            this.initialExpr = initialExpr;
+        }
+    }
+
+    private final class ObjectiveContext {
+        public final String name;
+        public final OperatorArithmetic operatorArithmetic;
+
+        public ObjectiveContext(String name, OperatorArithmetic operatorArithmetic) {
+            this.name = name;
+            this.operatorArithmetic = operatorArithmetic;
+        }
+    }
+
+    private final class MultiobjectiveContext {
+        public final MultiObjective.Builder builder;
+
+        private MultiobjectiveContext(MultiObjective.Builder builder) {
+            this.builder = builder;
+        }
+    }
+
+*/
 
 
 }

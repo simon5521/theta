@@ -4,6 +4,7 @@ package hu.bme.mit.theta.mm.parser;
 
 import hu.bme.mit.theta.mm.model.DiscreteTimeMarkovDecisionProcess;
 import hu.bme.mit.theta.mm.generator.MMPRISMWriter;
+import hu.bme.mit.theta.mm.prop.Property;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,11 +27,16 @@ public final class MarkovianModelTest {
 
 
     @Parameter(0)
-    public String filepath;
+    public String mmfilepath;
+
+    @Parameter(1)
+    public String propfilepath;
 
 
-    private Reader reader;
-    private MarkovianModelParser parser;
+    private Reader mmreader;
+    private Reader propreader;
+    private MarkovianModelParser mmparser;
+    private PropertyParser propparser;
     private MMPRISMWriter writer;
 
     @Parameters
@@ -38,7 +44,7 @@ public final class MarkovianModelTest {
         return Arrays.asList(new Object[][] {
 
                 //{ "src/test/resources/pctmc_test.lisp.mm"},
-                { "src/test/resources/dtmdp_test.lisp.mm"},
+                { "src/test/resources/dtmdp_test.lisp.mm", "/home/simon5521/theta/subprojects/mm/src/test/resources/property.lisp.prop"},
 
 
         });
@@ -46,14 +52,15 @@ public final class MarkovianModelTest {
 
     @Before
     public void before() throws FileNotFoundException {
-        reader = new FileReader(filepath);
-        parser = new MarkovianModelParser(reader);
+        mmreader = new FileReader(mmfilepath);
+        propreader = new FileReader(propfilepath);
+        mmparser = new MarkovianModelParser(mmreader);
         writer = MMPRISMWriter.instance();
     }
 
     @After
     public void after() throws IOException {
-        reader.close();
+        mmreader.close();
     }
 
 
@@ -61,8 +68,12 @@ public final class MarkovianModelTest {
     public void test(){
         //ParametricContinousTimeMarkovChain pCTMC=parser.pCTMC();
         //System.out.println(writer.PCTMC2PRISM(pCTMC));
-        DiscreteTimeMarkovDecisionProcess dtmdp=parser.DTMDP();
+        DiscreteTimeMarkovDecisionProcess dtmdp=mmparser.DTMDP();
+        propparser=new PropertyParser(propreader,dtmdp.variables);
+        Property prop=propparser.property();
         System.out.println(writer.DTMDP2PRISM(dtmdp));
+        System.out.println("_______________________________________");
+        System.out.println(writer.Property2PRISM(prop));
     }
 
 

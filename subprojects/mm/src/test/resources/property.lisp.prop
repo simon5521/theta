@@ -1,0 +1,4 @@
+(property
+    (constant allando Int 3)
+    (objective tulajdonsag (=? P (F (= l allando)) ) )
+)
