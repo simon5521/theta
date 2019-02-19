@@ -9,15 +9,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-@SuppressWarnings({"untested","unfinished"})
 public class PRISMSolverLinux extends ExternalSolver {
 
 
-    private final String modelChecker="/home/simon5521/Programs/prism/prism-4.4-linux64/bin/prism";
+
+    private final String modelChecker="./prism";
 
     private final String modelCheckerLocation="/home/simon5521/Programs/prism/prism-4.4-linux64/bin";
-    private final String tempPropertyLocation="/home/simon5521/Desktop";
-    private final String tempModelLocation="/home/simon5521/Desktop";
+    private final String tempPropertyLocation="/home/simon5521/Desktop/mm_solve_autogen.pctl";
+    private final String tempModelLocation="/home/simon5521/Desktop/mm_solve_autogen.nm";
+
+    public PRISMSolverLinux() {
+        super("Result: [0-9]*\\.*[0-9]*", "Result: [a-z]*");
+    }
 
     @Override
     protected List<String> generateCommand() {
@@ -35,6 +39,7 @@ public class PRISMSolverLinux extends ExternalSolver {
                 .command(commandLine)
                 .directory(new File(modelCheckerLocation))
                 .start();
+
 
         return new Scanner(new BufferedInputStream(process.getInputStream()));
 

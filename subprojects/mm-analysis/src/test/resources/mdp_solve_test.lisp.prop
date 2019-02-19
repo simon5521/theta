@@ -1,0 +1,3 @@
+(property
+    (objective mdp_r_min (max=? P (F (= state 3)) ))
+)

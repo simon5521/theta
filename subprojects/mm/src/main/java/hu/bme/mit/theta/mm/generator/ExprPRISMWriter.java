@@ -38,6 +38,7 @@ import hu.bme.mit.theta.core.type.operator.SteadyStateProbabilityOperator;
 public final class ExprPRISMWriter {
 
 	private final DispatchTable<String> table;
+	private final DispatchTable<String> typetable;
 
 	private static class LazyHolder {
 		private static ExprPRISMWriter INSTANCE = new ExprPRISMWriter();
@@ -209,10 +210,23 @@ public final class ExprPRISMWriter {
 				})
 
 				.build();
+
+		typetable = DispatchTable.<String>builder()
+				.addCase(IntType.class,e -> "int")
+				.addCase(RealType.class,e -> "double")
+				.addCase(BoolType.class,e -> "bool")
+				.addDefault(e -> {
+					throw new UnsupportedOperationException("Type is not supported: "+e.toString());
+				}).build();
+
 	}
 
 	public String write(final Expr<?> expr) {
 		return table.dispatch(expr);
+	}
+
+	public String write(final Type type) {
+		return typetable.dispatch(type);
 	}
 
 	private String writeWithBrackets(final Expr<?> expr) {

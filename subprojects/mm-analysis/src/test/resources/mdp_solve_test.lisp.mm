@@ -1,9 +1,12 @@
 (dtmdp
+
     (var state Int
         0
         8
         8
     )
+
+
     (dcommand act0 (= state 8)
         (dupdate 0.5
             (assign state 0)
@@ -112,7 +115,8 @@
             (assign state 3)
         )
         (dupdate 0.9
-            (assign state 4)
+            (assign
+             state 4)
         )
     )
     (dcommand act12 (= state 7)

@@ -13,11 +13,16 @@ import java.util.Scanner;
 @SuppressWarnings("untested")
 public class PRISMSolverWin extends ExternalSolver {
 
+
     private final String modelChecker="c:\\Program Files\\prism-4.4\\bin\\prism.bat";
 
     private final String modelCheckerLocation="c:\\Program Files\\prism-4.4\\bin\\";
     private final String tempPropertyLocation="c:\\Users\\simon5521\\Desktop\\props.csl";
     private final String tempModelLocation="c:\\Users\\simon5521\\Desktop\\modell.pm";
+
+    public PRISMSolverWin() {
+        super("Result: [0-9]*\\.*[0-9]*", "Result: [a-z]*");
+    }
 
     @Override
     protected Scanner runSolver(List<String> commandLine) throws IOException {
