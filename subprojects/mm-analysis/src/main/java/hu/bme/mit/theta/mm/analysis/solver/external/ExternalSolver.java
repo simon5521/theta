@@ -1,5 +1,6 @@
-package hu.bme.mit.theta.mm.analysis.solver;
+package hu.bme.mit.theta.mm.analysis.solver.external;
 
+import hu.bme.mit.theta.mm.analysis.solver.MarkovSolver;
 import hu.bme.mit.theta.mm.generator.MMPRISMWriter;
 import hu.bme.mit.theta.mm.model.MarkovianModel;
 
@@ -8,7 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
-public abstract class ExternalSolver implements MarkovSolver{
+public abstract class ExternalSolver implements MarkovSolver {
 
 
     private final String doubleResultPattern;

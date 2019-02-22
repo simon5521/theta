@@ -18,7 +18,7 @@ public class DiscreteUpdate extends Update {
 
     public final Probability probability;
 
-    protected DiscreteUpdate(Probability probability, Collection<AssignStmt<?>> updateExpr) {
+    public DiscreteUpdate(Probability probability, Collection<AssignStmt<?>> updateExpr) {
         super(updateExpr);
         this.probability = probability;
     }

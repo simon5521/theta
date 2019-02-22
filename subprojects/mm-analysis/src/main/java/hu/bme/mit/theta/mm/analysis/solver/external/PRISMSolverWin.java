@@ -1,4 +1,4 @@
-package hu.bme.mit.theta.mm.analysis.solver;
+package hu.bme.mit.theta.mm.analysis.solver.external;
 
 import hu.bme.mit.theta.mm.generator.MMPRISMWriter;
 import hu.bme.mit.theta.mm.model.MarkovianModel;
@@ -9,18 +9,39 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class PRISMSolverLinux extends ExternalSolver {
+
+@SuppressWarnings("untested")
+public class PRISMSolverWin extends ExternalSolver {
 
 
+    private final String modelChecker="c:\\Program Files\\prism-4.4\\bin\\prism.bat";
 
-    private final String modelChecker="./prism";
+    private final String modelCheckerLocation="c:\\Program Files\\prism-4.4\\bin\\";
+    private final String tempPropertyLocation="c:\\Users\\simon5521\\Desktop\\props.csl";
+    private final String tempModelLocation="c:\\Users\\simon5521\\Desktop\\modell.pm";
 
-    private final String modelCheckerLocation="/home/simon5521/Programs/prism/prism-4.4-linux64/bin";
-    private final String tempPropertyLocation="/home/simon5521/Desktop/mm_solve_autogen.pctl";
-    private final String tempModelLocation="/home/simon5521/Desktop/mm_solve_autogen.nm";
-
-    public PRISMSolverLinux() {
+    public PRISMSolverWin() {
         super("Result: [0-9]*\\.*[0-9]*", "Result: [a-z]*");
+    }
+
+    @Override
+    protected Scanner runSolver(List<String> commandLine) throws IOException {
+
+        Process process = new ProcessBuilder()
+                .command(commandLine)
+                .directory(new File(modelCheckerLocation))
+                .start();
+
+        return new Scanner(new BufferedInputStream(process.getInputStream()));
+
+    }
+
+
+    @Override
+    protected void writeModellFile(String prizmModell) throws IOException {
+        BufferedWriter fileWriter=new BufferedWriter(new FileWriter(tempModelLocation));
+        fileWriter.write(prizmModell);
+        fileWriter.close();
     }
 
     @Override
@@ -32,27 +53,6 @@ public class PRISMSolverLinux extends ExternalSolver {
         return commandLine;
     }
 
-    @Override
-    protected Scanner runSolver(List<String> commandLine) throws IOException {
-
-        Process process = new ProcessBuilder()
-                .command(commandLine)
-                .directory(new File(modelCheckerLocation))
-                .start();
-
-
-        return new Scanner(new BufferedInputStream(process.getInputStream()));
-
-    }
-
-    @Override
-    protected void writeModellFile(String prizmModell) throws IOException {
-
-        BufferedWriter fileWriter=new BufferedWriter(new FileWriter(tempModelLocation));
-        fileWriter.write(prizmModell);
-        fileWriter.close();
-
-    }
 
     protected void writeProperty(Property property) throws IOException {
         MMPRISMWriter mmprismWriter = MMPRISMWriter.instance();
@@ -75,7 +75,6 @@ public class PRISMSolverLinux extends ExternalSolver {
         return check;
     }
 
-
     @Override
     public double solveDoubleSingle(MarkovianModel markovianModel, Property property) {
         double check=0;
@@ -86,6 +85,5 @@ public class PRISMSolverLinux extends ExternalSolver {
             e.printStackTrace();
             throw new IllegalStateException("There is a fatal problem with the Ountput files.");
         }
-        return check;
-    }
+        return check;    }
 }

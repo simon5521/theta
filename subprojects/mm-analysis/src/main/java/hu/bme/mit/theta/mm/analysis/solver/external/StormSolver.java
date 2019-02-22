@@ -1,4 +1,4 @@
-package hu.bme.mit.theta.mm.analysis.solver;
+package hu.bme.mit.theta.mm.analysis.solver.external;
 
 import hu.bme.mit.theta.mm.generator.MMPRISMWriter;
 import hu.bme.mit.theta.mm.model.MarkovianModel;

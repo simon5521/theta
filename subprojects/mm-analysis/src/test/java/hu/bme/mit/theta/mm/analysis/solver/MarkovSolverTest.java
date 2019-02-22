@@ -1,5 +1,7 @@
 package hu.bme.mit.theta.mm.analysis.solver;
 
+import hu.bme.mit.theta.mm.analysis.solver.external.PRISMSolverLinux;
+import hu.bme.mit.theta.mm.analysis.solver.external.StormSolver;
 import hu.bme.mit.theta.mm.generator.MMPRISMWriter;
 import hu.bme.mit.theta.mm.model.DiscreteTimeMarkovDecisionProcess;
 import hu.bme.mit.theta.mm.parser.MarkovianModelParser;

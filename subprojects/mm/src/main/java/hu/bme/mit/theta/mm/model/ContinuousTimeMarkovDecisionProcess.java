@@ -11,9 +11,9 @@ import java.util.HashSet;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
-public class DiscreteTimeMarkovDecisionProcess extends MarkovDecisionProcess<DiscreteCommand> {
-    protected DiscreteTimeMarkovDecisionProcess(Collection<DiscreteCommand> discreteCommands, Collection<VarDecl<?>> variables, Valuation variableInitalisations) {
-        super(discreteCommands, variables, variableInitalisations);
+public class ContinuousTimeMarkovDecisionProcess extends MarkovDecisionProcess<ContinousCommand> {
+    protected ContinuousTimeMarkovDecisionProcess(Collection<ContinousCommand> continousCommands, Collection<VarDecl<?>> variables, Valuation variableInitalisations) {
+        super(continousCommands, variables, variableInitalisations);
     }
 
 
@@ -27,7 +27,7 @@ public class DiscreteTimeMarkovDecisionProcess extends MarkovDecisionProcess<Dis
 
         private boolean built;
 
-        private Collection<DiscreteCommand> commands;
+        private Collection<ContinousCommand> commands;
 
         private Collection<VarDecl<?>> variables;
 
@@ -38,31 +38,32 @@ public class DiscreteTimeMarkovDecisionProcess extends MarkovDecisionProcess<Dis
 
 
         private Builder(){
-            commands=new HashSet<DiscreteCommand>();
+            commands=new HashSet<>();
             variables=new HashSet<>();
             variableInitalisations=null;
             initialisationBuilder= ImmutableValuation.builder();
         }
 
 
-        public DiscreteCommand createCommand(DiscreteCommand.Builder builder){
+        public ContinousCommand createCommand(ContinousCommand.Builder builder){
             checkNotBuilt();
-            DiscreteCommand command=builder.build();
+            ContinousCommand command=builder.build();
             commands.add(command);
             return command;
         }
 
-        public DiscreteCommand addCommand(DiscreteCommand command){
+        public ContinousCommand addCommand(ContinousCommand command){
             checkNotBuilt();
             commands.add(command);
             return command;
         }
 
 
-        public void addCommands(Collection<DiscreteCommand> commands){
+        public void addCommands(Collection<ContinousCommand> commands){
             checkNotBuilt();
             commands.addAll(commands);
         }
+
 
 
 
@@ -77,11 +78,11 @@ public class DiscreteTimeMarkovDecisionProcess extends MarkovDecisionProcess<Dis
         }
 
 
-        public DiscreteTimeMarkovDecisionProcess build() {
+        public ContinuousTimeMarkovDecisionProcess build() {
             checkNotBuilt();
             built = true;
             variableInitalisations=initialisationBuilder.build();
-            return new DiscreteTimeMarkovDecisionProcess(this.commands, this.variables, this.variableInitalisations);
+            return new ContinuousTimeMarkovDecisionProcess(this.commands, this.variables, this.variableInitalisations);
         }
 
 

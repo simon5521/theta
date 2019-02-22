@@ -175,7 +175,7 @@ public class MarkovianModelInterpreter {
                         throw new UnsupportedOperationException();
                     }
                 } else if (object instanceof DiscreteCommandContext) {
-                    final DiscreteCommand command= MDPBuilder.createCommand(((DiscreteCommandContext) object).builder);
+                    final ContinousCommand command= MDPBuilder.createCommand(((DiscreteCommandContext) object).builder);
                     env.define(command.action, command);
                 } else {
                     throw new UnsupportedOperationException();

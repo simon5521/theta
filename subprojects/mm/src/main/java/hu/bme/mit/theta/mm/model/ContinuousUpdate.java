@@ -18,7 +18,7 @@ public class ContinuousUpdate extends Update {
 
     public final Rate rate;
 
-    protected ContinuousUpdate(Rate rate, Collection<AssignStmt<?>> updateExpr) {
+    public ContinuousUpdate(Rate rate, Collection<AssignStmt<?>> updateExpr) {
         super(updateExpr);
         this.rate = rate;
     }
