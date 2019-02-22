@@ -10,6 +10,8 @@ import hu.bme.mit.theta.mm.prop.Objective;
 import hu.bme.mit.theta.mm.prop.Property;
 import hu.bme.mit.theta.core.type.arithmetic.OperatorArithmetic;
 
+import java.util.Collection;
+
 public final class MMPRISMWriter {
 
     private MMPRISMWriter(){}
@@ -276,6 +278,90 @@ public final class MMPRISMWriter {
 
         return prismBuilder.toString();
     }
+
+    //writing out rewards
+
+
+    public String StateRewardCommand2PRISM(StateRewardCommand command){
+
+        StringBuilder prismBuilder=new StringBuilder();
+        ExprPRISMWriter exprWriter=ExprPRISMWriter.instance();
+        prismBuilder.append(exprWriter.write(command.guard))
+                .append(" : ")
+                .append(exprWriter.write(command.reward))
+                .append(" ;");
+
+        return prismBuilder.toString();
+
+    }
+
+
+    public String TransitionRewardCommand2PRISM(TranstionRewardCommand command){
+
+        StringBuilder prismBuilder=new StringBuilder();
+        ExprPRISMWriter exprWriter=ExprPRISMWriter.instance();
+        prismBuilder.append("[")
+                .append(command.name)
+                .append("] ")
+                .append(exprWriter.write(command.guard))
+                .append(" : ")
+                .append(exprWriter.write(command.reward))
+                .append(" ;");
+
+        return prismBuilder.toString();
+
+    }
+
+    public String RewardCommand2PRISM(RewardCommand command){
+        if (command instanceof StateRewardCommand){
+            return StateRewardCommand2PRISM((StateRewardCommand) command);
+        } else if (command instanceof TranstionRewardCommand){
+            return TransitionRewardCommand2PRISM((TranstionRewardCommand) command);
+        } else {
+            throw new UnsupportedOperationException("Writer can not recognise this kind of reward command.");
+        }
+
+    }
+
+
+    public String Reward2PRISM(Reward<?> reward){
+
+        StringBuilder prismBuilder=new StringBuilder();
+        ExprPRISMWriter exprWriter=ExprPRISMWriter.instance();
+        prismBuilder.append("rewards ");
+
+        if (reward.name != null ){
+            prismBuilder.append("\"").append(reward.name).append("\" ");
+        }
+
+        prismBuilder.append("\n");
+
+
+        for (RewardCommand command:reward.commands){
+            prismBuilder.append(RewardCommand2PRISM(command))
+                    .append("\n");
+
+
+        }
+
+        prismBuilder.append("endrewards");
+
+        return prismBuilder.toString();
+
+    }
+
+
+    public String MMwithRewards2PRISM(MarkovianModel markovianModel, Collection<Reward> rewards){
+        StringBuilder prismBuilder=new StringBuilder();
+        prismBuilder.append(MarkovianModel2PRISM(markovianModel))
+                .append('\n');
+        for (Reward reward:rewards){
+            prismBuilder.append(Reward2PRISM(reward))
+                    .append('\n');
+        }
+        return prismBuilder.toString();
+    }
+
 
 
 

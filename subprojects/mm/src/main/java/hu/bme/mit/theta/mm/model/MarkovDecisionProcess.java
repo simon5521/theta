@@ -7,6 +7,6 @@ import java.util.Collection;
 
 public abstract class MarkovDecisionProcess<ModelCommand extends Command>  extends MarkovianModel<ModelCommand>{
     protected MarkovDecisionProcess(Collection<ModelCommand> modelCommands, Collection<VarDecl<?>> variables, Valuation variableInitalisations) {
-        super(modelCommands, variables, variableInitalisations);
+        super(modelCommands, variables, variableInitalisations, rewards);
     }
 }

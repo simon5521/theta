@@ -25,6 +25,21 @@ public class ParameterSpace /*implements Type*/ {
         this.upperLimits = upperLimits;
     }
 
+    public LitExpr<?> getLimit(ParamDecl<?> paramDecl,ParameterDirection direction){
+
+        if (!paramDecls.contains(paramDecl)){
+            throw new UnsupportedOperationException("Can not found the parameter in parameterspace.");
+        }
+
+        if (direction == ParameterDirection.LOW){
+            return lowerLimits.eval(paramDecl).get();
+        } else if (direction==ParameterDirection.UP){
+            return upperLimits.eval(paramDecl).get();
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+
     public static ParameterSpace.Builder builder(){
         return new Builder();
     }

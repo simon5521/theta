@@ -69,7 +69,7 @@ public class MarkovianModelInterpreter {
         interpreter.defineCommonTypes();
         interpreter.defineCommonExprs();
         interpreter.defineCommonStmts();
-        env.define("pctmc", pCTMCCreator());
+        env.define("mm", pCTMCCreator());
         env.define("dtmdp", DTMDPCreator());
         env.define("var",variableCreator());
         env.define("command", continuousCommandCreator());

@@ -21,7 +21,6 @@ public abstract class MarkovianModel<ModelCommand extends Command> {
     public final Valuation variableInitalisations;
 
 
-
     protected MarkovianModel(Collection<ModelCommand> commands, Collection<VarDecl<?>> variables, Valuation variableInitalisations) {
         this.commands = commands;
         this.variables = variables;

@@ -1,4 +1,4 @@
-(pctmc
+(mm
     (param p
         1.1
         2.1
