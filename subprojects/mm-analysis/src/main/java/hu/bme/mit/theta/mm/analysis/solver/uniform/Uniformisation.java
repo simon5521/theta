@@ -30,6 +30,8 @@ public class Uniformisation {
         for (ContinousCommand command:pctmc.commands){
             Collection<Expr<RealType>> rateSumColl=new HashSet<>();
             ContinousCommand.Builder commandBuilder=new ContinousCommand.Builder();
+            commandBuilder.setAction(command.action);
+            commandBuilder.setGuard(command.guard);
             for (ContinuousUpdate update:command.updates){
                 rateSumColl.add(update.rate.rateExpr);
                 commandBuilder.addUpdate(update);
@@ -38,6 +40,7 @@ public class Uniformisation {
             ContinuousUpdate.Builder updateBuilder=ContinuousUpdate.builder();
             updateBuilder.setRate(RealExprs.Sub(uniformRate.rateExpr,rateSum));
             commandBuilder.addUpdate(updateBuilder.build());
+            modelBuilder.createCommand(commandBuilder);
         }
 
         return modelBuilder.build();

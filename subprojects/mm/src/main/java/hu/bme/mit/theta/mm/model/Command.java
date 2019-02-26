@@ -35,7 +35,10 @@ public abstract class Command<CommandUpdate extends hu.bme.mit.theta.mm.model.Up
 
 
     public void collectParams(Collection<ParamDecl<?>> collection){
-        updates.forEach(update -> {update.collectParams(collection);});
+        for (CommandUpdate update:updates){
+            update.collectParams(collection);
+        }
+
     }
 
     public Collection<ParamDecl<?>> getParams(){

@@ -61,7 +61,7 @@ public class ContinuousTimeMarkovDecisionProcess extends MarkovDecisionProcess<C
 
         public void addCommands(Collection<ContinousCommand> commands){
             checkNotBuilt();
-            commands.addAll(commands);
+            this.commands.addAll(commands);
         }
 
 

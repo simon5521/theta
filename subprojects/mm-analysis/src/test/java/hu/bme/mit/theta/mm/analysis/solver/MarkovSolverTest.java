@@ -80,7 +80,7 @@ public class MarkovSolverTest {
 
     @Test
     public void test(){
-        DiscreteTimeMarkovDecisionProcess dtmdp= mdpparser.DTMDP();
+        /*DiscreteTimeMarkovDecisionProcess dtmdp= mdpparser.DTMDP();
         propparser=new PropertyParser(propreader,dtmdp.variables);
         Property prop=propparser.property();
         System.out.println(writer.DTMDP2PRISM(dtmdp));
@@ -96,6 +96,7 @@ public class MarkovSolverTest {
         Double minProbStorm=stormSolver.solveDoubleSingle(dtmdp,prop);
         System.out.println("Result is: "+minProbStorm.toString());
         System.out.println("_______________________________________");
+        */
         System.out.println("Reading the pmctmc");
         System.out.println("_______________________________________");
         ParametricContinousTimeMarkovChain pCTMC=pctmcparser.pCTMC();
@@ -119,8 +120,8 @@ public class MarkovSolverTest {
         System.out.println("Discetisating the ctmdp");
         System.out.println("_______________________________________");
         Discretisation discretisation=Discretisation.getInstance();
-        dtmdp=discretisation.discretisate(ctmdp,uniformRate);
-        System.out.println(writer.CTMDP2PRISM(ctmdp));
+        DiscreteTimeMarkovDecisionProcess dtmdp2=discretisation.discretisate(ctmdp,uniformRate);
+        System.out.println(writer.DTMDP2PRISM(dtmdp2));
 
     }
 

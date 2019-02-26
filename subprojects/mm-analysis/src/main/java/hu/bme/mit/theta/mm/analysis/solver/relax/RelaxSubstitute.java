@@ -24,11 +24,19 @@ public class RelaxSubstitute {
 
 
     public Collection<Valuation> relax(Command command, ParameterSpace parameterSpace){
+
+        Collection<Valuation> valuations=new HashSet<>();
+
         Collection<ParamDecl> parameters=command.getParams();
+
+        if (parameters.isEmpty()){
+            valuations.add(ImmutableValuation.builder().build());
+            return valuations;
+        }
+
         int actionNumber=pow2(parameters.size());
         int parameterNumber=parameters.size();
 
-        Collection<Valuation> valuations=new HashSet<>();
         ParamDecl<?>[] paramArray=new ParamDecl[parameterNumber];
         parameters.toArray(paramArray);
         for (long directions=0;directions<actionNumber;directions++){
@@ -36,7 +44,7 @@ public class RelaxSubstitute {
 
             for (int paramCntr=0; paramCntr<parameterNumber;paramCntr++){
                 long mask=1<<paramCntr;
-                long dir= ((directions|mask)>>paramCntr);
+                long dir= ((directions&mask)>>paramCntr);
                 ParameterDirection parameterDirection;
                 if (dir==0){
                     parameterDirection=ParameterDirection.LOW;
@@ -55,16 +63,20 @@ public class RelaxSubstitute {
     }
 
 
-    public Collection<ContinousCommand> relaxsubstitute(ContinousCommand command, ParameterSpace parameterSpace){
+    public Collection<ContinousCommand> relaxsubstitute(ContinousCommand incommand, ParameterSpace parameterSpace){
         Collection<ContinousCommand> commands=new HashSet<>();
-        Collection<Valuation> valuations=relax(command,parameterSpace);
+        Collection<Valuation> valuations=relax(incommand,parameterSpace);
 
+
+        Integer cntr=0;
         for (Valuation valuation: valuations){
             ContinousCommand.Builder builder= new ContinousCommand.Builder();
-            builder.setAction(command.action);
-            builder.setGuard(command.guard);
+            builder.setAction(incommand.action+"_"+cntr.toString());
+            cntr++;
 
-            for (ContinuousUpdate update:command.updates){
+            builder.setGuard(incommand.guard);
+
+            for (ContinuousUpdate update:incommand.updates){
                 ContinuousUpdate newUpdate=new ContinuousUpdate(new Rate(update.getRate(valuation)),update.updateExpr);
                 builder.addUpdate(newUpdate);
             }
@@ -76,18 +88,18 @@ public class RelaxSubstitute {
         return commands;
     }
 
-    public Collection<DiscreteCommand> relaxsubstitute(DiscreteCommand command, ParameterSpace parameterSpace){
+    public Collection<DiscreteCommand> relaxsubstitute(DiscreteCommand incommand, ParameterSpace parameterSpace){
         Collection<DiscreteCommand> commands=new HashSet<>();
-        Collection<Valuation> valuations=relax(command,parameterSpace);
+        Collection<Valuation> valuations=relax(incommand,parameterSpace);
 
         Integer nameCntr=0;
         for (Valuation valuation: valuations){
             DiscreteCommand.Builder builder= new DiscreteCommand.Builder();
-            builder.setAction(command.action+nameCntr.toString());
-            builder.setGuard(command.guard);
+            builder.setAction(incommand.action+"_"+nameCntr.toString());
+            builder.setGuard(incommand.guard);
             nameCntr++;
 
-            for (DiscreteUpdate update:command.updates){
+            for (DiscreteUpdate update:incommand.updates){
                 DiscreteUpdate newUpdate=new DiscreteUpdate(new Probability(update.getRate(valuation)),update.updateExpr);
                 builder.addUpdate(newUpdate);
             }
@@ -112,6 +124,8 @@ public class RelaxSubstitute {
 
         return builder.build();
     }
+
+
 
     private int pow2(int a){
         int b=1;

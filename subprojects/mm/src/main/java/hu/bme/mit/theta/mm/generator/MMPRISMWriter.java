@@ -1,6 +1,7 @@
 package hu.bme.mit.theta.mm.generator;
 
 import hu.bme.mit.theta.core.decl.ConstDecl;
+import hu.bme.mit.theta.core.decl.ParamDecl;
 import hu.bme.mit.theta.core.decl.VarDecl;
 import hu.bme.mit.theta.core.stmt.AssignStmt;
 import hu.bme.mit.theta.core.type.LitExpr;
@@ -47,6 +48,10 @@ public final class MMPRISMWriter {
             }
             i++;
         }
+        //if there is no update expression write 'true'
+        if (continuousUpdate.updateExpr.isEmpty()){
+            prismBuilder.append(" true ");
+        }
 
         return prismBuilder.toString();
 
@@ -72,6 +77,10 @@ public final class MMPRISMWriter {
                 prismBuilder.append("&");
             }
             i++;
+        }
+        //if there is no update expression write 'true'
+        if (discreteUpdate.updateExpr.isEmpty()){
+            prismBuilder.append(" true ");
         }
 
         return prismBuilder.toString();
@@ -395,6 +404,27 @@ public final class MMPRISMWriter {
 
 
 
+    public String ParameterSpace2PRISM(ParameterSpace parameterSpace){
+        StringBuilder psBuilder=new StringBuilder();
+        ExprPRISMWriter exprPRISMWriter=ExprPRISMWriter.instance();
 
+        psBuilder.append("parameterspace\n");
+
+        for (ParamDecl<?> param:parameterSpace.paramDecls){
+            psBuilder.append(param.getName())
+                    .append(" ")
+                    .append(exprPRISMWriter.write(param.getType()))
+                    .append(" [")
+                    .append(exprPRISMWriter.write(parameterSpace.getLimit(param,ParameterDirection.LOW)))
+                    .append("..")
+                    .append(exprPRISMWriter.write(parameterSpace.getLimit(param,ParameterDirection.UP)))
+                    .append("];\n");
+        }
+
+        psBuilder.append("endparameterspace");
+
+        return psBuilder.toString();
+
+    }
 
 }

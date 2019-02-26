@@ -74,7 +74,7 @@ public class DiscreteUpdate extends Update {
         }
         public void addStmts(Collection<AssignStmt<?>> updates){
             checkNotBuilt();
-            updates.addAll(updates);
+            this.updates.addAll(updates);
         }
 
 

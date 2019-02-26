@@ -73,6 +73,10 @@ public class ContinuousUpdate extends Update {
             updates.add(update);
         }
 
+        public void addStmts(Collection<AssignStmt<?>> updates){
+            checkNotBuilt();
+            this.updates.addAll(updates);
+        }
 
         private void checkNotBuilt() {
             checkState(!built, "Update was already built.");
