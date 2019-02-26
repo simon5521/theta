@@ -10,16 +10,16 @@ import hu.bme.mit.theta.mm.model.*;
 import java.util.Collection;
 import java.util.HashSet;
 
-public class RelaxCommand {
+public class RelaxSubstitute {
 
-    private final RelaxCommand relaxCommand=new RelaxCommand();
+    private final static RelaxSubstitute relaxSubstitute =new RelaxSubstitute();
 
-    private RelaxCommand(){
+    private RelaxSubstitute(){
 
     }
 
-    public RelaxCommand getInstance(){
-        return relaxCommand;
+    public static RelaxSubstitute getInstance(){
+        return relaxSubstitute;
     }
 
 
@@ -55,7 +55,7 @@ public class RelaxCommand {
     }
 
 
-    public Collection<ContinousCommand> generateRelaxedContCommands(ContinousCommand command,ParameterSpace parameterSpace){
+    public Collection<ContinousCommand> relaxsubstitute(ContinousCommand command, ParameterSpace parameterSpace){
         Collection<ContinousCommand> commands=new HashSet<>();
         Collection<Valuation> valuations=relax(command,parameterSpace);
 
@@ -76,7 +76,7 @@ public class RelaxCommand {
         return commands;
     }
 
-    public Collection<DiscreteCommand> generateRelaxedDiscCommands(DiscreteCommand command, ParameterSpace parameterSpace){
+    public Collection<DiscreteCommand> relaxsubstitute(DiscreteCommand command, ParameterSpace parameterSpace){
         Collection<DiscreteCommand> commands=new HashSet<>();
         Collection<Valuation> valuations=relax(command,parameterSpace);
 
@@ -99,7 +99,7 @@ public class RelaxCommand {
         return commands;
     }
 
-    public ContinuousTimeMarkovDecisionProcess relax(ParametricContinousTimeMarkovChain pctmc,ParameterSpace parameterSpace){
+    public ContinuousTimeMarkovDecisionProcess relaxsubstitute(ParametricContinousTimeMarkovChain pctmc, ParameterSpace parameterSpace){
         ContinuousTimeMarkovDecisionProcess.Builder builder=ContinuousTimeMarkovDecisionProcess.builder();
 
         for (VarDecl varDecl:pctmc.variables){
@@ -107,7 +107,7 @@ public class RelaxCommand {
         }
 
         for (ContinousCommand command:pctmc.commands){
-            builder.addCommands(generateRelaxedContCommands(command,parameterSpace));
+            builder.addCommands(relaxsubstitute(command,parameterSpace));
         }
 
         return builder.build();
