@@ -27,13 +27,10 @@ import hu.bme.mit.theta.core.type.booltype.*;
 import hu.bme.mit.theta.core.type.inttype.*;
 import hu.bme.mit.theta.core.type.inttype.ModExpr;
 import hu.bme.mit.theta.core.type.inttype.RemExpr;
+import hu.bme.mit.theta.core.type.operator.*;
 import hu.bme.mit.theta.core.type.rattype.*;
 import hu.bme.mit.theta.core.type.realtype.*;
 import hu.bme.mit.theta.core.type.templogic.*;
-import hu.bme.mit.theta.core.type.operator.EventProbabilityOperator;
-import hu.bme.mit.theta.core.type.operator.PropertyOperator;
-import hu.bme.mit.theta.core.type.operator.RewardOperator;
-import hu.bme.mit.theta.core.type.operator.SteadyStateProbabilityOperator;
 
 public final class ExprPRISMWriter {
 
@@ -93,6 +90,10 @@ public final class ExprPRISMWriter {
 
 				.addCase(RewardOperator.class, e -> "R")
 
+				.addCase(TimeOperator.class, e -> "T")
+
+				.addCase(ExpTimeOperator.class, e -> "ExpT")
+
 				//Property operator arithmetics
 
 				.addCase(GetExactValue.class, e -> binaryOperatorArthimetric(e,"=?"))
@@ -101,9 +102,9 @@ public final class ExprPRISMWriter {
 
 				.addCase(GetMinValue.class, e -> binaryOperatorArthimetric(e, "min=?"))
 
-				.addCase(GT.class, e -> ternaryOperatorArthimetric(e, "<=") )
+				.addCase(GT.class, e -> ternaryOperatorArthimetric(e, ">=") )
 
-				.addCase(LT.class, e -> ternaryOperatorArthimetric(e, ">="))
+				.addCase(LT.class, e -> ternaryOperatorArthimetric(e, "<="))
 
 				// Integer
 

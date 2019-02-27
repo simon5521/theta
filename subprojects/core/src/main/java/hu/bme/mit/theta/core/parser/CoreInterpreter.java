@@ -139,6 +139,8 @@ public class CoreInterpreter {
 		defineExpr("R", RewardOperator.getINSTANCE());
 		defineExpr("E", ThereExistsOperator.getINSTANCE());
 		defineExpr("A", ForAllOperator.getINSTANCE());
+		defineExpr("T",TimeOperator.getInstance());
+		defineExpr("ExpT",ExpTimeOperator.getInstance());
 		defineExpr("=?", exprBinaryOperator(GetExactValue::create));
 		defineExpr("min=?", exprBinaryOperator(GetMinValue::create));
 		defineExpr("max=?", exprBinaryOperator(GetMaxValue::create));

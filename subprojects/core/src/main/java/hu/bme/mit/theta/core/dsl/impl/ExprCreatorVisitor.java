@@ -135,7 +135,7 @@ public final class ExprCreatorVisitor extends CoreDslBaseVisitor<Expr<?>> {
 	@Override
 	public Expr<?> visitFuncLitExpr(final FuncLitExprContext ctx) {
 		if (ctx.result != null) {
-			final List<ParamDecl<?>> params = createParamList(ctx.paramDecls);
+			final List<ParamDecl<?>> params = createParamList(ctx.parameters);
 
 			checkArgument(params.size() == 1);
 			@SuppressWarnings("unchecked")
@@ -204,8 +204,8 @@ public final class ExprCreatorVisitor extends CoreDslBaseVisitor<Expr<?>> {
 
 	@Override
 	public Expr<?> visitForallExpr(final ForallExprContext ctx) {
-		if (ctx.paramDecls != null) {
-			final List<ParamDecl<?>> paramDecls = createParamList(ctx.paramDecls);
+		if (ctx.parameters != null) {
+			final List<ParamDecl<?>> paramDecls = createParamList(ctx.parameters);
 
 			push(paramDecls);
 			final Expr<BoolType> op = TypeUtils.cast(ctx.op.accept(this), Bool());
@@ -219,8 +219,8 @@ public final class ExprCreatorVisitor extends CoreDslBaseVisitor<Expr<?>> {
 
 	@Override
 	public Expr<?> visitExistsExpr(final ExistsExprContext ctx) {
-		if (ctx.paramDecls != null) {
-			final List<ParamDecl<?>> paramDecls = createParamList(ctx.paramDecls);
+		if (ctx.parameters != null) {
+			final List<ParamDecl<?>> paramDecls = createParamList(ctx.parameters);
 
 			push(paramDecls);
 			final Expr<BoolType> op = TypeUtils.cast(ctx.op.accept(this), Bool());

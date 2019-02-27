@@ -60,12 +60,12 @@ public class ParametricDiscreteTimeMarkovChain extends ParametricMarkovianModel<
 
         public void addCommand(DiscreteCommand command){
             checkNotBuilt();
-            commands.add(command);
+            this.commands.add(command);
         }
 
         public void addCommands(Collection<DiscreteCommand> commands){
             checkNotBuilt();
-            commands.addAll(commands);
+            this.commands.addAll(commands);
         }
 
 

@@ -40,7 +40,7 @@ public abstract class MarkovParameterChecker {
         return check(mm,parameterSpace,getRewards(), getSatisfyingProperty(property), getUnsatisfyingProperty(property));
     }
 
-    private Map<ParameterSpace,ParameterSpaceState> check(ParametricMarkovianModel mm,ParameterSpace parameterSpace,Collection<Reward> rewards, Property satProperty, Property unsatProperty){
+    private Map<ParameterSpace,ParameterSpaceState> check(ParametricMarkovianModel mm,ParameterSpace parameterSpace,Collection<Reward<?>> rewards, Property satProperty, Property unsatProperty){
 
         Map<ParameterSpace,ParameterSpaceState> result=new HashMap<>();
 
@@ -76,7 +76,9 @@ public abstract class MarkovParameterChecker {
             throw new UnsupportedOperationException("This kind of Markovian Model is not supported yet.");
         }
 
+        Integer iterationDepth=0;
         do{
+
 
             ParameterSpace localSpace=fifo.remove();
 
@@ -85,23 +87,29 @@ public abstract class MarkovParameterChecker {
 
             if(solver.solveBinSingle(mdp,rewards,satProperty)){
                 result.put(localSpace,ParameterSpaceState.SATISFYING);
-                RelativeCoveredJordanMeasure+=localSpace.getJordanMeasure()/AllJordanMeasure;
+                RelativeCoveredJordanMeasure+=(localSpace.getJordanMeasure()/AllJordanMeasure);
             }else if (solver.solveBinSingle(mdp,rewards,unsatProperty)) {
                 result.put(localSpace,ParameterSpaceState.UNSATISFYING);
-                RelativeCoveredJordanMeasure+=localSpace.getJordanMeasure()/AllJordanMeasure;
+                RelativeCoveredJordanMeasure+=(localSpace.getJordanMeasure()/AllJordanMeasure);
             }else {
                 ParamDecl<?> cutParam=searchCutParameter(cutNum);
                 ParameterSpace lowSpace=localSpace.cutAndGetLowHalf(cutParam);
                 ParameterSpace upSpace=localSpace.cutAndGetUpHalf(cutParam);
                 fifo.add(lowSpace);
                 fifo.add(upSpace);
+                iterationDepth=searchIteration(cutNum);
+                cutNum.put(cutParam,iterationDepth+1);
             }
 
 
-        }while ( !fifo.isEmpty() &&
-                RelativeCoveredJordanMeasure>RelativeJordanMeasureLimit &&
-                searchIteration(cutNum)>IterationLimit
+        }while ( (!fifo.isEmpty()) &&
+                    (RelativeCoveredJordanMeasure<RelativeJordanMeasureLimit) &&
+                    (iterationDepth<IterationLimit)
         );
+
+        while (!fifo.isEmpty()){
+            result.put(fifo.remove(),ParameterSpaceState.NEUTRAL);
+        }
 
         return result;
     }
@@ -121,8 +129,8 @@ public abstract class MarkovParameterChecker {
         return maxParam;
     }
 
-    private int searchIteration(Map<ParamDecl<?>,Integer> cut){
-        int min=Integer.MAX_VALUE;
+    private Integer searchIteration(Map<ParamDecl<?>,Integer> cut){
+        Integer min=Integer.MAX_VALUE;
 
 
         for (Map.Entry<ParamDecl<?>,Integer> e:cut.entrySet()){

@@ -11,7 +11,7 @@ public interface MarkovSolver {
     boolean solveBinSingle(MarkovianModel markovianModel, Property property);
     double  solveDoubleSingle(MarkovianModel   markovianModel, Property property);
 
-    boolean solveBinSingle(MarkovianModel markovianModel, Collection<Reward> rewards, Property property);
-    double  solveDoubleSingle(MarkovianModel   markovianModel, Collection<Reward> rewards, Property property);
+    boolean solveBinSingle(MarkovianModel markovianModel, Collection<Reward<?>> rewards, Property property);
+    double  solveDoubleSingle(MarkovianModel   markovianModel, Collection<Reward<?>> rewards, Property property);
 
 }

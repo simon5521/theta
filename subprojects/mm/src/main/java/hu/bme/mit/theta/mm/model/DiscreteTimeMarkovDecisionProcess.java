@@ -54,14 +54,14 @@ public class DiscreteTimeMarkovDecisionProcess extends MarkovDecisionProcess<Dis
 
         public DiscreteCommand addCommand(DiscreteCommand command){
             checkNotBuilt();
-            commands.add(command);
+            this.commands.add(command);
             return command;
         }
 
 
         public void addCommands(Collection<DiscreteCommand> commands){
             checkNotBuilt();
-            commands.addAll(commands);
+            this.commands.addAll(commands);
         }
 
 

@@ -21,15 +21,15 @@ import java.util.Collection;
 import java.util.HashSet;
 
 public class ExpectedTimeChecker extends MarkovParameterChecker {
-    protected ExpectedTimeChecker(ExternalSolver solver) {
+    public ExpectedTimeChecker(ExternalSolver solver) {
         super(solver);
     }
 
-    private final static ExpectedTimeChecker Instance=new ExpectedTimeChecker(new StormSolver());
+    /*private final static ExpectedTimeChecker Instance=new ExpectedTimeChecker(new StormSolver());
 
     public static ExpectedTimeChecker getInstance() {
         return Instance;
-    }
+    }*/
 
     @Override
     protected Property getSatisfyingProperty(Property property) {
@@ -40,7 +40,7 @@ public class ExpectedTimeChecker extends MarkovParameterChecker {
         OperatorArithmetic<BoolType> opArth;
         if (objective.operatorArithmetic instanceof GT){
             GT gtArithmetic=(GT) objective.operatorArithmetic;
-            opArth=GT.create(RewardOperator.getINSTANCE(),gtArithmetic.opExpr,gtArithmetic.pathProp);
+            opArth=GT.create(RewardOperator.getINSTANCE(),gtArithmetic.pathProp,gtArithmetic.opExpr);
             prBuilder.addObjective(new Objective(opArth,"ExpextedTimeMin"));
 
 
@@ -51,7 +51,7 @@ public class ExpectedTimeChecker extends MarkovParameterChecker {
             return prBuilder.build();
         } else if (objective.operatorArithmetic instanceof LT){
             LT gtArithmetic=(LT) objective.operatorArithmetic;
-            opArth=LT.create(RewardOperator.getINSTANCE(),gtArithmetic.opExpr,gtArithmetic.pathProp);
+            opArth=LT.create(RewardOperator.getINSTANCE(),gtArithmetic.pathProp,gtArithmetic.opExpr);
             prBuilder.addObjective(new Objective(opArth,"ExpextedTimeMax"));
 
 
@@ -73,8 +73,8 @@ public class ExpectedTimeChecker extends MarkovParameterChecker {
 
         OperatorArithmetic<BoolType> opArth;
         if (objective.operatorArithmetic instanceof GT){
-            LT gtArithmetic=(LT) objective.operatorArithmetic;
-            opArth=LT.create(RewardOperator.getINSTANCE(),gtArithmetic.opExpr,gtArithmetic.pathProp);
+            GT gtArithmetic=(GT) objective.operatorArithmetic;
+            opArth=LT.create(RewardOperator.getINSTANCE(),gtArithmetic.pathProp,gtArithmetic.opExpr);
             prBuilder.addObjective(new Objective(opArth,"ExpextedTimeMax"));
 
 
@@ -84,8 +84,8 @@ public class ExpectedTimeChecker extends MarkovParameterChecker {
 
             return prBuilder.build();
         } else if (objective.operatorArithmetic instanceof LT){
-            GT gtArithmetic=(GT) objective.operatorArithmetic;
-            opArth=GT.create(RewardOperator.getINSTANCE(),gtArithmetic.opExpr,gtArithmetic.pathProp);
+            LT gtArithmetic=(LT) objective.operatorArithmetic;
+            opArth=GT.create(RewardOperator.getINSTANCE(),gtArithmetic.pathProp,gtArithmetic.opExpr);
             prBuilder.addObjective(new Objective(opArth,"ExpextedTimeMin"));
 
 

@@ -41,7 +41,7 @@ public abstract class ExternalSolver implements MarkovSolver {
         }
         Scanner scanner2=new Scanner(rawResult);
         scanner2.useLocale(Locale.US);
-        scanner2=new Scanner(scanner2.findWithinHorizon("[a-z][a-z][a-z][a-z][a-z]",100));
+        scanner2=new Scanner(scanner2.findWithinHorizon("true|false",100));
         boolean res=scanner2.nextBoolean();
         scanner.close();
         scanner2.close();
@@ -102,7 +102,7 @@ public abstract class ExternalSolver implements MarkovSolver {
 
     }
 
-    protected double solveDouble(MarkovianModel model, Collection<Reward> rewards) throws IOException {
+    protected double solveDouble(MarkovianModel model, Collection<Reward<?>> rewards) throws IOException {
 
         MMPRISMWriter mmprismWriter=MMPRISMWriter.instance();
         writeModellFile(mmprismWriter.MMwithRewards2PRISM(model,rewards));
@@ -115,7 +115,7 @@ public abstract class ExternalSolver implements MarkovSolver {
 
     }
 
-    protected boolean solveBool(MarkovianModel model, Collection<Reward> rewards) throws IOException {
+    protected boolean solveBool(MarkovianModel model, Collection<Reward<?>> rewards) throws IOException {
         MMPRISMWriter mmprismWriter=MMPRISMWriter.instance();
         writeModellFile(mmprismWriter.MMwithRewards2PRISM(model,rewards));
 

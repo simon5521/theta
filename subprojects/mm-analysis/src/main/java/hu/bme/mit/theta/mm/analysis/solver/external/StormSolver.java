@@ -100,7 +100,7 @@ public class StormSolver extends ExternalSolver{
         }
 
     @Override
-    public boolean solveBinSingle(MarkovianModel markovianModel, Collection<Reward> rewards, Property property) {
+    public boolean solveBinSingle(MarkovianModel markovianModel, Collection<Reward<?>> rewards, Property property) {
         boolean check=false;
         try {
             writeProperty(property);
@@ -113,7 +113,7 @@ public class StormSolver extends ExternalSolver{
     }
 
     @Override
-    public double solveDoubleSingle(MarkovianModel markovianModel, Collection<Reward> rewards, Property property) {
+    public double solveDoubleSingle(MarkovianModel markovianModel, Collection<Reward<?>> rewards, Property property) {
         double check=0;
         try {
             writeProperty(property);

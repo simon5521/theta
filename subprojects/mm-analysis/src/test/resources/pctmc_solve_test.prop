@@ -1,0 +1,3 @@
+(property
+    (objective mdp_r_min (LT ExpT (F (= l 3)) 0.03 ))
+)
