@@ -46,7 +46,7 @@ import hu.bme.mit.theta.core.stmt.HavocStmt;
 import hu.bme.mit.theta.core.stmt.SkipStmt;
 import hu.bme.mit.theta.core.stmt.Stmt;
 import hu.bme.mit.theta.core.type.Expr;
-import hu.bme.mit.theta.core.type.arithmetic.*;
+import hu.bme.mit.theta.core.type.oparithmetic.*;
 import hu.bme.mit.theta.core.type.operator.*;
 import hu.bme.mit.theta.core.type.templogic.*;
 import hu.bme.mit.theta.core.type.Type;

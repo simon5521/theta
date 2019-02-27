@@ -25,7 +25,7 @@ public class  Reward<R extends RewardCommand> {
         private Collection<R> commands;
         private boolean built;
 
-        private Builder(){
+        public Builder(){
             commands=new HashSet<>();
             built=false;
         }

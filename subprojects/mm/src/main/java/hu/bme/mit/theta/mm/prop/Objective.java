@@ -1,6 +1,6 @@
 package hu.bme.mit.theta.mm.prop;
 
-import hu.bme.mit.theta.core.type.arithmetic.OperatorArithmetic;
+import hu.bme.mit.theta.core.type.oparithmetic.OperatorArithmetic;
 
 public class Objective {
 

@@ -17,7 +17,7 @@ grammar StsDsl;
 
 // S P E C I F I C A T I O N
 
-stsSpec:	SPECIFICATION name=ID (LPAREN (paramDecls=declList)? RPAREN)? LBRAC
+stsSpec:	SPECIFICATION name=ID (LPAREN (parameters=declList)? RPAREN)? LBRAC
 			(	constDecls+=constDecl
 			|	varDecls+=varDecl
 			|	stsDecls+=stsDecl
@@ -52,7 +52,7 @@ propDecl
 	;
 
 stsDecl
-	:	SYSTEM name=ID (LPAREN (paramDecls=declList)? RPAREN)? ASSIGN def=sts
+	:	SYSTEM name=ID (LPAREN (parameters=declList)? RPAREN)? ASSIGN def=sts
 	;
 	
 sts	:	defSts
@@ -180,7 +180,7 @@ exprList
 	
 funcLitExpr
 	:	iteExpr
-	|	LPAREN (paramDecls=declList)? RPAREN RARROW result=funcLitExpr
+	|	LPAREN (parameters=declList)? RPAREN RARROW result=funcLitExpr
 	;
 
 iteExpr
@@ -203,11 +203,11 @@ quantifiedExpr
 	;
 	
 forallExpr
-	:	FORALL LPAREN paramDecls=declList RPAREN op=quantifiedExpr
+	:	FORALL LPAREN parameters=declList RPAREN op=quantifiedExpr
 	;
 	
 existsExpr
-	:	EXISTS LPAREN paramDecls=declList RPAREN op=quantifiedExpr
+	:	EXISTS LPAREN parameters=declList RPAREN op=quantifiedExpr
 	;
 	
 orExpr

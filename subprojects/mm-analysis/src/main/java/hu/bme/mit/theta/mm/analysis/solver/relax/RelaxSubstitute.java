@@ -127,6 +127,33 @@ public class RelaxSubstitute {
 
 
 
+    public DiscreteTimeMarkovDecisionProcess relaxsubstitute(ParametricDiscreteTimeMarkovChain pdtmc, ParameterSpace parameterSpace){
+        DiscreteTimeMarkovDecisionProcess.Builder builder=DiscreteTimeMarkovDecisionProcess.builder();
+
+        for (VarDecl varDecl:pdtmc.variables){
+            builder.createVariable(varDecl, (LitExpr<?>) pdtmc.variableInitalisations.eval(varDecl).get());
+        }
+
+        for (DiscreteCommand command:pdtmc.commands){
+            builder.addCommands(relaxsubstitute(command,parameterSpace));
+        }
+
+        return builder.build();
+    }
+
+
+    public MarkovDecisionProcess<?> relaxandsubstitute(ParametricMarkovianModel pmm,ParameterSpace parameterSpace){
+        if (pmm instanceof ParametricContinousTimeMarkovChain){
+            return relaxsubstitute((ParametricContinousTimeMarkovChain) pmm,parameterSpace);
+        } else if (pmm instanceof ParametricDiscreteTimeMarkovChain) {
+            return relaxsubstitute((ParametricDiscreteTimeMarkovChain) pmm,parameterSpace);
+        } else {
+            throw new UnsupportedOperationException("This kind of model is not supported yet.");
+        }
+    }
+
+
+
     private int pow2(int a){
         int b=1;
         for (int i=0;i<a;i++){

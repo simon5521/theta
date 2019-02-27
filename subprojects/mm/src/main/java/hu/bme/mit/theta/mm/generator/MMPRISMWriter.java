@@ -9,7 +9,6 @@ import hu.bme.mit.theta.core.type.rangetype.RangeType;
 import hu.bme.mit.theta.mm.model.*;
 import hu.bme.mit.theta.mm.prop.Objective;
 import hu.bme.mit.theta.mm.prop.Property;
-import hu.bme.mit.theta.core.type.arithmetic.OperatorArithmetic;
 
 import java.util.Collection;
 
@@ -410,7 +409,7 @@ public final class MMPRISMWriter {
 
         psBuilder.append("parameterspace\n");
 
-        for (ParamDecl<?> param:parameterSpace.paramDecls){
+        for (ParamDecl<?> param:parameterSpace.parameters){
             psBuilder.append(param.getName())
                     .append(" ")
                     .append(exprPRISMWriter.write(param.getType()))

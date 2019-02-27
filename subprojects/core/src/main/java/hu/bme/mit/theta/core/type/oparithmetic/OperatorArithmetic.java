@@ -1,4 +1,4 @@
-package hu.bme.mit.theta.core.type.arithmetic;
+package hu.bme.mit.theta.core.type.oparithmetic;
 
 import hu.bme.mit.theta.core.model.Valuation;
 import hu.bme.mit.theta.core.type.Expr;

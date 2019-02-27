@@ -25,7 +25,7 @@ varDecl
 	;
 
 procDecl
-	:	(main=MAIN)? PROCESS id=ID (LPAREN (paramDecls=declList)? RPAREN)? LBRAC
+	:	(main=MAIN)? PROCESS id=ID (LPAREN (parameters=declList)? RPAREN)? LBRAC
 			(varDecls+=varDecl | locs+=loc | edges+=edge)*
 		RBRAC
 	;
@@ -129,7 +129,7 @@ exprList
 	
 funcLitExpr
 	:	iteExpr
-	|	LPAREN (paramDecls=declList)? RPAREN RARROW result=funcLitExpr
+	|	LPAREN (parameters=declList)? RPAREN RARROW result=funcLitExpr
 	;
 
 iteExpr
@@ -152,11 +152,11 @@ quantifiedExpr
 	;
 	
 forallExpr
-	:	FORALL LPAREN paramDecls=declList RPAREN op=quantifiedExpr
+	:	FORALL LPAREN parameters=declList RPAREN op=quantifiedExpr
 	;
 	
 existsExpr
-	:	EXISTS LPAREN paramDecls=declList RPAREN op=quantifiedExpr
+	:	EXISTS LPAREN parameters=declList RPAREN op=quantifiedExpr
 	;
 	
 orExpr

@@ -81,7 +81,7 @@ exprList
 	
 funcLitExpr
 	:	iteExpr
-	|	LPAREN (paramDecls=declList)? RPAREN RARROW result=funcLitExpr
+	|	LPAREN (parameters=declList)? RPAREN RARROW result=funcLitExpr
 	;
 
 iteExpr
@@ -104,11 +104,11 @@ quantifiedExpr
 	;
 	
 forallExpr
-	:	FORALL LPAREN paramDecls=declList RPAREN op=quantifiedExpr
+	:	FORALL LPAREN parameters=declList RPAREN op=quantifiedExpr
 	;
 	
 existsExpr
-	:	EXISTS LPAREN paramDecls=declList RPAREN op=quantifiedExpr
+	:	EXISTS LPAREN parameters=declList RPAREN op=quantifiedExpr
 	;
 	
 orExpr

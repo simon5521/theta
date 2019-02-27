@@ -3,8 +3,10 @@ package hu.bme.mit.theta.mm.analysis.solver.external;
 import hu.bme.mit.theta.mm.analysis.solver.MarkovSolver;
 import hu.bme.mit.theta.mm.generator.MMPRISMWriter;
 import hu.bme.mit.theta.mm.model.MarkovianModel;
+import hu.bme.mit.theta.mm.model.Reward;
 
 import java.io.*;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
@@ -88,6 +90,34 @@ public abstract class ExternalSolver implements MarkovSolver {
     protected boolean solveBool(MarkovianModel model) throws IOException {
         MMPRISMWriter mmprismWriter=MMPRISMWriter.instance();
         writeModellFile(mmprismWriter.MarkovianModel2PRISM(model));
+
+        List<String> commandLine=generateCommand();
+
+
+        Scanner scanner=runSolver(commandLine);
+
+        String resultString=scanner.toString();
+
+        return findBoolResult(scanner);
+
+    }
+
+    protected double solveDouble(MarkovianModel model, Collection<Reward> rewards) throws IOException {
+
+        MMPRISMWriter mmprismWriter=MMPRISMWriter.instance();
+        writeModellFile(mmprismWriter.MMwithRewards2PRISM(model,rewards));
+        List<String> commandLine = generateCommand();
+
+
+        Scanner scanner=runSolver(commandLine);
+
+        return findDoubleResult(scanner);
+
+    }
+
+    protected boolean solveBool(MarkovianModel model, Collection<Reward> rewards) throws IOException {
+        MMPRISMWriter mmprismWriter=MMPRISMWriter.instance();
+        writeModellFile(mmprismWriter.MMwithRewards2PRISM(model,rewards));
 
         List<String> commandLine=generateCommand();
 

@@ -1,4 +1,4 @@
-package hu.bme.mit.theta.core.type.arithmetic;
+package hu.bme.mit.theta.core.type.oparithmetic;
 
 import com.google.common.collect.ImmutableList;
 import hu.bme.mit.theta.core.type.Expr;

@@ -2,10 +2,12 @@ package hu.bme.mit.theta.mm.analysis.solver.external;
 
 import hu.bme.mit.theta.mm.generator.MMPRISMWriter;
 import hu.bme.mit.theta.mm.model.MarkovianModel;
+import hu.bme.mit.theta.mm.model.Reward;
 import hu.bme.mit.theta.mm.prop.Property;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
 
@@ -82,6 +84,32 @@ public class PRISMSolverLinux extends ExternalSolver {
         try {
             writeProperty(property);
             check=solveDouble(markovianModel);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new IllegalStateException("There is a fatal problem with the Ountput files.");
+        }
+        return check;
+    }
+
+    @Override
+    public boolean solveBinSingle(MarkovianModel markovianModel, Collection<Reward> rewards, Property property) {
+        boolean check=false;
+        try {
+            writeProperty(property);
+            check=solveBool(markovianModel,rewards);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new IllegalStateException("There is a fatal problem with the Ountput files;");
+        }
+        return check;
+    }
+
+    @Override
+    public double solveDoubleSingle(MarkovianModel markovianModel, Collection<Reward> rewards, Property property) {
+        double check=0;
+        try {
+            writeProperty(property);
+            check=solveDouble(markovianModel,rewards);
         } catch (IOException e) {
             e.printStackTrace();
             throw new IllegalStateException("There is a fatal problem with the Ountput files.");

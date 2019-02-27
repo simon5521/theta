@@ -1,5 +1,6 @@
 package hu.bme.mit.theta.mm.analysis.solver.discrete;
 
+import hu.bme.mit.theta.core.decl.ParamDecl;
 import hu.bme.mit.theta.core.decl.VarDecl;
 import hu.bme.mit.theta.core.type.realtype.RealExprs;
 import hu.bme.mit.theta.mm.model.*;
@@ -12,6 +13,29 @@ public class Discretisation {
     }
 
     private Discretisation() {
+    }
+
+
+
+
+
+
+    public ParametricDiscreteTimeMarkovChain discretisate(ParametricContinousTimeMarkovChain pctmc, Rate uniformRate){
+        ParametricDiscreteTimeMarkovChain.Builder builder=ParametricDiscreteTimeMarkovChain.builder();
+
+        for (ParamDecl<?> param:pctmc.parameters){
+            builder.addParameter(param);
+        }
+
+        for (VarDecl<?> varDecl:pctmc.variables){
+            builder.createVariable(varDecl,pctmc.variableInitalisations.eval(varDecl).get());
+        }
+
+        for (ContinousCommand command:pctmc.commands){
+            builder.addCommand(discretisate(command,uniformRate));
+        }
+
+        return builder.build();
     }
 
 
