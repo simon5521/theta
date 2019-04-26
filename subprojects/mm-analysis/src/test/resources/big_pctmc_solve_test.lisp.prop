@@ -1,0 +1,23 @@
+(property
+
+
+    (objective
+        mdp_r_min (LT ExpT
+            (F
+                (and
+                    (= l1 10)
+                    (and
+                        (= l2 10)
+                        (and
+                            (= l3 10)
+                            (= l4 10)
+                        )
+                     )
+                )
+            )
+            10.0
+        )
+    )
+
+
+)

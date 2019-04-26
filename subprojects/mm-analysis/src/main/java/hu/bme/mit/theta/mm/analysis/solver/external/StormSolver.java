@@ -34,6 +34,8 @@ public class StormSolver extends ExternalSolver{
             commandLine.add(tempModelLocation);
             commandLine.add("--prop");
             commandLine.add(tempPropertyLocation);
+            commandLine.add("--engine");
+            commandLine.add("hybrid");
             return commandLine;
         }
 
@@ -50,8 +52,13 @@ public class StormSolver extends ExternalSolver{
             while (inputStreamReader.hasNextLine()) System.out.println(inputStreamReader.nextLine());
             */
 
+            while (process.isAlive());
+            BufferedInputStream stream=new BufferedInputStream(process.getInputStream());
+            Scanner ret=new Scanner(new String(stream.readAllBytes()));
 
-            return new Scanner(new BufferedInputStream(process.getInputStream()));
+            process.destroy();
+
+            return ret;
 
         }
 

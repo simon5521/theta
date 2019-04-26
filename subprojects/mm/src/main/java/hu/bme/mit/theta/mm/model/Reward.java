@@ -16,6 +16,11 @@ public class  Reward<R extends RewardCommand> {
         this.commands = commands;
     }
 
+    public RewardCommand.Type getType(){
+        if(commands.isEmpty()){ throw new  UnsupportedOperationException(); }
+        return commands.iterator().next().getType();
+    }
+
     public Builder<R> builder(){
         return new Builder();
     }

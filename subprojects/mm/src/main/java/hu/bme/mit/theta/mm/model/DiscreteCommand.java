@@ -64,6 +64,10 @@ public class DiscreteCommand extends Command<DiscreteUpdate> {
             updates.add(update);
         }
 
+        public void addUpdates(Collection<DiscreteUpdate> updates){
+            updates.addAll(updates);
+        }
+
         private void checkNotBuilt() {
             checkState(!built, "Command was already built.");
         }

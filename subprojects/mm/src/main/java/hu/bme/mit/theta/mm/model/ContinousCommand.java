@@ -60,6 +60,10 @@ public class ContinousCommand extends Command<ContinuousUpdate> {
             updates.add(update);
         }
 
+        public void addUpdates(Collection<ContinuousUpdate> updates){
+            updates.addAll(updates);
+        }
+
         private void checkNotBuilt() {
             checkState(!built, "Command was already built.");
         }

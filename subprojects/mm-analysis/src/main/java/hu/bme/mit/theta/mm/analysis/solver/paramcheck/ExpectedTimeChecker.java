@@ -41,7 +41,7 @@ public class ExpectedTimeChecker extends MarkovParameterChecker {
         if (objective.operatorArithmetic instanceof GT){
             GT gtArithmetic=(GT) objective.operatorArithmetic;
             opArth=GT.create(RewardOperator.getINSTANCE(),gtArithmetic.pathProp,gtArithmetic.opExpr);
-            prBuilder.addObjective(new Objective(opArth,"ExpextedTimeMin"));
+            prBuilder.addObjective(new Objective(opArth,"ExpextedTimeMinSatProp"));
 
 
             for (ConstDecl<?> constant:property.constans){
@@ -75,7 +75,7 @@ public class ExpectedTimeChecker extends MarkovParameterChecker {
         if (objective.operatorArithmetic instanceof GT){
             GT gtArithmetic=(GT) objective.operatorArithmetic;
             opArth=LT.create(RewardOperator.getINSTANCE(),gtArithmetic.pathProp,gtArithmetic.opExpr);
-            prBuilder.addObjective(new Objective(opArth,"ExpextedTimeMax"));
+            prBuilder.addObjective(new Objective(opArth,"ExpextedTimeMaxUnsatProp"));
 
 
             for (ConstDecl<?> constant:property.constans){
@@ -86,7 +86,7 @@ public class ExpectedTimeChecker extends MarkovParameterChecker {
         } else if (objective.operatorArithmetic instanceof LT){
             LT gtArithmetic=(LT) objective.operatorArithmetic;
             opArth=GT.create(RewardOperator.getINSTANCE(),gtArithmetic.pathProp,gtArithmetic.opExpr);
-            prBuilder.addObjective(new Objective(opArth,"ExpextedTimeMin"));
+            prBuilder.addObjective(new Objective(opArth,"ExpextedTimeMinUnsat"));
 
 
             for (ConstDecl<?> constant:property.constans){

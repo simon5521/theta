@@ -13,11 +13,11 @@ import java.util.*;
 
 public abstract class MarkovParameterChecker {
     protected Queue<ParameterSpace> fifo;
-    private final int IterationLimit=10;
+    private final int IterationLimit=60;
     private final double RelativeJordanMeasureLimit=0.9;
     private final ExternalSolver solver;
     private Map<ParamDecl<?>, Integer> cutNum;
-    protected final Rate uniformRate=new Rate(RealLitExpr.of(50));
+    protected final Rate uniformRate=new Rate(RealLitExpr.of(60.1));
 
 
     protected MarkovParameterChecker(ExternalSolver solver){
@@ -70,7 +70,7 @@ public abstract class MarkovParameterChecker {
         if(mm instanceof ParametricContinousTimeMarkovChain){
             pctmc=(ParametricContinousTimeMarkovChain) mm;
             ParametricContinousTimeMarkovChain upctmc=uniformisation.uniformisate(pctmc,uniformRate);
-            ParametricDiscreteTimeMarkovChain dtmc=discretisation.discretisate(pctmc,uniformRate);
+            ParametricDiscreteTimeMarkovChain dtmc=discretisation.discretisate(upctmc,uniformRate);
             MM=dtmc;
         }else {
             throw new UnsupportedOperationException("This kind of Markovian Model is not supported yet.");
@@ -78,6 +78,9 @@ public abstract class MarkovParameterChecker {
 
         Integer iterationDepth=0;
         do{
+
+            //just for debugging
+            System.out.println("Iteration: "+iterationDepth.toString());
 
 
             ParameterSpace localSpace=fifo.remove();
