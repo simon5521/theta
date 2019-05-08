@@ -15,7 +15,7 @@ import java.util.*;
 
 public abstract class MarkovParameterChecker {
     protected Queue<ParameterSpace> fifo;
-    private final int IterationLimit=60;
+    private final int IterationLimit=20;
     private final double RelativeJordanMeasureLimit=0.9;
     private final ExternalSolver solver;
     private Map<ParamDecl<?>, Integer> cutNum;

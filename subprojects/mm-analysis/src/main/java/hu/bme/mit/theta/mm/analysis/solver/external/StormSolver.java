@@ -34,8 +34,8 @@ public class StormSolver extends ExternalSolver{
             commandLine.add(tempModelLocation);
             commandLine.add("--prop");
             commandLine.add(tempPropertyLocation);
-            commandLine.add("--engine");
-            commandLine.add("hybrid");
+            //commandLine.add("--engine");
+            //commandLine.add("hybrid");
             return commandLine;
         }
 
