@@ -1,9 +1,11 @@
 package hu.bme.mit.theta.mm.analysis.solver.paramcheck;
 
 import hu.bme.mit.theta.core.decl.ParamDecl;
+import hu.bme.mit.theta.core.model.Valuation;
 import hu.bme.mit.theta.core.type.realtype.RealLitExpr;
 import hu.bme.mit.theta.mm.analysis.solver.discrete.Discretisation;
 import hu.bme.mit.theta.mm.analysis.solver.external.ExternalSolver;
+import hu.bme.mit.theta.mm.analysis.solver.locationarea.AddInitLocations;
 import hu.bme.mit.theta.mm.analysis.solver.relax.RelaxSubstitute;
 import hu.bme.mit.theta.mm.analysis.solver.uniform.Uniformisation;
 import hu.bme.mit.theta.mm.model.*;
@@ -17,7 +19,7 @@ public abstract class MarkovParameterChecker {
     private final double RelativeJordanMeasureLimit=0.9;
     private final ExternalSolver solver;
     private Map<ParamDecl<?>, Integer> cutNum;
-    protected final Rate uniformRate=new Rate(RealLitExpr.of(60.1));
+    protected final Rate uniformRate=new Rate(RealLitExpr.of(2.0));
 
 
     protected MarkovParameterChecker(ExternalSolver solver){
@@ -58,7 +60,6 @@ public abstract class MarkovParameterChecker {
         Uniformisation uniformisation=Uniformisation.getInstance();
         RelaxSubstitute substitute=RelaxSubstitute.getInstance();
         Discretisation discretisation=Discretisation.getInstance();
-
 
         ParametricContinousTimeMarkovChain pctmc;
         ParametricMarkovianModel MM;//preprocessed Markovian Model
@@ -108,6 +109,87 @@ public abstract class MarkovParameterChecker {
         }while ( (!fifo.isEmpty()) &&
                     (RelativeCoveredJordanMeasure<RelativeJordanMeasureLimit) &&
                     (iterationDepth<IterationLimit)
+        );
+
+        while (!fifo.isEmpty()){
+            result.put(fifo.remove(),ParameterSpaceState.NEUTRAL);
+        }
+
+        return result;
+    }
+
+
+
+    private Map<ParameterSpace,ParameterSpaceState> check(ParametricMarkovianModel mm, ParameterSpace parameterSpace, Collection<Reward<?>> rewards, Property satProperty, Property unsatProperty, Collection<Valuation> nondetInitStates){
+
+        Map<ParameterSpace,ParameterSpaceState> result=new HashMap<>();
+
+        fifo.clear();
+        fifo.add(parameterSpace);
+
+
+        //initalising the "cutNum"
+        cutNum.clear();
+        for(ParamDecl<?> param:parameterSpace.parameters){
+            cutNum.put(param,0);
+        }
+
+
+        Uniformisation uniformisation=Uniformisation.getInstance();
+        RelaxSubstitute substitute=RelaxSubstitute.getInstance();
+        Discretisation discretisation=Discretisation.getInstance();
+        AddInitLocations addInitLocations=AddInitLocations.getInstance();
+        rewards=addInitLocations.modifyRewards(rewards);
+
+        ParametricContinousTimeMarkovChain pctmc;
+        ParametricMarkovianModel MM;//preprocessed Markovian Model
+
+
+        final double AllJordanMeasure=parameterSpace.getJordanMeasure();
+        double RelativeCoveredJordanMeasure=0;
+
+        if(mm instanceof ParametricContinousTimeMarkovChain){
+            pctmc=(ParametricContinousTimeMarkovChain) mm;
+            ParametricContinousTimeMarkovChain upctmc=uniformisation.uniformisate(pctmc,uniformRate);
+            ParametricDiscreteTimeMarkovChain dtmc=discretisation.discretisate(upctmc,uniformRate);
+            MM=dtmc;
+        }else {
+            throw new UnsupportedOperationException("This kind of Markovian Model is not supported yet.");
+        }
+
+        Integer iterationDepth=0;
+        do{
+
+            //just for debugging
+            System.out.println("Iteration: "+iterationDepth.toString());
+
+
+            ParameterSpace localSpace=fifo.remove();
+
+            //Markov Decision Process after all model transformations
+            MarkovDecisionProcess mdp=substitute.relaxandsubstitute(MM,localSpace);
+            mdp=addInitLocations.addInitLocation(mdp,nondetInitStates);
+
+            if(solver.solveBinSingle(mdp,rewards,satProperty)){
+                result.put(localSpace,ParameterSpaceState.SATISFYING);
+                RelativeCoveredJordanMeasure+=(localSpace.getJordanMeasure()/AllJordanMeasure);
+            }else if (solver.solveBinSingle(mdp,rewards,unsatProperty)) {
+                result.put(localSpace,ParameterSpaceState.UNSATISFYING);
+                RelativeCoveredJordanMeasure+=(localSpace.getJordanMeasure()/AllJordanMeasure);
+            }else {
+                ParamDecl<?> cutParam=searchCutParameter(cutNum);
+                ParameterSpace lowSpace=localSpace.cutAndGetLowHalf(cutParam);
+                ParameterSpace upSpace=localSpace.cutAndGetUpHalf(cutParam);
+                fifo.add(lowSpace);
+                fifo.add(upSpace);
+                iterationDepth=searchIteration(cutNum);
+                cutNum.put(cutParam,iterationDepth+1);
+            }
+
+
+        }while ( (!fifo.isEmpty()) &&
+                (RelativeCoveredJordanMeasure<RelativeJordanMeasureLimit) &&
+                (iterationDepth<IterationLimit)
         );
 
         while (!fifo.isEmpty()){

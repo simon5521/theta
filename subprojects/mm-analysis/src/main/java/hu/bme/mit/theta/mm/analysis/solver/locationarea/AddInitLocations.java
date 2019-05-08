@@ -36,7 +36,7 @@ public class AddInitLocations {
 
     private static Integer ID=0;
 
-    private static final VarDecl<IntType> initIndicator= Decls.Var("InitVariable3212",IntType.getInstance());
+    private static final VarDecl<IntType> initIndicator= Decls.Var("InitVar",IntType.getInstance());
 
     private static final VarDecl<?> _initIndicator=initIndicator;
 
@@ -49,6 +49,17 @@ public class AddInitLocations {
     }
 
     private AddInitLocations() {
+    }
+
+
+    public MarkovDecisionProcess addInitLocation(MarkovDecisionProcess mdp,Collection<Valuation> initStates){
+        if(mdp instanceof ContinuousTimeMarkovDecisionProcess){
+            return addInitLocations((ContinuousTimeMarkovDecisionProcess) mdp,initStates);
+        }else if(mdp instanceof DiscreteTimeMarkovDecisionProcess){
+            return addInitLocations((DiscreteTimeMarkovDecisionProcess) mdp,initStates);
+        }else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public ContinuousTimeMarkovDecisionProcess addInitLocations(ContinuousTimeMarkovDecisionProcess markovDecisionProcess,Collection<Valuation> initialStates){
@@ -78,7 +89,15 @@ public class AddInitLocations {
     }
 
 
-    private Reward<?> generateReward(Reward<?> reward){
+    public Collection<Reward<?>> modifyRewards(Collection<Reward<?>> rewards){
+        Collection<Reward<?>> rewards1=new HashSet<>();
+        for (Reward<?> reward:rewards){
+            rewards1.add(generateReward(reward));
+        }
+        return rewards1;
+    }
+
+    public Reward<?> generateReward(Reward<?> reward){
         if(reward.getType()== RewardCommand.Type.EDGE){
             Reward<TranstionRewardCommand> reward1=(Reward<TranstionRewardCommand>) reward;
             Reward.Builder<TranstionRewardCommand> builder=reward1.builder();
@@ -150,7 +169,7 @@ public class AddInitLocations {
 
     private ContinousCommand generateContinousCommand(Valuation initialState){
         ContinousCommand.Builder cbuilder=new ContinousCommand.Builder();
-        cbuilder.setAction((ID++).toString());
+        cbuilder.setAction("InitAct"+(ID++).toString());
         cbuilder.setGuard(IntExprs.Eq(initIndicator.getRef(),IntExprs.Int(0)));
         Collection<ContinuousUpdate> updates=new HashSet<>();
         ContinuousUpdate.Builder ubuilder=ContinuousUpdate.builder();
@@ -168,7 +187,7 @@ public class AddInitLocations {
 
     private DiscreteCommand generateDisceteCommand(Valuation initialState /*a valuation describe an initial state*/){
         DiscreteCommand.Builder cbuilder=new DiscreteCommand.Builder();
-        cbuilder.setAction((ID++).toString());
+        cbuilder.setAction("InitAct"+(ID++).toString());
         cbuilder.setGuard(IntExprs.Eq(initIndicator.getRef(),IntExprs.Int(0)));
         Collection<DiscreteUpdate> updates=new HashSet<>();
         /* one command describes only one initial state, it has only one update*/

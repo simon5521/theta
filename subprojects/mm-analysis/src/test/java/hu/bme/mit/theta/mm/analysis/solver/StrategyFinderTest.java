@@ -62,6 +62,7 @@ public class StrategyFinderTest {
     private MMPRISMWriter writer;
     private PRISMSolverLinux prismSolverLinux;
     private StormSolver stormSolver;
+    ExpectedTimeChecker expectedTimeChecker;
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
@@ -89,6 +90,7 @@ public class StrategyFinderTest {
         writer = MMPRISMWriter.instance();
         prismSolverLinux = new PRISMSolverLinux();
         stormSolver = new StormSolver();
+        expectedTimeChecker=new ExpectedTimeChecker(new StormSolver());
 
     }
 
@@ -104,9 +106,12 @@ public class StrategyFinderTest {
 
     @Test
     public void test(){
+
+
         System.out.println("Reading the model of the server");
         System.out.println("-----------------------------------------------------");
         ParametricContinousTimeMarkovChain serverModel=pctmcparser.pCTMC();
+        ParametricContinousTimeMarkovChain pCTMC=serverModel;
         System.out.println(writer.PCTMC2PRISM(serverModel));
 
         ParameterSpace parameterSpace=pctmcparser.parameterspace();
@@ -132,6 +137,28 @@ public class StrategyFinderTest {
         Collection<Valuation> nondetInitStates=nondetinitparser.NondetInitialStates();
         serverMDP=addInitLocations.addInitLocations(serverMDP,nondetInitStates);
         System.out.println(writer.DTMDP2PRISM(serverMDP));
+
+
+        System.out.println("Adding multiple initialisation states and do parametric analysis");
+        System.out.println("-----------------------------------------------------");
+        propparser=new PropertyParser(PropReader,pCTMC.variables);
+        Property property=propparser.property();
+
+
+        Map<ParameterSpace,ParameterSpaceState> result=expectedTimeChecker.check(pCTMC,parameterSpace,property);
+
+        for (Map.Entry<ParameterSpace,ParameterSpaceState> entry:result.entrySet()){
+            if (entry.getValue()==ParameterSpaceState.SATISFYING){
+                System.out.println("Satisfying area found:");
+                System.out.println(writer.ParameterSpace2PRISM(entry.getKey()));
+            } else if (entry.getValue()==ParameterSpaceState.UNSATISFYING){
+                System.out.println("Unsatisfying area found:");
+                System.out.println(writer.ParameterSpace2PRISM(entry.getKey()));
+            } else if (entry.getValue()==ParameterSpaceState.NEUTRAL){
+                System.out.println("Neutral area:");
+                System.out.println(writer.ParameterSpace2PRISM(entry.getKey()));
+            }
+        }
 
 
     }
