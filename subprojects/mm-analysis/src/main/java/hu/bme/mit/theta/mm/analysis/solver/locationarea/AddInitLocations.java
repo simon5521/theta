@@ -34,13 +34,15 @@ public class AddInitLocations {
 
     private static AddInitLocations ourInstance = new AddInitLocations();
 
-    private static final RangeType InitRangeType=RangeType.Range(0,1);
-
     private static Integer ID=0;
 
-    private static final VarDecl<?> initIndicator= Decls.Var("InitVariable3212",InitRangeType);
+    private static final VarDecl<IntType> initIndicator= Decls.Var("InitVariable3212",IntType.getInstance());
 
-    private static final VarDecl<IntType> _initIndicator=Decls.Var("InitVariable3212",IntType.getInstance());
+    private static final VarDecl<?> _initIndicator=initIndicator;
+
+    private final LitExpr<IntType> ZERO = IntLitExpr.of(0);
+
+    private final LitExpr<IntType> ONE = IntLitExpr.of(1);
 
     public static AddInitLocations getInstance() {
         return ourInstance;
@@ -53,11 +55,12 @@ public class AddInitLocations {
         ContinuousTimeMarkovDecisionProcess.Builder builder=ContinuousTimeMarkovDecisionProcess.builder();
         builder.addCommands(generateContCommads(initialStates));
         builder.addCommands(modifyContCommands(markovDecisionProcess.commands));
+        builder.addVarBounds(markovDecisionProcess.lowerVarBound,markovDecisionProcess.upperVarBound);
         for(Map.Entry<Decl<?>, LitExpr<?>> entry:markovDecisionProcess.variableInitalisations.toMap().entrySet()){
             builder.createVariable((VarDecl<?>) entry.getKey(),entry.getValue());
         }
         LitExpr<?> init=(LitExpr<?>) IntLitExpr.of(0);
-        builder.createVariable(initIndicator, init);
+        builder.createVariable(initIndicator, init,ZERO,ONE);
         return builder.build();
     }
 
@@ -65,11 +68,12 @@ public class AddInitLocations {
         DiscreteTimeMarkovDecisionProcess.Builder builder=DiscreteTimeMarkovDecisionProcess.builder();
         builder.addCommands(generateDiscCommads(initialStates));
         builder.addCommands(modifyDiscCommands(markovDecisionProcess.commands));
+        builder.addVarBounds(markovDecisionProcess.lowerVarBound,markovDecisionProcess.upperVarBound);
         for(Map.Entry<Decl<?>, LitExpr<?>> entry:markovDecisionProcess.variableInitalisations.toMap().entrySet()){
             builder.createVariable((VarDecl<?>) entry.getKey(),entry.getValue());
         }
         LitExpr<?> init=(LitExpr<?>) IntLitExpr.of(0);
-        builder.createVariable(initIndicator, init);
+        builder.createVariable(initIndicator, init,ZERO,ONE);
         return builder.build();
     }
 
@@ -84,7 +88,7 @@ public class AddInitLocations {
                                 BoolExprs.And(
                                         command.guard,
                                         IntExprs.Eq(
-                                                _initIndicator.getRef(),
+                                                initIndicator.getRef(),
                                                 IntLitExpr.of(1)
                                         )
                                 ),
@@ -93,7 +97,7 @@ public class AddInitLocations {
                         )
                 );
             }
-            builder.addCommand(new TranstionRewardCommand(IntExprs.Eq(_initIndicator.getRef(),IntLitExpr.of(0)),RealLitExpr.of(0.0),"nondet_init_command"));
+            builder.addCommand(new TranstionRewardCommand(IntExprs.Eq(initIndicator.getRef(),IntLitExpr.of(0)),RealLitExpr.of(0.0),"nondet_init_command"));
             return builder.build();
         }
         if(reward.getType()== RewardCommand.Type.STATE){
@@ -105,7 +109,7 @@ public class AddInitLocations {
                                 BoolExprs.And(
                                         command.guard,
                                         IntExprs.Eq(
-                                                _initIndicator.getRef(),
+                                                initIndicator.getRef(),
                                                 IntLitExpr.of(1)
                                         )
                                 ),
@@ -113,7 +117,7 @@ public class AddInitLocations {
                         )
                 );
             }
-            builder.addCommand(new StateRewardCommand(IntExprs.Eq(_initIndicator.getRef(),IntLitExpr.of(0)),RealLitExpr.of(0.0)));
+            builder.addCommand(new StateRewardCommand(IntExprs.Eq(initIndicator.getRef(),IntLitExpr.of(0)),RealLitExpr.of(0.0)));
             return builder.build();
         }
         throw new UnsupportedOperationException();
@@ -147,7 +151,7 @@ public class AddInitLocations {
     private ContinousCommand generateContinousCommand(Valuation initialState){
         ContinousCommand.Builder cbuilder=new ContinousCommand.Builder();
         cbuilder.setAction((ID++).toString());
-        cbuilder.setGuard(IntExprs.Eq(_initIndicator.getRef(),IntExprs.Int(0)));
+        cbuilder.setGuard(IntExprs.Eq(initIndicator.getRef(),IntExprs.Int(0)));
         Collection<ContinuousUpdate> updates=new HashSet<>();
         ContinuousUpdate.Builder ubuilder=ContinuousUpdate.builder();
 
@@ -165,7 +169,7 @@ public class AddInitLocations {
     private DiscreteCommand generateDisceteCommand(Valuation initialState /*a valuation describe an initial state*/){
         DiscreteCommand.Builder cbuilder=new DiscreteCommand.Builder();
         cbuilder.setAction((ID++).toString());
-        cbuilder.setGuard(IntExprs.Eq(_initIndicator.getRef(),IntExprs.Int(0)));
+        cbuilder.setGuard(IntExprs.Eq(initIndicator.getRef(),IntExprs.Int(0)));
         Collection<DiscreteUpdate> updates=new HashSet<>();
         /* one command describes only one initial state, it has only one update*/
         DiscreteUpdate.Builder ubuilder=DiscreteUpdate.builder();
@@ -190,7 +194,7 @@ public class AddInitLocations {
             builder.setGuard(BoolExprs.And(
                     command.guard,
                     IntExprs.Eq(
-                            _initIndicator.getRef(),
+                            initIndicator.getRef(),
                             IntLitExpr.of(1)
                     )
             ));
@@ -208,7 +212,7 @@ public class AddInitLocations {
             builder.setGuard(BoolExprs.And(
                     command.guard,
                     IntExprs.Eq(
-                            _initIndicator.getRef(),
+                            initIndicator.getRef(),
                             IntLitExpr.of(1)
                     )
             ));

@@ -113,7 +113,7 @@ public class RelaxSubstitute {
 
     public ContinuousTimeMarkovDecisionProcess relaxsubstitute(ParametricContinousTimeMarkovChain pctmc, ParameterSpace parameterSpace){
         ContinuousTimeMarkovDecisionProcess.Builder builder=ContinuousTimeMarkovDecisionProcess.builder();
-
+        builder.addVarBounds(pctmc.lowerVarBound,pctmc.upperVarBound);
         for (VarDecl varDecl:pctmc.variables){
             builder.createVariable(varDecl, (LitExpr<?>) pctmc.variableInitalisations.eval(varDecl).get());
         }
@@ -129,7 +129,7 @@ public class RelaxSubstitute {
 
     public DiscreteTimeMarkovDecisionProcess relaxsubstitute(ParametricDiscreteTimeMarkovChain pdtmc, ParameterSpace parameterSpace){
         DiscreteTimeMarkovDecisionProcess.Builder builder=DiscreteTimeMarkovDecisionProcess.builder();
-
+        builder.addVarBounds(pdtmc.lowerVarBound,pdtmc.upperVarBound);
         for (VarDecl varDecl:pdtmc.variables){
             builder.createVariable(varDecl, (LitExpr<?>) pdtmc.variableInitalisations.eval(varDecl).get());
         }

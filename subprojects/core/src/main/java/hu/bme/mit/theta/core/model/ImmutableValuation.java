@@ -107,6 +107,11 @@ public final class ImmutableValuation extends Valuation {
 			return this;
 		}
 
+		public Builder putAll(Valuation valuation) {
+			builder.putAll(valuation.toMap());
+			return this;
+		}
+
 		public ImmutableValuation build() {
 			return new ImmutableValuation(this);
 		}

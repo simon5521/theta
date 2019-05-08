@@ -146,8 +146,9 @@ public class MarkovianModelInterpreter {
                 final Object object = eval(sexpr);
                 if (object instanceof VariableContext) {
                     final VariableContext variableContext = (VariableContext) object;
-                    if (variableContext.varDecl.getType().toString().contains("Range")){
-                        pCTMCBuilder.createVariable(variableContext.varDecl,variableContext.initialExpr);
+                    env.define(variableContext.varDecl.getName(),variableContext.varDecl);
+                    if (variableContext.varDecl.getType()==IntType.getInstance()){
+                        pCTMCBuilder.createVariable(variableContext.varDecl,variableContext.initialExpr,variableContext.lowerBound,variableContext.upperBound);
                     } else if (variableContext.varDecl.getType().equals(BoolType.getInstance())) {
                         pCTMCBuilder.createVariable(variableContext.varDecl,variableContext.initialExpr);
                     } else {
@@ -177,8 +178,9 @@ public class MarkovianModelInterpreter {
                 final Object object = eval(sexpr);
                 if (object instanceof VariableContext) {
                     final VariableContext variableContext = (VariableContext) object;
-                    if (variableContext.varDecl.getType().toString().contains("Range")){
-                        MDPBuilder.createVariable(variableContext.varDecl,variableContext.initialExpr);
+                    env.define(variableContext.varDecl.getName(),variableContext.varDecl);
+                    if (variableContext.varDecl.getType()==IntType.getInstance()){
+                        MDPBuilder.createVariable(variableContext.varDecl,variableContext.initialExpr,variableContext.lowerBound,variableContext.upperBound);
                     } else if (variableContext.varDecl.getType().equals(BoolType.getInstance())) {
                         MDPBuilder.createVariable(variableContext.varDecl,variableContext.initialExpr);
                     } else {
@@ -304,16 +306,17 @@ public class MarkovianModelInterpreter {
             checkArgument(sexprs.size() >= 2);
             final String name = sexprs.get(0).asAtom().getAtom();
             final Type type = interpreter.type(sexprs.get(1));
-            if(type.equals(IntType.getInstance())){ //todo: supervising needed
-                final RangeType _type = RangeType.Range((int) evalAtom(sexprs.get(2).asAtom()),(int) evalAtom(sexprs.get(3).asAtom()));
-                final VarDecl<RangeType> varDecl = Var(name,_type);
-                VariableContext variableContext=new VariableContext(varDecl,IntLitExpr.of((Integer) eval(sexprs.get(4).asAtom()))  );
-                env.define(name,Var(name,IntType.getInstance()));
-                //todo: supervising needed (Más típussal deklarálom az environment-ben, hogy tisztán int-ként lehessen kezelni és a RangeType-ban ne kelljen a műveleteket újra deffiniálni)
+            if(type.equals(IntType.getInstance())){
+                Object lowerBound=eval(sexprs.get(2));
+                Object upperBound=eval(sexprs.get(3));
+                lowerBound=IntLitExpr.of((Integer) lowerBound);
+                upperBound=IntLitExpr.of((Integer) upperBound);
+                final VarDecl<IntType> varDecl = Var(name,IntType.getInstance());
+                VariableContext variableContext=new VariableContext(varDecl,IntLitExpr.of((Integer) eval(sexprs.get(4))), (LitExpr<?>) lowerBound,(LitExpr<?>) upperBound);
                 return variableContext;
             }else{
                 final VarDecl<?> varDecl = Var(name, type);
-                VariableContext variableContext=new VariableContext(varDecl,(LitExpr<?>) eval(sexprs.get(2).asAtom()));
+                VariableContext variableContext=new VariableContext(varDecl,(LitExpr<?>) eval(sexprs.get(2)));
                 return variableContext;
             }
         };
@@ -348,7 +351,7 @@ public class MarkovianModelInterpreter {
                 LitExpr<?> initVar;
                 checkArgument(sExprs.size() == 2);
                 VarDecl<?> variable = (VarDecl<?>) eval(sExprs.get(0));
-                if (variable.getType() instanceof RangeType) {
+                if (variable.getType() == IntType.getInstance()) {
                     initVar = IntLitExpr.of((Integer) eval(sExprs.get(1)));
                 } else {
                     throw new UnsupportedOperationException();
@@ -432,11 +435,24 @@ public class MarkovianModelInterpreter {
     private final class  VariableContext{
         public final VarDecl<?> varDecl;
         public final LitExpr<?> initialExpr;
+        public LitExpr<?> lowerBound;
+        public LitExpr<?> upperBound;
+        public final Boolean bounded;
 
         private VariableContext(VarDecl<?> varDecl, LitExpr<?> initialExpr) {
             this.varDecl = varDecl;
             this.initialExpr = initialExpr;
+            bounded=false;
         }
+
+        private VariableContext(VarDecl<?> varDecl, LitExpr<?> initialExpr, LitExpr<?> lowerBound, LitExpr<?> upperBound) {
+            this.varDecl = varDecl;
+            this.initialExpr = initialExpr;
+            this.lowerBound = lowerBound;
+            this.upperBound = upperBound;
+            bounded=true;
+        }
+
     }
 
     private final class ParameterContext{

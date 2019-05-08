@@ -61,7 +61,7 @@ public class ContinousCommand extends Command<ContinuousUpdate> {
         }
 
         public void addUpdates(Collection<ContinuousUpdate> updates){
-            updates.addAll(updates);
+            this.updates.addAll(updates);
         }
 
         private void checkNotBuilt() {

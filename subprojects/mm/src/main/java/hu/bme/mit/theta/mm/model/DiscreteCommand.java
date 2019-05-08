@@ -31,7 +31,7 @@ public class DiscreteCommand extends Command<DiscreteUpdate> {
 
 
         public Builder(){
-            updates=new HashSet<DiscreteUpdate>();
+            updates=new HashSet<>();
             guard=null;
             action=null;
             built=false;
@@ -65,7 +65,7 @@ public class DiscreteCommand extends Command<DiscreteUpdate> {
         }
 
         public void addUpdates(Collection<DiscreteUpdate> updates){
-            updates.addAll(updates);
+            this.updates.addAll(updates);
         }
 
         private void checkNotBuilt() {

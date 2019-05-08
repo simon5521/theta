@@ -39,9 +39,9 @@ public class ParametricDiscreteTimeMarkovChain extends ParametricMarkovianModel<
 
         private ImmutableValuation.Builder initialisationBuilder;
 
-        private ImmutableValuation.Builder lowerVarBounBuilder;
+        private ImmutableValuation.Builder lowerVarBoundBuilder;
 
-        private ImmutableValuation.Builder upperVarBounBuilder;
+        private ImmutableValuation.Builder upperVarBoundBuilder;
 
 
 
@@ -51,6 +51,8 @@ public class ParametricDiscreteTimeMarkovChain extends ParametricMarkovianModel<
             parameters=new HashSet<>();
             variableInitalisations=null;
             initialisationBuilder=ImmutableValuation.builder();
+            lowerVarBoundBuilder=ImmutableValuation.builder();
+            upperVarBoundBuilder=ImmutableValuation.builder();
         }
 
 
@@ -97,11 +99,16 @@ public class ParametricDiscreteTimeMarkovChain extends ParametricMarkovianModel<
             checkArgument(!variables.contains(variable),"Variable must be declared only once!");
             variables.add(variable);
             initialisationBuilder.put(variable,initialValue);
-            lowerVarBounBuilder.put(variable,lowerBound);
-            upperVarBounBuilder.put(variable,upperBound);
+            lowerVarBoundBuilder.put(variable,lowerBound);
+            upperVarBoundBuilder.put(variable,upperBound);
             return  variable;
         }
 
+
+        public void addVarBounds(Valuation lowerBound,Valuation upperBounds){
+            lowerVarBoundBuilder.putAll(lowerBound);
+            upperVarBoundBuilder.putAll(upperBounds);
+        }
 
         public ParametricDiscreteTimeMarkovChain build() {
             checkNotBuilt();
@@ -111,7 +118,7 @@ public class ParametricDiscreteTimeMarkovChain extends ParametricMarkovianModel<
                 command.collectParams(parameters);
             }
             variableInitalisations=initialisationBuilder.build();
-            return new ParametricDiscreteTimeMarkovChain(this.commands, this.variables, lowerVarBounBuilder.build(), upperVarBounBuilder.build(), this.parameters, this.variableInitalisations);
+            return new ParametricDiscreteTimeMarkovChain(this.commands, this.variables, lowerVarBoundBuilder.build(), upperVarBoundBuilder.build(), this.parameters, this.variableInitalisations);
         }
 
 

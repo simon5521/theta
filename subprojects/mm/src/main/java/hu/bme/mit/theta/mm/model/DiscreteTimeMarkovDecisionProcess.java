@@ -45,6 +45,8 @@ public class DiscreteTimeMarkovDecisionProcess extends MarkovDecisionProcess<Dis
             variables=new HashSet<>();
             variableInitalisations=null;
             initialisationBuilder= ImmutableValuation.builder();
+            lowerVarBoundBuilder=ImmutableValuation.builder();
+            upperVarBoundBuilder=ImmutableValuation.builder();
         }
 
 
@@ -93,6 +95,10 @@ public class DiscreteTimeMarkovDecisionProcess extends MarkovDecisionProcess<Dis
         }
 
 
+        public void addVarBounds(Valuation lowerBound,Valuation upperBounds){
+            lowerVarBoundBuilder.putAll(lowerBound);
+            upperVarBoundBuilder.putAll(upperBounds);
+        }
 
         public DiscreteTimeMarkovDecisionProcess build() {
             checkNotBuilt();

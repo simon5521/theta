@@ -22,7 +22,7 @@ public class Uniformisation {
 
     public ParametricContinousTimeMarkovChain uniformisate(ParametricContinousTimeMarkovChain pctmc, Rate uniformRate){
         ParametricContinousTimeMarkovChain.Builder modelBuilder=ParametricContinousTimeMarkovChain.builder();
-
+        modelBuilder.addVarBounds(pctmc.lowerVarBound,pctmc.upperVarBound);
         for (VarDecl varDecl:pctmc.variables){
             modelBuilder.createVariable(varDecl, (LitExpr<?>) pctmc.variableInitalisations.eval(varDecl).get());
         }

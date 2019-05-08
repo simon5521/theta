@@ -3,8 +3,10 @@ package hu.bme.mit.theta.mm.generator;
 import hu.bme.mit.theta.core.decl.ConstDecl;
 import hu.bme.mit.theta.core.decl.ParamDecl;
 import hu.bme.mit.theta.core.decl.VarDecl;
+import hu.bme.mit.theta.core.model.Valuation;
 import hu.bme.mit.theta.core.stmt.AssignStmt;
 import hu.bme.mit.theta.core.type.LitExpr;
+import hu.bme.mit.theta.core.type.inttype.IntType;
 import hu.bme.mit.theta.core.type.rangetype.RangeType;
 import hu.bme.mit.theta.mm.model.*;
 import hu.bme.mit.theta.mm.prop.Objective;
@@ -31,7 +33,7 @@ public final class MMPRISMWriter {
 
         //writing out variables
         for (VarDecl<?> varDecl:pdtmc.variables){
-            prismBuilder.append(Variable2PRISM(varDecl,pdtmc.variableInitalisations.toMap().get(varDecl)))
+            prismBuilder.append(Variable2PRISM(varDecl,pdtmc.variableInitalisations.eval(varDecl).get(),pdtmc.lowerVarBound,pdtmc.upperVarBound))
                     .append("\n");
         }
 
@@ -170,19 +172,24 @@ public final class MMPRISMWriter {
 
     }
 
-    public String Variable2PRISM(VarDecl<?> varDecl, LitExpr<?> initalValue){
+    public String Variable2PRISM(VarDecl<?> varDecl, LitExpr<?> initalValue, Valuation lowerBounds, Valuation upperBounds){
 
         ExprPRISMWriter exprWriter=ExprPRISMWriter.instance();
         StringBuilder prismBuilder=new StringBuilder();
 
 
-        if(varDecl.getType() instanceof RangeType){
-            VarDecl<RangeType> var=(VarDecl<RangeType>) varDecl;
+        if(varDecl.getType()== IntType.getInstance()){
+            String lowerBound;
+            String upperBound;
+            if (lowerBounds.eval(varDecl).isEmpty())  lowerBound="-inf";
+            else lowerBound=exprWriter.write(lowerBounds.eval(varDecl).get());
+            if (upperBounds.eval(varDecl).isEmpty()) upperBound="inf";
+            else upperBound=exprWriter.write(upperBounds.eval(varDecl).get());
             prismBuilder.append(varDecl.getName())
                     .append(": [")
-                    .append(var.getType().getLower())
+                    .append(lowerBound)
                     .append("..")
-                    .append(var.getType().getUpper())
+                    .append(upperBound)
                     .append("] init ")
                     .append(exprWriter.write(initalValue))
                     .append(" ;");
@@ -226,7 +233,7 @@ public final class MMPRISMWriter {
 
         //writing out variables
         for (VarDecl<?> varDecl:pCTMC.variables){
-            prismBuilder.append(Variable2PRISM(varDecl,pCTMC.variableInitalisations.toMap().get(varDecl)))
+            prismBuilder.append(Variable2PRISM(varDecl,pCTMC.variableInitalisations.eval(varDecl).get(),pCTMC.lowerVarBound,pCTMC.upperVarBound))
                     .append("\n");
         }
 
@@ -257,7 +264,7 @@ public final class MMPRISMWriter {
 
         //writing out variables
         for (VarDecl<?> varDecl:dtmdp.variables){
-            prismBuilder.append(Variable2PRISM(varDecl,dtmdp.variableInitalisations.toMap().get(varDecl)))
+            prismBuilder.append(Variable2PRISM(varDecl,dtmdp.variableInitalisations.eval(varDecl).get(),dtmdp.lowerVarBound,dtmdp.upperVarBound))
                     .append("\n");
         }
 
@@ -288,7 +295,7 @@ public final class MMPRISMWriter {
 
         //writing out variables
         for (VarDecl<?> varDecl:ctmdp.variables){
-            prismBuilder.append(Variable2PRISM(varDecl,ctmdp.variableInitalisations.toMap().get(varDecl)))
+            prismBuilder.append(Variable2PRISM(varDecl,ctmdp.variableInitalisations.eval(varDecl).get(),ctmdp.lowerVarBound,ctmdp.upperVarBound))
                     .append("\n");
         }
 

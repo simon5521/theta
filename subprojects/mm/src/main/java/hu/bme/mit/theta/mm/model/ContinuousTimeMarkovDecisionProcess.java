@@ -39,9 +39,9 @@ public class ContinuousTimeMarkovDecisionProcess extends MarkovDecisionProcess<C
 
         private ImmutableValuation.Builder initialisationBuilder;
 
-        private ImmutableValuation.Builder lowerVarBounBuilder;
+        private ImmutableValuation.Builder lowerVarBoundBuilder;
 
-        private ImmutableValuation.Builder upperVarBounBuilder;
+        private ImmutableValuation.Builder upperVarBoundBuilder;
 
 
 
@@ -50,6 +50,8 @@ public class ContinuousTimeMarkovDecisionProcess extends MarkovDecisionProcess<C
             variables=new HashSet<>();
             variableInitalisations=null;
             initialisationBuilder= ImmutableValuation.builder();
+            lowerVarBoundBuilder=ImmutableValuation.builder();
+            upperVarBoundBuilder=ImmutableValuation.builder();
         }
 
 
@@ -93,9 +95,14 @@ public class ContinuousTimeMarkovDecisionProcess extends MarkovDecisionProcess<C
             checkArgument(!variables.contains(variable),"Variable must be declared only once!");
             variables.add(variable);
             initialisationBuilder.put(variable,initialValue);
-            lowerVarBounBuilder.put(variable,lowerBound);
-            upperVarBounBuilder.put(variable,upperBound);
+            lowerVarBoundBuilder.put(variable,lowerBound);
+            upperVarBoundBuilder.put(variable,upperBound);
             return  variable;
+        }
+
+        public void addVarBounds(Valuation lowerBound,Valuation upperBounds){
+            lowerVarBoundBuilder.putAll(lowerBound);
+            upperVarBoundBuilder.putAll(upperBounds);
         }
 
 
@@ -103,7 +110,7 @@ public class ContinuousTimeMarkovDecisionProcess extends MarkovDecisionProcess<C
             checkNotBuilt();
             built = true;
             variableInitalisations=initialisationBuilder.build();
-            return new ContinuousTimeMarkovDecisionProcess(this.commands, this.variables,lowerVarBounBuilder.build(),upperVarBounBuilder.build(), this.variableInitalisations);
+            return new ContinuousTimeMarkovDecisionProcess(this.commands, this.variables, lowerVarBoundBuilder.build(), upperVarBoundBuilder.build(), this.variableInitalisations);
         }
 
 

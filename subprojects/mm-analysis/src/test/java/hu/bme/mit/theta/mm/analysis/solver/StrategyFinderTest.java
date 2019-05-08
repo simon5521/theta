@@ -118,6 +118,7 @@ public class StrategyFinderTest {
         AddInitLocations addInitLocations=AddInitLocations.getInstance();
 
         serverModel=uniformisation.uniformisate(serverModel,uniRate);
+        System.out.println(writer.PCTMC2PRISM(serverModel));
         ParametricDiscreteTimeMarkovChain dserverMode=discretisation.discretisate(serverModel,uniRate);
         DiscreteTimeMarkovDecisionProcess serverMDP=relaxSubstitute.relaxsubstitute(dserverMode,parameterSpace);
         System.out.println("Relaxing the model and sustitute");

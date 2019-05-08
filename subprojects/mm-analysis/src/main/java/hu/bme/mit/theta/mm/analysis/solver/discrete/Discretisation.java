@@ -22,7 +22,7 @@ public class Discretisation {
 
     public ParametricDiscreteTimeMarkovChain discretisate(ParametricContinousTimeMarkovChain pctmc, Rate uniformRate){
         ParametricDiscreteTimeMarkovChain.Builder builder=ParametricDiscreteTimeMarkovChain.builder();
-
+        builder.addVarBounds(pctmc.lowerVarBound,pctmc.upperVarBound);
         for (ParamDecl<?> param:pctmc.parameters){
             builder.addParameter(param);
         }
@@ -41,7 +41,7 @@ public class Discretisation {
 
     public DiscreteTimeMarkovDecisionProcess discretisate(ContinuousTimeMarkovDecisionProcess ctmdp, Rate uniformRate){
         DiscreteTimeMarkovDecisionProcess.Builder builder=DiscreteTimeMarkovDecisionProcess.builder();
-
+        builder.addVarBounds(ctmdp.lowerVarBound,ctmdp.upperVarBound);
         for (VarDecl<?> varDecl:ctmdp.variables){
             builder.createVariable(varDecl,ctmdp.variableInitalisations.eval(varDecl).get());
         }
