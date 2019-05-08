@@ -27,7 +27,7 @@ public class RelaxSubstitute {
 
         Collection<Valuation> valuations=new HashSet<>();
 
-        Collection<ParamDecl> parameters=command.getParams();
+        Collection<ParamDecl<?>>  parameters=command.getParams();
 
         if (parameters.isEmpty()){
             valuations.add(ImmutableValuation.builder().build());

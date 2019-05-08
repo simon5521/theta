@@ -12,8 +12,12 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
 public class ContinuousTimeMarkovDecisionProcess extends MarkovDecisionProcess<ContinousCommand> {
-    protected ContinuousTimeMarkovDecisionProcess(Collection<ContinousCommand> continousCommands, Collection<VarDecl<?>> variables, Valuation variableInitalisations) {
-        super(continousCommands, variables, variableInitalisations);
+    protected ContinuousTimeMarkovDecisionProcess(Collection<ContinousCommand> continousCommands,
+                                                  Collection<VarDecl<?>> variables,
+                                                  Valuation lowerVarBound,
+                                                  Valuation upperVarBound,
+                                                  Valuation variableInitalisations) {
+        super(continousCommands, variables,lowerVarBound ,upperVarBound, variableInitalisations);
     }
 
 
@@ -34,6 +38,10 @@ public class ContinuousTimeMarkovDecisionProcess extends MarkovDecisionProcess<C
         private Valuation variableInitalisations;
 
         private ImmutableValuation.Builder initialisationBuilder;
+
+        private ImmutableValuation.Builder lowerVarBounBuilder;
+
+        private ImmutableValuation.Builder upperVarBounBuilder;
 
 
 
@@ -78,11 +86,24 @@ public class ContinuousTimeMarkovDecisionProcess extends MarkovDecisionProcess<C
         }
 
 
+        public VarDecl<?> createVariable(VarDecl<?> variable, LitExpr<?> initialValue,LitExpr<?> lowerBound,LitExpr<?> upperBound){
+            checkNotBuilt();
+            checkArgument(variable!=null,"Variable must not be null!");
+            checkArgument(initialValue!=null,"Initial value must not be null!");
+            checkArgument(!variables.contains(variable),"Variable must be declared only once!");
+            variables.add(variable);
+            initialisationBuilder.put(variable,initialValue);
+            lowerVarBounBuilder.put(variable,lowerBound);
+            upperVarBounBuilder.put(variable,upperBound);
+            return  variable;
+        }
+
+
         public ContinuousTimeMarkovDecisionProcess build() {
             checkNotBuilt();
             built = true;
             variableInitalisations=initialisationBuilder.build();
-            return new ContinuousTimeMarkovDecisionProcess(this.commands, this.variables, this.variableInitalisations);
+            return new ContinuousTimeMarkovDecisionProcess(this.commands, this.variables,lowerVarBounBuilder.build(),upperVarBounBuilder.build(), this.variableInitalisations);
         }
 
 

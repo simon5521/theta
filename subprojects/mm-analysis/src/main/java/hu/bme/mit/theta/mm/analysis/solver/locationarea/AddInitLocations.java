@@ -1,6 +1,8 @@
 package hu.bme.mit.theta.mm.analysis.solver.locationarea;
 
+import com.google.errorprone.annotations.Var;
 import hu.bme.mit.theta.core.decl.Decl;
+import hu.bme.mit.theta.core.decl.Decls;
 import hu.bme.mit.theta.core.decl.VarDecl;
 import hu.bme.mit.theta.core.model.ImmutableValuation;
 import hu.bme.mit.theta.core.model.Valuation;
@@ -36,9 +38,9 @@ public class AddInitLocations {
 
     private static Integer ID=0;
 
-    private static final VarDecl<?> initIndicator=new VarDecl<>("InitVariable3212",InitRangeType);
+    private static final VarDecl<?> initIndicator= Decls.Var("InitVariable3212",InitRangeType);
 
-    private static final VarDecl<IntType> _initIndicator=new VarDecl<>("InitVariable3212",IntType.getInstance());
+    private static final VarDecl<IntType> _initIndicator=Decls.Var("InitVariable3212",IntType.getInstance());
 
     public static AddInitLocations getInstance() {
         return ourInstance;
@@ -54,7 +56,8 @@ public class AddInitLocations {
         for(Map.Entry<Decl<?>, LitExpr<?>> entry:markovDecisionProcess.variableInitalisations.toMap().entrySet()){
             builder.createVariable((VarDecl<?>) entry.getKey(),entry.getValue());
         }
-        builder.createVariable(initIndicator, IntLitExpr.of(0));
+        LitExpr<?> init=(LitExpr<?>) IntLitExpr.of(0);
+        builder.createVariable(initIndicator, init);
         return builder.build();
     }
 
@@ -65,7 +68,8 @@ public class AddInitLocations {
         for(Map.Entry<Decl<?>, LitExpr<?>> entry:markovDecisionProcess.variableInitalisations.toMap().entrySet()){
             builder.createVariable((VarDecl<?>) entry.getKey(),entry.getValue());
         }
-        builder.createVariable(initIndicator, IntLitExpr.of(0));
+        LitExpr<?> init=(LitExpr<?>) IntLitExpr.of(0);
+        builder.createVariable(initIndicator, init);
         return builder.build();
     }
 

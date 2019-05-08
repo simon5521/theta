@@ -13,8 +13,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
 public class ParametricContinousTimeMarkovChain extends ParametricMarkovianModel<ContinousCommand> {
-    protected ParametricContinousTimeMarkovChain(Collection<ContinousCommand> collection, Collection variables, Collection parameters, Valuation variableInitalisations) {
-        super(collection, variables, parameters, variableInitalisations);
+    protected ParametricContinousTimeMarkovChain(Collection<ContinousCommand> collection, Collection variables, Valuation lowerVarBound, Valuation upperVarBound, Collection<ParamDecl<?>> parameters, Valuation variableInitalisations) {
+        super(collection, variables, lowerVarBound, upperVarBound, parameters, variableInitalisations);
     }
 
 
@@ -37,6 +37,10 @@ public class ParametricContinousTimeMarkovChain extends ParametricMarkovianModel
         private Valuation variableInitalisations;
 
         private ImmutableValuation.Builder initialisationBuilder;
+
+        private ImmutableValuation.Builder lowerVarBounBuilder;
+
+        private ImmutableValuation.Builder upperVarBounBuilder;
 
 
 
@@ -72,6 +76,19 @@ public class ParametricContinousTimeMarkovChain extends ParametricMarkovianModel
         }
 
 
+        public VarDecl<?> createVariable(VarDecl<?> variable, LitExpr<?> initialValue,LitExpr<?> lowerBound,LitExpr<?> upperBound){
+            checkNotBuilt();
+            checkArgument(variable!=null,"Variable must not be null!");
+            checkArgument(initialValue!=null,"Initial value must not be null!");
+            checkArgument(!variables.contains(variable),"Variable must be declared only once!");
+            variables.add(variable);
+            initialisationBuilder.put(variable,initialValue);
+            lowerVarBounBuilder.put(variable,lowerBound);
+            upperVarBounBuilder.put(variable,upperBound);
+            return  variable;
+        }
+
+
         public ParametricContinousTimeMarkovChain build() {
             checkNotBuilt();
             built = true;
@@ -80,7 +97,7 @@ public class ParametricContinousTimeMarkovChain extends ParametricMarkovianModel
                 command.collectParams(parameters);
             }
             variableInitalisations=initialisationBuilder.build();
-            return new ParametricContinousTimeMarkovChain(this.commands, this.variables, this.parameters, this.variableInitalisations);
+            return new ParametricContinousTimeMarkovChain(this.commands, this.variables, lowerVarBounBuilder.build(), upperVarBounBuilder.build(), this.parameters, this.variableInitalisations);
         }
 
 

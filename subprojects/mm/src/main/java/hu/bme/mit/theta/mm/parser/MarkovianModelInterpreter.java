@@ -5,12 +5,15 @@ import com.google.common.primitives.Ints;
 import hu.bme.mit.theta.common.parser.SExpr;
 import hu.bme.mit.theta.core.decl.ParamDecl;
 import hu.bme.mit.theta.core.decl.VarDecl;
+import hu.bme.mit.theta.core.model.ImmutableValuation;
+import hu.bme.mit.theta.core.model.Valuation;
 import hu.bme.mit.theta.core.parser.CoreInterpreter;
 import hu.bme.mit.theta.core.parser.Env;
 import hu.bme.mit.theta.core.stmt.AssignStmt;
 import hu.bme.mit.theta.core.type.Expr;
 import hu.bme.mit.theta.core.type.LitExpr;
 import hu.bme.mit.theta.core.type.Type;
+import hu.bme.mit.theta.core.type.anytype.RefExpr;
 import hu.bme.mit.theta.core.type.booltype.BoolType;
 import hu.bme.mit.theta.core.type.inttype.IntLitExpr;
 import hu.bme.mit.theta.core.type.inttype.IntType;
@@ -21,6 +24,8 @@ import hu.bme.mit.theta.core.type.realtype.RealType;
 import hu.bme.mit.theta.mm.model.*;
 import hu.bme.mit.theta.mm.prop.Property;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.function.Function;
 
@@ -37,7 +42,9 @@ public class MarkovianModelInterpreter {
     private  final ParametricContinousTimeMarkovChain.Builder pCTMCBuilder;
     private final DiscreteTimeMarkovDecisionProcess.Builder MDPBuilder;
     private final ParameterSpace.Builder paramBuilder;
+    private Collection<Valuation> MultiInitStates;
     private ParameterSpace parameterSpace;
+
 
     private final Property.Builder propertyBuilder;
 
@@ -50,6 +57,7 @@ public class MarkovianModelInterpreter {
         MDPBuilder = DiscreteTimeMarkovDecisionProcess.builder();
         paramBuilder=ParameterSpace.builder();
         propertyBuilder =Property.builder();
+        MultiInitStates=new HashSet<>();
 
     }
 
@@ -59,6 +67,10 @@ public class MarkovianModelInterpreter {
 
     public DiscreteTimeMarkovDecisionProcess discreteTimeMarkovDecisionProcess(SExpr sExpr){
         return (DiscreteTimeMarkovDecisionProcess) eval(sExpr);
+    }
+
+    public Collection<Valuation> multipleInitialStates(SExpr sExpr){
+        return (Collection<Valuation>) eval(sExpr);
     }
 
     private void initEnv(){
@@ -73,6 +85,8 @@ public class MarkovianModelInterpreter {
         env.define("update", continuousUpdateCreator());
         env.define("dupdate",discreteUpdateCreator());
         env.define("param",parameterCreator());
+        env.define("init", InitStateCreator());
+        env.define("nondetinit",NondetInitStatesCreator());
         /*
         interpreter.defineTempLogicExprs();
         env.define("const",constantCreator());
@@ -190,25 +204,29 @@ public class MarkovianModelInterpreter {
 
     private Function<List<SExpr>, ContinuousUpdateContext> continuousUpdateCreator() {
         return sexprs -> {
-            checkArgument(sexprs.size() == 2);
+            checkArgument(sexprs.size() >= 2);
             ContinuousUpdate.Builder builder=new ContinuousUpdate.Builder();
             Object object=eval(sexprs.get(0));
             if (object instanceof Expr){
                 builder.setRate((Expr<RealType>) object);
+            } else if (object instanceof Integer) {
+                builder.setRate(RealLitExpr.of((Integer) object));
             } else if(object instanceof Double) {
                 builder.setRate(RealLitExpr.of((Double) object));
+            } else if(object instanceof ParamDecl) {
+                ParamDecl<RealType> param =(ParamDecl<RealType>) object;
+                builder.setRate(RefExpr.of(param));
             } else {
                 throw new UnsupportedOperationException();
             }
 
             List<SExpr> stmtSExprs = List.copyOf(sexprs.subList(1,sexprs.size()));
-            //env.push();
             for(final SExpr sexpr :stmtSExprs){
                 final Object objecti = eval(sexpr);
                 final AssignStmt stmt = (AssignStmt) objecti;
                 builder.addStmt(stmt);
             }
-            //env.pop();
+
             return new ContinuousUpdateContext(builder);
         };
     }
@@ -225,6 +243,9 @@ public class MarkovianModelInterpreter {
                 builder.setProbability(RealLitExpr.of((Double) object));
             } else if (object instanceof Integer) {
                 builder.setProbability(RealLitExpr.of((Integer) object));
+            } else if(object instanceof ParamDecl) {
+                ParamDecl<RealType> param =(ParamDecl<RealType>) object;
+                builder.setProbability(RefExpr.of(param));
             } else {
                 throw new UnsupportedOperationException();
             }
@@ -314,6 +335,41 @@ public class MarkovianModelInterpreter {
 
 
 
+    private Function<List<SExpr>, Valuation> InitStateCreator() {
+        return sexprs -> {
+            ImmutableValuation.Builder builder = ImmutableValuation.builder();
+            for (final SExpr sexpr : sexprs) {
+                List<SExpr> sExprs;
+                if(sexpr.isList()){
+                    sExprs=sexpr.asList().getList();
+                }else {
+                    throw new UnsupportedOperationException();
+                }
+                LitExpr<?> initVar;
+                checkArgument(sExprs.size() == 2);
+                VarDecl<?> variable = (VarDecl<?>) eval(sExprs.get(0));
+                if (variable.getType() instanceof RangeType) {
+                    initVar = IntLitExpr.of((Integer) eval(sExprs.get(1)));
+                } else {
+                    throw new UnsupportedOperationException();
+                }
+                builder.put(variable, initVar);
+            }
+            return builder.build();
+        };
+    }
+
+    private Function<List<SExpr>, Collection<Valuation>> NondetInitStatesCreator(){
+        return sexprs -> {
+            for (final SExpr sexpr : sexprs) {
+                Valuation initState = (Valuation) eval(sexpr);
+                MultiInitStates.add(initState);
+            }
+            final Collection<Valuation> _MultiInitStates=MultiInitStates;
+
+            return _MultiInitStates;
+        };
+    }
 
 
 

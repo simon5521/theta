@@ -1,10 +1,12 @@
 package hu.bme.mit.theta.mm.analysis.solver;
 
+import hu.bme.mit.theta.core.model.ImmutableValuation;
 import hu.bme.mit.theta.core.type.realtype.RealExprs;
 import hu.bme.mit.theta.core.type.realtype.RealLitExpr;
 import hu.bme.mit.theta.mm.analysis.solver.discrete.Discretisation;
 import hu.bme.mit.theta.mm.analysis.solver.external.PRISMSolverLinux;
 import hu.bme.mit.theta.mm.analysis.solver.external.StormSolver;
+import hu.bme.mit.theta.mm.analysis.solver.locationarea.AddInitLocations;
 import hu.bme.mit.theta.mm.analysis.solver.paramcheck.ExpectedTimeChecker;
 import hu.bme.mit.theta.mm.analysis.solver.relax.RelaxSubstitute;
 import hu.bme.mit.theta.mm.analysis.solver.uniform.Uniformisation;
@@ -90,7 +92,7 @@ public class MarkovSolverTest {
 
     @Test
     public void test(){
-        /*DiscreteTimeMarkovDecisionProcess dtmdp= mdpparser.DTMDP();
+        DiscreteTimeMarkovDecisionProcess dtmdp= mdpparser.DTMDP();
         propparser=new PropertyParser(propreader,dtmdp.variables);
         Property prop=propparser.property();
         System.out.println(writer.DTMDP2PRISM(dtmdp));
@@ -105,8 +107,8 @@ public class MarkovSolverTest {
         System.out.println("_______________________________________");
         Double minProbStorm=stormSolver.solveDoubleSingle(dtmdp,prop);
         System.out.println("Result is: "+minProbStorm.toString());
-        System.out.println("_______________________________________");
-        */
+        System.out.println("Result is: "+minProbStorm.toString());
+
         System.out.println("Reading the pmctmc");
         System.out.println("_______________________________________");
         ParametricContinousTimeMarkovChain pCTMC=pctmcparser.pCTMC();
@@ -149,7 +151,7 @@ public class MarkovSolverTest {
         System.out.println("_______________________________________");
         RelaxSubstitute relaxSubstitute=RelaxSubstitute.getInstance();
 
-        DiscreteTimeMarkovDecisionProcess dtmdp=relaxSubstitute.relaxsubstitute(pdtmc,parameterSpace);
+        dtmdp=relaxSubstitute.relaxsubstitute(pdtmc,parameterSpace);
         System.out.println(writer.DTMDP2PRISM(dtmdp));
 
 

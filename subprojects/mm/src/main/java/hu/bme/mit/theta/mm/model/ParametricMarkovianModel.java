@@ -11,8 +11,8 @@ import static com.google.common.base.Preconditions.checkState;
 
 public class ParametricMarkovianModel<ModellCommand extends Command> extends MarkovianModel<ModellCommand> implements Parametric {
 
-    protected ParametricMarkovianModel(Collection collection, Collection variables, Collection parameters, Valuation variableInitalisations) {
-        super(collection, variables, variableInitalisations);
+    protected ParametricMarkovianModel(Collection collection, Collection variables, Valuation lowerVarBound, Valuation upperVarBound, Collection<ParamDecl<?>> parameters, Valuation variableInitalisations) {
+        super(collection, variables, lowerVarBound, upperVarBound, variableInitalisations);
         this.parameters=parameters;
         parameterNumber=parameters.size();
 

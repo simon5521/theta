@@ -12,8 +12,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
 public class DiscreteTimeMarkovDecisionProcess extends MarkovDecisionProcess<DiscreteCommand> {
-    protected DiscreteTimeMarkovDecisionProcess(Collection<DiscreteCommand> discreteCommands, Collection<VarDecl<?>> variables, Valuation variableInitalisations) {
-        super(discreteCommands, variables, variableInitalisations);
+    protected DiscreteTimeMarkovDecisionProcess(Collection<DiscreteCommand> discreteCommands, Collection<VarDecl<?>> variables, Valuation lowerVarBound, Valuation upperVarBound, Valuation variableInitalisations) {
+        super(discreteCommands, variables,  lowerVarBound,  upperVarBound, variableInitalisations);
     }
 
 
@@ -35,6 +35,9 @@ public class DiscreteTimeMarkovDecisionProcess extends MarkovDecisionProcess<Dis
 
         private ImmutableValuation.Builder initialisationBuilder;
 
+        private ImmutableValuation.Builder lowerVarBoundBuilder;
+
+        private ImmutableValuation.Builder upperVarBoundBuilder;
 
 
         private Builder(){
@@ -77,13 +80,25 @@ public class DiscreteTimeMarkovDecisionProcess extends MarkovDecisionProcess<Dis
         }
 
 
+        public VarDecl<?> createVariable(VarDecl<?> variable, LitExpr<?> initialValue,LitExpr<?> lowerBound,LitExpr<?> upperBound){
+            checkNotBuilt();
+            checkArgument(variable!=null,"Variable must not be null!");
+            checkArgument(initialValue!=null,"Initial value must not be null!");
+            checkArgument(!variables.contains(variable),"Variable must be declared only once!");
+            variables.add(variable);
+            initialisationBuilder.put(variable,initialValue);
+            lowerVarBoundBuilder.put(variable,lowerBound);
+            upperVarBoundBuilder.put(variable,upperBound);
+            return  variable;
+        }
+
 
 
         public DiscreteTimeMarkovDecisionProcess build() {
             checkNotBuilt();
             built = true;
             variableInitalisations=initialisationBuilder.build();
-            return new DiscreteTimeMarkovDecisionProcess(this.commands, this.variables, this.variableInitalisations);
+            return new DiscreteTimeMarkovDecisionProcess(this.commands, this.variables,lowerVarBoundBuilder.build(),upperVarBoundBuilder.build(), this.variableInitalisations);
         }
 
 

@@ -51,6 +51,7 @@ public class PropertyInterpreter{
         env.define("constant",constantCreator());
         env.define("property",propertyCreator());
         env.define("objective",objectiveCreator());
+
         for(VarDecl<?> var:variables){
             env.define(var.getName(),var);
         }

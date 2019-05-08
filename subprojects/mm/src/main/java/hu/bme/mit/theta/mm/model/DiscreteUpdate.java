@@ -34,7 +34,7 @@ public class DiscreteUpdate extends Update {
     }
 
     @Override
-    public void collectParams(Collection<ParamDecl<?>> collection){
+    public void collectParams(Collection<ParamDecl<?>>  collection){
         collection.addAll(ExprUtils.getParams(probability.probExpr));
     }
 

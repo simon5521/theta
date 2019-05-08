@@ -1,12 +1,12 @@
 package hu.bme.mit.theta.mm.model;
 
 import hu.bme.mit.theta.core.decl.ParamDecl;
+import hu.bme.mit.theta.core.model.Valuation;
 import hu.bme.mit.theta.core.type.Expr;
 import hu.bme.mit.theta.core.type.booltype.BoolType;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkState;
 
@@ -42,7 +42,7 @@ public abstract class Command<CommandUpdate extends hu.bme.mit.theta.mm.model.Up
     }
 
     public Collection<ParamDecl<?>> getParams(){
-        Set<ParamDecl<?>> paramDeclSet=new HashSet<>();
+        Collection<ParamDecl<?>> paramDeclSet=new HashSet<>();
         collectParams(paramDeclSet);
         return paramDeclSet;
     }
